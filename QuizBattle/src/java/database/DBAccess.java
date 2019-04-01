@@ -35,7 +35,7 @@ public class DBAccess {
         statement.close();
     }
 
-    public void addAccound(Account account) throws SQLException {
+    public void addAccount(Account account) throws SQLException {
         Statement statement = stmtPool.getStatement();
         String sqlString = "INSERT INTO account"
                 + "(userid, username, password, dateOfBirth, mailAddress) "
@@ -49,20 +49,19 @@ public class DBAccess {
         statement.close();
     }
 
-    public List<Account> getAccountByUsername(String username) throws SQLException {
+    public Account getAccountByUsername(String username) throws SQLException {
         PreparedStatement pStat = stmtPool.getPreparedStatement(DB_StatementType.GET_ACCOUNT_BY_USERNAME);
+        Account account = null;
         pStat.setString(1, username); //Werte für Fragezeichen einsetzen
         ResultSet rs = pStat.executeQuery();
-        List<Account> filmNames = new LinkedList<>();
         while (rs.next()) {
             String password = rs.getString("password");
             java.sql.Date dateOfBirth = rs.getDate("dateOfBirth");
             int userid = rs.getInt("userid");
             String email = rs.getString("mailAddress");
-            Account account = new Account(username, password, email, userid, dateOfBirth);
-            filmNames.add(account);
+            account = new Account(username, password, email, userid, dateOfBirth);
         }
         stmtPool.releaseStatement(pStat);
-        return filmNames;
+        return account;
     }
 }
