@@ -5,6 +5,7 @@
  */
 package client;
 
+import beans.Account;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,24 +17,63 @@ import java.util.logging.Logger;
  *
  * @author tobias
  */
-public class Client 
-{
+public class Client {
+
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+
     public static void main(String[] args) {
         new Client();
     }
-    public Client()
-    {
+    private Account account;
+    public Client() {
         connect();
+        account = new Account("Günther");
+        registration(account);
     }
 
-    public void connect() {
+    public void registration(Account account) {
         try {
-            System.out.println("hier");
-            Socket s = new Socket("10.151.77.50", 9999);
-            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+            oos.writeObject("registration");
+            oos.flush();
+            oos.writeObject(account);
+            oos.flush();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void connect() {
+        try {
+            
+                Socket s = new Socket("10.151.77.50", 9999);
+                oos = new ObjectOutputStream(s.getOutputStream());
+                ois = new ObjectInputStream(s.getInputStream());
+                ServerMessages sm = new ServerMessages();
+                sm.start();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    class ServerMessages extends Thread {
+
+        @Override
+        public void run() {
+            super.run(); //To change body of generated methods, choose Tools | Templates.
+            try {   
+                while (true) {
+                    String message = (String) ois.readObject();
+                    System.out.println("message");
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
 }
