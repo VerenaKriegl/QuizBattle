@@ -6,16 +6,22 @@
 package beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  *
  * @author tobia
  */ 
 public class Account implements Serializable{
-    private String name; 
-    public Account(String name)
-    {
-        
-        this.name = name;
+    private String username, password, mailAddress;
+    private int userid;
+    private Date dateOfBirth;
+
+    public Account(String username, String password, String mailAddress, int userid, Date dateOfBirth) {
+        this.username = username;
+        this.password = password;
+        this.mailAddress = mailAddress;
+        this.userid = userid;
+        this.dateOfBirth = dateOfBirth;
     }
 }
