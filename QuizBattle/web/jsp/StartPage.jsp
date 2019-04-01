@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Startpage
-    Created on : 27.03.2019, 11:17:55
+    Document   : StartPage
+    Created on : 30.03.2019, 09:15:29
     Author     : kriegl
 --%>
 
@@ -22,16 +22,16 @@
         .alignButton {
             width: 900px;
             height: 300px;
-            position: fixed;
-            margin: auto;
+            left: 50%;
+            margin-top: 100px;
+            margin-left: -300px;
+            position: relative;
         }
-
     </style>
     <body>
-
+        <img style="left: 50%; position: relative; margin-left: -150px; margin-top: 50px;" src="../images/Logo.PNG">
         <div class="alignButton">
-
-            <button style="border: 2px solid black; font-size: 100px; width:70%;" type="button" name="registration" class="btn btn-outline-dark">Registrieren</button>
+            <button style="border: 2px solid black; font-size: 100px; width:70%;margin-bottom: 50px;" type="button" name="registration" class="btn btn-outline-dark">Registrieren</button>
             <button style="border: 2px solid black; font-size: 100px; width:70%;" type="button" name="login" class="btn btn-outline-dark">Login</button>
         </div>
     </body>
