@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "QuizServlet", urlPatterns = {"/QuizServlet"})
 public class QuizServlet extends HttpServlet {
-    private Client client;
+    private Client client;  
     @Override
     public void init(ServletConfig config)
             throws ServletException {
