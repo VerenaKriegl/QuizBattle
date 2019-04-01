@@ -7,7 +7,7 @@ package beans;
 
 /**
  *
- * @author krieg
+ * @author kriegl
  */
 public class Quiz {
       

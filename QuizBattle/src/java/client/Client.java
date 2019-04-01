@@ -14,18 +14,21 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tobia
+ * @author tobias
  */
 public class Client 
 {
     public static void main(String[] args) {
-        new Client().connect();
-        
+        new Client();
     }
-    
+    public Client()
+    {
+        connect();
+    }
 
-    private void connect() {
+    public void connect() {
         try {
+            System.out.println("hier");
             Socket s = new Socket("192.168.88.102", 9999);
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
@@ -33,5 +36,4 @@ public class Client
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
