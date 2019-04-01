@@ -29,7 +29,7 @@ public class Client
     public void connect() {
         try {
             System.out.println("hier");
-            Socket s = new Socket("192.168.88.102", 9999);
+            Socket s = new Socket("10.151.77.50", 9999);
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
         } catch (IOException ex) {
