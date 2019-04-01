@@ -38,6 +38,17 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void logIn(Account account)
+    {
+        try {
+            oos.writeObject("login");
+            oos.flush();
+            oos.writeObject(account);
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void connect() {
         try {

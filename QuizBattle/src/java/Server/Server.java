@@ -6,12 +6,14 @@
 package Server;
 
 import beans.Account;
+import database.DBAccess;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,6 +83,7 @@ public class Server {
         @Override
         public void run() {
             try {
+                DBAccess dba = new DBAccess();
                 while (true) {
 
                     String type = (String) ois.readObject();
@@ -89,10 +92,27 @@ public class Server {
                         oos.writeObject("Account erstellt");
                         oos.flush();
                     }
+                    else if(type.equals("login"))
+                    {
+                        Account account = (Account)ois.readObject();
+                        Account loginAccount = dba.getAccountByUsername(account.getUsername());
+                        if(loginAccount.getPassword().equals(account.getPassword()))
+                        {
+                            oos.writeObject("Herzlich willkommen");
+                            oos.flush();
+                        }
+                        else
+                        {
+                            oos.writeObject("Login fehlgeschlagen");
+                            oos.flush();
+                        }
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
