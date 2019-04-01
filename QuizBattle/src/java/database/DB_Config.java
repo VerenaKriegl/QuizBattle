@@ -6,4 +6,4 @@ public interface DB_Config {
     String DB_USERNAME = "postgres";
     String DB_PASSWD = "postgres";
     String DB_DRIVER = "org.postgresql.Driver";
-}
+} 

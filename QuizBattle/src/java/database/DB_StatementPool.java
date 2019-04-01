@@ -50,7 +50,7 @@ public class DB_StatementPool {
         }
         if (stmtList.isEmpty()) {
             return connection.createStatement();
-        } else {
+        } else { 
             return stmtList.poll();
         }
     }
