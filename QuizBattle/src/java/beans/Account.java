@@ -24,4 +24,26 @@ public class Account implements Serializable{
         this.userid = userid;
         this.dateOfBirth = dateOfBirth;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getMailAddress() {
+        return mailAddress;
+    }
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+    
+    
 }
