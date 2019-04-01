@@ -10,11 +10,12 @@ import java.io.Serializable;
 /**
  *
  * @author tobia
- */
+ */ 
 public class Account implements Serializable{
-    private String name;
+    private String name; 
     public Account(String name)
     {
+        
         this.name = name;
     }
 }

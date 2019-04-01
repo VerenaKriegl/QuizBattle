@@ -41,7 +41,7 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+  
     class AcceptClient extends Thread {
 
         private ServerSocket ss;

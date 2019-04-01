@@ -31,9 +31,10 @@ public class Client {
         account = new Account("Günther");
         registration(account);
     }
-
+ 
     public void registration(Account account) {
         try {
+            
             oos.writeObject("registration");
             oos.flush();
             oos.writeObject(account);
