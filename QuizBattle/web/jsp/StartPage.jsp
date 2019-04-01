@@ -29,10 +29,12 @@
         }
     </style>
     <body>
-        <img style="left: 50%; position: relative; margin-left: -150px; margin-top: 50px;" src="../images/Logo.PNG">
-        <div class="alignButton">
-            <button style="border: 2px solid black; font-size: 100px; width:70%;margin-bottom: 50px;" type="button" name="registration" class="btn btn-outline-dark">Registrieren</button>
-            <button style="border: 2px solid black; font-size: 100px; width:70%;" type="button" name="login" class="btn btn-outline-dark">Login</button>
-        </div>
+        <form action="startPage" method="POST">
+            <img style="left: 50%; position: relative; margin-left: -150px; margin-top: 50px;" src="../images/Logo.PNG">
+            <div class="alignButton">
+                <button style="border: 2px solid black; font-size: 100px; width:70%;margin-bottom: 50px;" type="button" name="registration" class="btn btn-outline-dark">Registrieren</button>
+                <button style="border: 2px solid black; font-size: 100px; width:70%;" type="button" name="login" class="btn btn-outline-dark">Login</button>
+            </div>
+        </form>
     </body>
 </html>
