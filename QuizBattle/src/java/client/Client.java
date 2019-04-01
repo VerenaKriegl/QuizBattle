@@ -22,14 +22,9 @@ public class Client {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    public static void main(String[] args) {
-        new Client();
-    }
-    private Account account;
+   
     public Client() {
         connect();
-        account = new Account("Günther");
-        registration(account);
     }
  
     public void registration(Account account) {
