@@ -44,7 +44,7 @@ public class DBAccess {
                 + "', '" + account.getPassword()
                 + "', '" + account.getDateOfBirth()
                 + "', '" + account.getMailAddress()
-                + "');";
+                + "');"; 
         statement.execute(sqlString);
         statement.close();
     }

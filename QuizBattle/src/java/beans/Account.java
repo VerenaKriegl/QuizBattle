@@ -23,7 +23,7 @@ public class Account implements Serializable{
         this.mailAddress = mailAddress;
         this.userid = userid;
         this.dateOfBirth = dateOfBirth;
-    }
+    } 
 
     public String getUsername() {
         return username;
