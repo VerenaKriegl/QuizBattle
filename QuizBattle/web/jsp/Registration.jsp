@@ -67,7 +67,7 @@
         <h1 style="text-align: center;">Registrieren!</h1>
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
-                <table align="center" style="vertical-align: middle;">
+                <table style = "margin-top: 40px" align="center" style="vertical-align: middle;">
                     <tr>
                         <td>Userame: </td>
                         <td><input type="text" name="username" value="" required="required" /></td>
