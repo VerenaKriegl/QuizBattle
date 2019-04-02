@@ -6,7 +6,7 @@
 package beans;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,9 +15,9 @@ import java.sql.Date;
 public class Account implements Serializable{
     private String username, password, mailAddress;
     private int userid;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
-    public Account(String username, String password, String mailAddress, int userid, Date dateOfBirth) {
+    public Account(String username, String password, String mailAddress, int userid, LocalDate dateOfBirth) {
         this.username = username;
         this.password = password;
         this.mailAddress = mailAddress;
@@ -41,7 +41,7 @@ public class Account implements Serializable{
         return userid;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 }

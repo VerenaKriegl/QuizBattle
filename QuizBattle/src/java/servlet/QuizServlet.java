@@ -8,11 +8,10 @@ package servlet;
 import beans.Account;
 import client.Client;
 import java.io.IOException;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class QuizServlet extends HttpServlet {
 
     private Client client;
-    private SimpleDateFormat sdf;
+    private DateTimeFormatter dtf;
     private Account newAccount;
     private int userid;
 
@@ -38,7 +37,7 @@ public class QuizServlet extends HttpServlet {
         super.init(config);
         System.out.println("hier");
         client = new Client();
-        sdf = new SimpleDateFormat("dd.MM.yyyy");
+        dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         userid = 1;
     }
 
@@ -75,13 +74,7 @@ public class QuizServlet extends HttpServlet {
             String mail = request.getParameter("mail");
             String pass = request.getParameter("pass");
             String date = request.getParameter("dateOfBirth");
-            Date dateOfBirth = null;
-            try {
-                java.util.Date utilDate = sdf.parse(date);
-                dateOfBirth = new Date(utilDate.getTime());
-            } catch (ParseException ex) {
-                System.out.println("Date error in Servlet");
-            }
+            LocalDate dateOfBirth = (LocalDate) dtf.parse(date);
             newAccount = new Account(username, mail, pass, userid, dateOfBirth);
             userid++;
             client.registrate(newAccount);
@@ -92,5 +85,4 @@ public class QuizServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
