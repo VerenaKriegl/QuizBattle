@@ -14,6 +14,9 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,12 +28,17 @@ public class Server {
 
     public ServerSocket serverSocket = null;
 
+    private Map<Integer, ArrayList<ObjectOutputStream>> mapGames = new HashMap<>();
+    private ArrayList<ObjectOutputStream> listGameStreams;
+    private Map<String, ObjectOutputStream> mapClients = new HashMap<>();
+
     public static void main(String[] args) {
         new Server();
     }
 
     public Server() {
         startServer();
+
     }
 
     private void startServer() {
@@ -43,7 +51,7 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-  
+
     class AcceptClient extends Thread {
 
         private ServerSocket ss;
@@ -55,10 +63,10 @@ public class Server {
         @Override
         public void run() {
             try {
-                System.out.println("connected");
 
                 while (true) {
                     Socket socket = ss.accept();
+                    System.out.println("connected");
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                     ClientCommunicatoin cc = new ClientCommunicatoin(oos, ois);
@@ -84,27 +92,32 @@ public class Server {
         public void run() {
             try {
                 DBAccess dba = new DBAccess();
-                while (true) {
+                String username = null;
 
-                    String type = (String) ois.readObject();
-                    if (type.equals("registration")) {
-                        Account account = (Account)ois.readObject();
-                        oos.writeObject("Account erstellt");
+                String type = (String) ois.readObject();
+                if (type.equals("registration")) {
+                    Account account = (Account) ois.readObject();
+                    username = account.getUsername();
+                    mapClients.put(account.getUsername(), oos);
+                    oos.writeObject("Account erstellt");
+                    oos.flush();
+
+                } else if (type.equals("login")) {
+                    Account account = (Account) ois.readObject();
+                    Account loginAccount = dba.getAccountByUsername(account.getUsername());
+                    if (loginAccount.getPassword().equals(account.getPassword())) {
+                        mapClients.put(username, oos);
+                        oos.writeObject("Herzlich willkommen");
                         oos.flush();
                     }
-                    else if(type.equals("login"))
-                    {
-                        Account account = (Account)ois.readObject();
-                        Account loginAccount = dba.getAccountByUsername(account.getUsername());
-                        if(loginAccount.getPassword().equals(account.getPassword()))
-                        {
-                            oos.writeObject("Herzlich willkommen");
+                    while (true) {
+                        type = (String) ois.readObject();
+                        if (type.equals("logout")) {
+                            mapClients.remove(username);
+                            oos.writeObject("Auf wiedersehen!");
                             oos.flush();
-                        }
-                        else
-                        {
-                            oos.writeObject("Login fehlgeschlagen");
-                            oos.flush();
+                        } else if (type.equals("startgame")) {
+                            startGame(oos);
                         }
                     }
                 }
@@ -116,5 +129,68 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        private void startGame(ObjectOutputStream oos) {
+            boolean availableGame = false;
+            if (mapGames.isEmpty()) {
+                listGameStreams = new ArrayList<>();
+                listGameStreams.add(oos);
+                mapGames.put(1, listGameStreams);
+                WaitForPlayer wfp = new WaitForPlayer(1);
+                wfp.start();
+            } else {
+                for (ArrayList list : mapGames.values()) {
+                    if (list.size() == 1) {
+                        for (int mapKey : mapGames.keySet()) {
+                            if (list.equals(mapGames.get(mapKey))) {
+                                mapGames.remove(mapKey, list);
+                                list.add(oos);
+                                listGameStreams = list;
+                                mapGames.put(mapKey, listGameStreams);
+                                availableGame = true;
+                            }
+                        }
+                        System.out.println("Beitreten");
+                        break;
+                    } else {
+                        System.out.println("voll");
+                    }
+                }
+                if (!availableGame) {
+                    int gameCount = mapGames.size() + 1;
+                    listGameStreams = new ArrayList<>();
+                    listGameStreams.add(oos);
+                    mapGames.put(mapGames.size() + 1, listGameStreams);
+                    WaitForPlayer wfp = new WaitForPlayer(gameCount);
+                    wfp.start();
+                }
+            }
+
+        }
     }
+
+    class WaitForPlayer extends Thread {
+
+        private int gameCount;
+        private boolean isOnePlayer = true;
+
+        public WaitForPlayer(int gameCount) {
+            this.gameCount = gameCount;
+        }
+
+        @Override
+        public void run() {
+            while (isOnePlayer) {
+                if (mapGames.get(gameCount).size() == 2) {
+                    System.out.println("Spieler gefunden");
+                    isOnePlayer = false;
+                    System.out.println(mapGames.size());
+                } else {
+                    System.out.println("hier");
+                }
+            }
+        }
+
+    }
+
 }

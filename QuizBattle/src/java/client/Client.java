@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,9 +23,22 @@ public class Client {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-   
+    public static void main(String[] args) {
+        new Client();
+    }
     public Client() {
         connect();
+        logIn(new Account("Hans", "abcd", null, 0, null));
+        startGame();
+    }
+    public void startGame()
+    {
+        try {
+            oos.writeObject("startgame");
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
  
     public void registrate(Account account) {
