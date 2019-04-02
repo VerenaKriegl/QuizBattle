@@ -44,6 +44,4 @@ public class Account implements Serializable{
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
-    
-    
 }

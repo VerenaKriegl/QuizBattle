@@ -27,9 +27,8 @@ public class Client {
         connect();
     }
  
-    public void registration(Account account) {
+    public void registrate(Account account) {
         try {
-            
             oos.writeObject("registration");
             oos.flush();
             oos.writeObject(account);

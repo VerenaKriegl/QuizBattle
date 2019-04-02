@@ -5,6 +5,7 @@
  */
 package servlet;
 
+import beans.Account;
 import client.Client;
 import java.io.IOException;
 import java.sql.Date;
@@ -28,6 +29,8 @@ public class QuizServlet extends HttpServlet {
 
     private Client client;
     private SimpleDateFormat sdf;
+    private Account newAccount;
+    private int userid;
 
     @Override
     public void init(ServletConfig config)
@@ -36,36 +39,19 @@ public class QuizServlet extends HttpServlet {
         System.out.println("hier");
         client = new Client();
         sdf = new SimpleDateFormat("dd.MM.yyyy");
+        userid = 1;
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         System.out.println("hier");
-        request.getRequestDispatcher("jsp/StartPage.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String signup = request.getParameter("signup");
-        String back = request.getParameter("back");
-        
-        if (signup != null) {
-            String username = request.getParameter("username");
-            String mail = request.getParameter("mail");
-            String pass = request.getParameter("pass");
-            String date = request.getParameter("dateOfBirth");
-            Date dateOfBirth;
-            try {
-                java.util.Date utilDate = sdf.parse(date);
-                dateOfBirth = new Date(utilDate.getTime());
-            } catch (ParseException ex) {
-                System.out.println("Date error in Servlet");
-            }
-        }
-        
         processRequest(request, response);
     }
 
@@ -78,6 +64,26 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
+        }
+        
+        String signup = request.getParameter("signup");
+        String back = request.getParameter("back");
+        
+        if (signup != null) {
+            String username = request.getParameter("username");
+            String mail = request.getParameter("mail");
+            String pass = request.getParameter("pass");
+            String date = request.getParameter("dateOfBirth");
+            Date dateOfBirth = null;
+            try {
+                java.util.Date utilDate = sdf.parse(date);
+                dateOfBirth = new Date(utilDate.getTime());
+            } catch (ParseException ex) {
+                System.out.println("Date error in Servlet");
+            }
+            newAccount = new Account(username, mail, pass, userid, dateOfBirth);
+            userid++;
+            client.registrate(newAccount);
         }
     }
 

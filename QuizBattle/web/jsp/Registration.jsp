@@ -50,7 +50,7 @@
         </style>
     </head>
     <body>
-        <form action="QuizServlet" method="GET">
+        <form action="QuizServlet" method="POST">
             <div>
                 <table align="center">
                     <tr>
