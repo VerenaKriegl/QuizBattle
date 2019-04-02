@@ -52,7 +52,7 @@
     <body>
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
-                <img style="display:block; margin:auto; margin-bottom: 20px;" src="../images/Logo.PNG" alt="LOGO">
+                <img style="display:block; margin:auto; margin-bottom: 20px;" src="images/Logo.PNG" alt="LOGO">
                 <table align="center">
                     <tr>
                         <td><input style="margin-bottom: 20px; font-size: 16px;" type="submit" name="registration" value="Registrieren"/></td>
