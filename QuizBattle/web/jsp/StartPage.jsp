@@ -28,23 +28,34 @@
             margin: 4px 2px;
             cursor: pointer;
             -webkit-transition-duration: 0.4s;
-            width: 350px;
-            height: 80px;
+            width: 600px;
+            height: 200px;
         }
         input[type=submit]:hover {
             background-color: white;
             color: black;
         }
+        .divCenter {
+            width: 800px;
+            height: 800px;
+
+            position:absolute;
+            left:0; right:0;
+            top:0; bottom:0;
+            margin:auto;
+
+            max-width:100%;
+            max-height:100%;
+            overflow:auto;
+        }
     </style>
     <body>
         <form action="QuizServlet" method="POST">
-            <div vertical-align="middle">
-                <div align="center">
-                    <img src="images/Logo.PNG" alt="LOGO">
-                </div>
+            <div class="divCenter">
+                <img style="display:block; margin:auto; margin-bottom: 20px;" src="../images/Logo.PNG" alt="LOGO">
                 <table align="center">
                     <tr>
-                        <td><input type="submit" name="registration" value="Registrieren"/></td>
+                        <td><input style="margin-bottom: 20px; font-size: 16px;" type="submit" name="registration" value="Registrieren"/></td>
                     </tr>
                     <tr>
                         <td><input type="submit" name="login" value="LogIn"/></td>

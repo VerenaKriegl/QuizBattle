@@ -3,10 +3,12 @@ package database;
 import beans.Account;
 import beans.Category;
 import beans.Question;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DBAccess {
@@ -17,19 +19,14 @@ public class DBAccess {
     public static void main(String[] args) {
         DBAccess dba = new DBAccess();
         try {
-            int counter = 2;
-            String frage = "Wer wurde zum ersten Mal Weltfussballer des Jahres?";
-            String firstAnswer = "Pele";
-            String secondAnswer = "Zinedine Zindane";
-            String thirdAnswer = "Stanley Matthews";
-            String fourthAnswer = "Diego Maradonna";
-            String category = "Sport";
-            Question question = new Question(frage, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer, counter);
-            dba.addQuestions(question, category);
+            LocalDate date = LocalDate.now();
+            Account account = new Account("Hans", "abcd", "hans@email.com", 1, date);
+            dba.addAccount(account);
         } catch (SQLException ex) {
             System.out.println(ex.toString());
         }
     }
+    
     
     public void dropEntry(String sqlQuery) throws SQLException {
         Statement statement = stmtPool.getStatement();
@@ -78,12 +75,13 @@ public class DBAccess {
 
     public void addAccount(Account account) throws SQLException {
         Statement statement = stmtPool.getStatement();
+        Date sqlDate = Date.valueOf(account.getDateOfBirth());
         String sqlString = "INSERT INTO account"
                 + "(userid, username, password, dateOfBirth, mailAddress) "
                 + "VALUES ('" + account.getUserid()
                 + "','" + account.getUsername()
                 + "', '" + account.getPassword()
-                + "', '" + account.getDateOfBirth()
+                + "', '" + sqlDate
                 + "', '" + account.getMailAddress()
                 + "');";
         statement.execute(sqlString);
@@ -124,10 +122,11 @@ public class DBAccess {
         ResultSet rs = pStat.executeQuery();
         while (rs.next()) {
             String password = rs.getString("password");
-            java.sql.Date dateOfBirth = rs.getDate("dateOfBirth");
+            java.sql.Date sqlDate = rs.getDate("dateOfBirth");
+            LocalDate date = sqlDate.toLocalDate();
             int userid = rs.getInt("userid");
             String email = rs.getString("mailAddress");
-            account = new Account(username, password, email, userid, dateOfBirth);
+            account = new Account(username, password, email, userid, date);
         }
         stmtPool.releaseStatement(pStat);
         return account;
