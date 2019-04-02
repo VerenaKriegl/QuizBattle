@@ -47,7 +47,7 @@
                         <td><input type="submit" name="registration" value="Registrieren"/></td>
                     </tr>
                     <tr>
-                        <td><input type="submit" name="registration" value="Registrieren"/></td>
+                        <td><input type="submit" name="login" value="LogIn"/></td>
                     </tr>
                 </table>
             </div>

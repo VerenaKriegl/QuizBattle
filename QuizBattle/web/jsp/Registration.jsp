@@ -14,6 +14,10 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         <title>Registration</title>
         <style>
+         body {
+            background-color: #f4511e; /* Orange */
+            color: #ffffff;
+        }
         input[type=submit] {
             background-color: darkgray;
             border: none;
@@ -23,12 +27,25 @@
             margin: 4px 2px;
             cursor: pointer;
             -webkit-transition-duration: 0.4s;
-            width: 350px;
-            height: 80px;
+            width: 600px;
+            height: 50px;
         }
         input[type=submit]:hover {
             background-color: white;
             color: black;
+        }
+        input[type=text], input[type=password] {
+            background-color: white;
+            color: black;
+        }
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+        table {
+            top: 50%;
+            bottom: 50%;
+            height: 500px;
+            width: 600px;
         }
         </style>
     </head>
@@ -36,30 +53,26 @@
         <form action="QuizServlet" method="GET">
             <div>
                 <table align="center">
-                        <tr>
-                            <td>Userame: </td>
-                            <td><input type="text" name="username" value="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Mail: </td>
-                            <td><input type="text" name="mail" value="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Passwort: </td>
-                            <td><input type="text" name="pass" value="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Passwort bestätigen: </td>
-                            <td><input type="text" name="confirmPass" value="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Geburtsdatum: </td>
-                            <td><input type="date" name="dateOfBirth" value="" /></td>
-                        </tr>
-                        <tr>
-                            <td><input type="submit" name="dateOfBirth" value="Fertig" /></td>
-                        </tr>
+                    <tr>
+                        <td>Userame: </td>
+                        <td><input type="text" name="username" value="" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td>Mail: </td>
+                        <td><input type="text" name="mail" value="" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td>Passwort: </td>
+                        <td><input type="password" name="pass" value="" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td>Geburtsdatum: </td>
+                        <td><input type="date" name="dateOfBirth" value="" required="required" /></td>
+                    </tr>
                 </table>
+                <div align="center">
+                    <input type="submit" name="signup" value="Fertig" />
+                </div>
             </div>
         </form>
     </body>

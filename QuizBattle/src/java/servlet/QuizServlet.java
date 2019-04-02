@@ -7,6 +7,11 @@ package servlet;
 
 import client.Client;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class QuizServlet extends HttpServlet {
 
     private Client client;
+    private SimpleDateFormat sdf;
 
     @Override
     public void init(ServletConfig config)
@@ -29,6 +35,7 @@ public class QuizServlet extends HttpServlet {
         super.init(config);
         System.out.println("hier");
         client = new Client();
+        sdf = new SimpleDateFormat("dd.MM.yyyy");
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,6 +48,24 @@ public class QuizServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String signup = request.getParameter("signup");
+        String back = request.getParameter("back");
+        
+        if (signup != null) {
+            String username = request.getParameter("username");
+            String mail = request.getParameter("mail");
+            String pass = request.getParameter("pass");
+            String date = request.getParameter("dateOfBirth");
+            Date dateOfBirth;
+            try {
+                java.util.Date utilDate = sdf.parse(date);
+                dateOfBirth = new Date(utilDate.getTime());
+            } catch (ParseException ex) {
+                System.out.println("Date error in Servlet");
+            }
+        }
+        
         processRequest(request, response);
     }
 
@@ -48,13 +73,11 @@ public class QuizServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String option = request.getParameter("registration");
-        System.out.println("im post");
+
         if (option != null) {
-            System.out.println("gleich");
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
-            System.out.println("da");
         }
     }
 
