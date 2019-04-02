@@ -48,12 +48,26 @@
             height: 500px;
             width: 600px;
         }
+        .divCenter {
+            width: 800px;
+            height: 800px;
+
+            position:absolute;
+            left:0; right:0;
+            top:0; bottom:0;
+            margin:auto;
+
+            max-width:100%;
+            max-height:100%;
+            overflow:auto;;
+        }
         </style>
     </head>
     <body>
+        <h1 style="text-align: center;">Registrieren!</h1>
         <form action="QuizServlet" method="POST">
-            <div>
-                <table align="center">
+            <div class="divCenter">
+                <table align="center" style="vertical-align: middle;">
                     <tr>
                         <td>Userame: </td>
                         <td><input type="text" name="username" value="" required="required" /></td>

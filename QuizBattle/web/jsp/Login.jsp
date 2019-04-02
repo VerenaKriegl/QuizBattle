@@ -1,6 +1,6 @@
 <%-- 
     Document   : Login
-    Created on : 02.04.2019, 08:53:17
+    Created on : 02.04.2019, 09:35:38
     Author     : krieg
 --%>
 
@@ -14,21 +14,14 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         <title>Login</title>
         <style>
-            .styleDiv {
-
-            }
-
             body {
                 background-color: #f4511e; /* Orange */
                 color: #ffffff;
             }
+            
         </style>
     </head>
     <body>
-        <form action="QuizServlet" method="POST">
-            <div class="styleDiv">
-
-            </div>
-        </form>
+        <h1>Hello World!</h1>
     </body>
 </html>
