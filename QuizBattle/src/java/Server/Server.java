@@ -28,8 +28,8 @@ public class Server {
 
     public ServerSocket serverSocket = null;
 
-    private Map<Integer, ArrayList<ObjectOutputStream>> mapGames = new HashMap<>();
-    private ArrayList<ObjectOutputStream> listGameStreams;
+    private Map<Integer, ArrayList<String>> mapGames = new HashMap<>();
+    private ArrayList<String> listGameUser;
     private Map<String, ObjectOutputStream> mapClients = new HashMap<>();
 
     public static void main(String[] args) {
@@ -69,7 +69,7 @@ public class Server {
                     System.out.println("connected");
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                    ClientCommunicatoin cc = new ClientCommunicatoin(oos, ois);
+                    ClientCommunicatoin cc = new ClientCommunicatoin(oos, ois, socket);
                     cc.start();
                 }
             } catch (IOException ex) {
@@ -82,10 +82,11 @@ public class Server {
 
         private ObjectOutputStream oos;
         private ObjectInputStream ois;
-
-        private ClientCommunicatoin(ObjectOutputStream oos, ObjectInputStream ois) {
+        private Socket s;
+        private ClientCommunicatoin(ObjectOutputStream oos, ObjectInputStream ois, Socket s) {
             this.oos = oos;
             this.ois = ois;
+            this.s = s;
         }
 
         @Override
@@ -104,21 +105,32 @@ public class Server {
 
                 } else if (type.equals("login")) {
                     Account account = (Account) ois.readObject();
-                    Account loginAccount = dba.getAccountByUsername(account.getUsername());
-                    if (loginAccount.getPassword().equals(account.getPassword())) {
-                        mapClients.put(username, oos);
-                        oos.writeObject("Herzlich willkommen");
+                    if (mapClients.containsKey(account.getUsername())) {
+                        oos.writeObject("Sind sind bereits über ein anderes Gerät eingeloggt!");
                         oos.flush();
-                    }
-                    while (true) {
-                        type = (String) ois.readObject();
-                        if (type.equals("logout")) {
-                            mapClients.remove(username);
-                            oos.writeObject("Auf wiedersehen!");
+                    } else {
+                        Account loginAccount = dba.getAccountByUsername(account.getUsername());
+                        if (loginAccount.getPassword().equals(account.getPassword())) {
+                            username = loginAccount.getUsername();
+                            mapClients.put(username, oos);
+                            oos.writeObject("Herzlich willkommen");
                             oos.flush();
-                        } else if (type.equals("startgame")) {
-                            startGame(oos);
                         }
+                        while (true) {
+                            type = (String) ois.readObject();
+                            if (type.equals("logout")) {
+                                mapClients.remove(username);
+                                oos.writeObject("Auf wiedersehen!");
+                                oos.flush();
+                                break;
+                            } else if (type.equals("startgame")) {
+                                startGame(username);
+                            }
+                        }
+                        System.out.println("Hier!");
+                        oos.close();
+                        ois.close();
+                        s.close();
                     }
                 }
             } catch (IOException ex) {
@@ -130,12 +142,14 @@ public class Server {
             }
         }
 
-        private void startGame(ObjectOutputStream oos) {
+        private void startGame(String username) {
             boolean availableGame = false;
+
             if (mapGames.isEmpty()) {
-                listGameStreams = new ArrayList<>();
-                listGameStreams.add(oos);
-                mapGames.put(1, listGameStreams);
+                listGameUser = new ArrayList<>();
+                listGameUser.add(username);
+                System.out.println("Username: " + username);
+                mapGames.put(1, listGameUser);
                 WaitForPlayer wfp = new WaitForPlayer(1);
                 wfp.start();
             } else {
@@ -144,13 +158,12 @@ public class Server {
                         for (int mapKey : mapGames.keySet()) {
                             if (list.equals(mapGames.get(mapKey))) {
                                 mapGames.remove(mapKey, list);
-                                list.add(oos);
-                                listGameStreams = list;
-                                mapGames.put(mapKey, listGameStreams);
+                                list.add(username);
+                                listGameUser = list;
+                                mapGames.put(mapKey, listGameUser);
                                 availableGame = true;
                             }
                         }
-                        System.out.println("Beitreten");
                         break;
                     } else {
                         System.out.println("voll");
@@ -158,15 +171,33 @@ public class Server {
                 }
                 if (!availableGame) {
                     int gameCount = mapGames.size() + 1;
-                    listGameStreams = new ArrayList<>();
-                    listGameStreams.add(oos);
-                    mapGames.put(mapGames.size() + 1, listGameStreams);
-                    WaitForPlayer wfp = new WaitForPlayer(gameCount);
+                    listGameUser = new ArrayList<>();
+                    listGameUser.add(username);
+                    mapGames.put(gameCount, listGameUser);
+                    WaitForPlayer wfp = new WaitForPlayer(1);
                     wfp.start();
                 }
             }
 
         }
+    }
+
+    class PlayGame extends Thread {
+
+        private ArrayList<String> playerGame;
+
+        public PlayGame(ArrayList<String> playerGame) {
+            this.playerGame = playerGame;
+
+        }
+
+        @Override
+        public void run() {
+            for (String player : playerGame) {
+                System.out.println(player);
+            }
+        }
+
     }
 
     class WaitForPlayer extends Thread {
@@ -181,14 +212,21 @@ public class Server {
         @Override
         public void run() {
             while (isOnePlayer) {
-                if (mapGames.get(gameCount).size() == 2) {
-                    System.out.println("Spieler gefunden");
-                    isOnePlayer = false;
-                    System.out.println(mapGames.size());
-                } else {
-                    System.out.println("hier");
+                try {
+                    if (mapGames.get(gameCount).size() == 2) {
+                        System.out.println("Spieler gefunden");
+                        isOnePlayer = false;
+                        System.out.println(mapGames.size());
+                        ArrayList<String> list = mapGames.get(gameCount);
+                        PlayGame pg = new PlayGame(mapGames.get(gameCount));
+                        pg.start();
+                    }
+                } catch (Exception ex) {
+
                 }
+
             }
+
         }
 
     }

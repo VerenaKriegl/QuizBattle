@@ -28,9 +28,20 @@ public class Client {
     }
     public Client() {
         connect();
-        logIn(new Account("Hans", "abcd", null, 0, null));
-        startGame();
     }
+    
+    public void logout()
+    {
+        try {
+            oos.writeObject("logout");
+            oos.flush();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
     public void startGame()
     {
         try {
@@ -62,13 +73,13 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    private Socket socket;
     public void connect() {
         try {
             
-                Socket s = new Socket("10.151.77.50", 9999);
-                oos = new ObjectOutputStream(s.getOutputStream());
-                ois = new ObjectInputStream(s.getInputStream());
+                socket = new Socket("10.151.77.50", 9999);
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
                 ServerMessages sm = new ServerMessages();
                 sm.start();
             
@@ -81,11 +92,16 @@ public class Client {
 
         @Override
         public void run() {
-            super.run(); //To change body of generated methods, choose Tools | Templates.
             try {   
                 while (true) {
                     String message = (String) ois.readObject();
-                    System.out.println("message");
+                    if(message.equals("Auf wiedersehen!"))
+                    {
+                        oos.close();
+                        ois.close();
+                        socket.close();
+                    }
+                    System.out.println("Server message: "+message);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
