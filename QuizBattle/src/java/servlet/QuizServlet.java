@@ -8,8 +8,6 @@ package servlet;
 import beans.Account;
 import client.Client;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javax.servlet.ServletConfig;
