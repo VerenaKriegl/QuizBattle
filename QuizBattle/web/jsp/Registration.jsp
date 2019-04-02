@@ -34,9 +34,10 @@
             background-color: white;
             color: black;
         }
-        input[type=text], input[type=password] {
+        input[type=text], input[type=password], input[type=date] {
             background-color: white;
             color: black;
+            width: 100%;
         }
         td {
             border-bottom: 1px solid #ddd;
