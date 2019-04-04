@@ -5,20 +5,22 @@
  */
 package beans;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author krieg
  */
 public class Question {
-    private String question, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer;
+    private String question;
+    private String rightAnswer; 
+    private ArrayList<String> wrongAnwers;
     private int questionid;
 
-    public Question(String question, String firstAnswer, String secondAnswer, String thirdAnswer, String fourthAnswer, int questionid) {
+    public Question(String question, String rightAnswer, ArrayList<String> wrongAnwers, int questionid) {
         this.question = question;
-        this.firstAnswer = firstAnswer;
-        this.secondAnswer = secondAnswer;
-        this.thirdAnswer = thirdAnswer;
-        this.fourthAnswer = fourthAnswer;
+        this.rightAnswer = rightAnswer;
+        this.wrongAnwers = wrongAnwers;
         this.questionid = questionid;
     }
 
@@ -26,23 +28,33 @@ public class Question {
         return question;
     }
 
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getRightAnswer() {
+        return rightAnswer;
+    }
+
+    public void setRightAnswer(String rightAnswer) {
+        this.rightAnswer = rightAnswer;
+    }
+
+    public ArrayList<String> getWrongAnwers() {
+        return wrongAnwers;
+    }
+
+    public void setWrongAnwers(ArrayList<String> wrongAnwers) {
+        this.wrongAnwers = wrongAnwers;
+    }
+
     public int getQuestionid() {
         return questionid;
     }
 
-    public String getFirstAnswer() {
-        return firstAnswer;
+    public void setQuestionid(int questionid) {
+        this.questionid = questionid;
     }
 
-    public String getSecondAnswer() {
-        return secondAnswer;
-    }
-
-    public String getThirdAnswer() {
-        return thirdAnswer;
-    }
-
-    public String getFourthAnswer() {
-        return fourthAnswer;
-    }
+    
 }

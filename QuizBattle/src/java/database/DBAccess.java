@@ -105,10 +105,10 @@ public class DBAccess {
                 + "(questionid, question, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer, categoryname)"
                 + "VALUES ('" + question.getQuestionid()
                 + "','" + question.getQuestion()
-                + "','" + question.getFirstAnswer()
-                + "','" + question.getSecondAnswer()
-                + "','" + question.getThirdAnswer()
-                + "','" + question.getFourthAnswer()
+                + "','" + question.getRightAnswer()
+                + "','" + question.getWrongAnwers().get(0)
+                + "','" + question.getWrongAnwers().get(1)
+                + "','" + question.getWrongAnwers().get(2)
                 + "','" + category
                 + "');";
         statement.execute(sqlString);
