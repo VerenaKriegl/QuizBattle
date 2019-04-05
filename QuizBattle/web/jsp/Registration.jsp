@@ -10,6 +10,7 @@
     <head> 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         <title>Registration</title>
@@ -59,36 +60,51 @@
 
             max-width:100%;
             max-height:100%;
-            overflow:auto;;
+            overflow:auto;
         }
+        .w3-animate-bottom{
+           animation:animatebottom 2s;
+        }
+        .w3-animate-left{
+           animation:animateleft 2s;
+        }
+        .w3-animate-right{
+           animation:animateright 2s;
+        }
+        .w3-animate-top{
+           animation:animatetop 2s;
+        }
+   
         </style>
     </head>
     <body>
-        <h1 style="text-align: center;">Registrieren!</h1>
+       
+        <h1 class="w3-animate-bottom" style="text-align: center;">Registrieren!</h1>
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
                 <table style = "margin-top: 40px" align="center" style="vertical-align: middle;">
                     <tr>
-                        <td>Userame: </td>
-                        <td><input type="text" name="username" value="" required="required" /></td>
+                        <td class="w3-animate-left">Userame: </td>
+                        <td class="w3-animate-left"><input type="text" name="username" value="" required="required" /></td>
                     </tr>
                     <tr>
-                        <td>Mail: </td>
-                        <td><input type="text" name="mail" value="" required="required" /></td>
+                        <td class="w3-animate-right">Mail: </td>
+                        <td class="w3-animate-right"><input type="text" name="mail" value="" required="required" /></td>
                     </tr>
                     <tr>
-                        <td>Passwort: </td>
-                        <td><input type="password" name="pass" value="" required="required" /></td>
+                        <td class="w3-animate-left">Passwort: </td>
+                        <td class="w3-animate-left"><input type="password" name="pass" value="" required="required" /></td>
                     </tr>
                     <tr>
-                        <td>Geburtsdatum: </td>
-                        <td><input type="date" name="dateOfBirth" value="" required="required" /></td>
+                        <td class="w3-animate-right">Geburtsdatum: </td>
+                        <td class="w3-animate-right"><input type="date" name="dateOfBirth" value="" required="required" /></td>
                     </tr>
                 </table>
                 <div align="center">
-                    <input type="submit" name="signup" value="Fertig" />
+                    <input class="w3-animate-top" type="submit" name="signup" value="Fertig" />
                 </div>
             </div>
         </form>
+     
     </body>
 </html>
