@@ -10,6 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="../js/FormatQuestions.js"></script>
         <title>Question</title>
         <style>
             body {
@@ -25,30 +26,56 @@
                 margin: 4px 2px;
                 cursor: pointer;
                 -webkit-transition-duration: 0.4s;
-                width: 600px;
+                width: 400px;
                 height: 50px;
             }
             input[type=submit]:hover {
                 background-color: white;
                 color: black;
             }
+
+            .styleDiv{
+                width: 900px;
+                height: 800px;
+
+                position:absolute;
+                left:0; right:0;
+                top:0; bottom:0;
+                margin:auto;
+
+                max-width:100%;
+                max-height:100%;
+                overflow:auto;
+            }
+
+            .timePanel{
+                width: 100px;
+                height: 20px;
+                background: black;
+                position: relative;
+                transition-duration: 1s;
+            }
         </style>
     </head>
     <body>
-        <div align="center">
-            <p></p>
+        <div class="styleDiv">
+            <h1 align="center">Aller guten Dinge sind ... ?</h1>
+
+            <table align="center">
+                <c:forEach var="question" items="">
+                </c:forEach>
+                <tr>
+                    <td><input type="submit" name="answer" value="zwei" /></td>
+                    <td><input type="submit" name="answer" value="drei" /></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" name="answer" value="vier" /></td>
+                    <td><input type="submit" name="answer" value="dreißig" /></td>
+                </tr>
+                <div id="timePanel" class="timePanel" onClick="setTimePanel()">
+
+                </div>
+            </table>
         </div>
-        <table align="center">
-            <c:forEach var="question" items="">
-            </c:forEach>
-            <tr>
-                <td><input type="submit" name="answer" value="" /></td>
-                <td><input type="submit" name="answer" value="" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" name="answer" value="" /></td>
-                <td><input type="submit" name="answer" value="" /></td>
-            </tr>
-        </table>
     </body>
 </html>
