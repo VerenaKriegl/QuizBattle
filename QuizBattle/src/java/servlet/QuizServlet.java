@@ -76,7 +76,8 @@ public class QuizServlet extends HttpServlet {
         if(request.getParameter("login") != null) {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
-            loginAccount = new Account(username, "", pass, 0, null);
+            loginAccount = new Account(username, pass, "", 0, null);
+            System.out.println("logged in");
             client.logIn(newAccount);
         }
     }
