@@ -56,18 +56,13 @@ public class QuizServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String option = request.getParameter("registration");
-
-        if (option != null) {
+        if (request.getParameter("registration") != null) {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
         }
-        
-        String signup = request.getParameter("signup");
-        String back = request.getParameter("back");
-        
-        if (signup != null) {
+
+        if (request.getParameter("signup") != null) {
             String username = request.getParameter("username");
             String mail = request.getParameter("mail");
             String pass = request.getParameter("pass");
