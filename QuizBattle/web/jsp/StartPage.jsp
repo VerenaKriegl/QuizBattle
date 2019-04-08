@@ -50,7 +50,7 @@
         }
     </style>
     <body>
-        <form action="QuizServlet" method="POST">
+        <form action="QuizServlet" method="GET">
             <div class="divCenter">
                 <img style="display:block; margin:auto; margin-bottom: 20px;" src="images/Logo.PNG" alt="LOGO">
                 <table align="center">

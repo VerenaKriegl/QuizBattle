@@ -49,19 +49,23 @@ public class QuizServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
         if (request.getParameter("registration") != null) {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
         }
+        if(request.getParameter("login") != null) {
+            getServletConfig().getServletContext().
+                    getRequestDispatcher("/jsp/Login.jsp").
+                    forward(request, response);
+        } else {
+            processRequest(request, response);
+        }
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         if (request.getParameter("signup") != null) {
             String username = request.getParameter("username");
             String mail = request.getParameter("mail");
@@ -71,6 +75,10 @@ public class QuizServlet extends HttpServlet {
             newAccount = new Account(username, mail, pass, userid, dateOfBirth);
             userid++;
             client.registrate(newAccount);
+        }
+        if(request.getParameter("login") != null) {
+            String username = request.getParameter("username");
+            String pass = request.getParameter("pass");
         }
     }
 

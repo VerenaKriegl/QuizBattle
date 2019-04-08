@@ -80,7 +80,7 @@
         <h1 class="w3-animate-bottom" style="text-align: center;font-size: 150px;">Login</h1>
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
-                <table style = "margin-top: 40px" align="center" style="vertical-align: middle;">
+                <table style = "margin-top: 100px" align="center" style="vertical-align: middle;">
                     <tr>
                         <td class="w3-animate-left">Userame: </td>
                         <td class="w3-animate-left"><input type="text" name="username" value="" required="required" /></td>
@@ -91,7 +91,7 @@
                     </tr>
                 </table>
                 <div align="center">
-                    <input class="w3-animate-top" type="submit" name="signup" value="Login" />
+                    <input class="w3-animate-top" type="submit" name="login" value="Login" />
                 </div>
             </div>
         </form>
