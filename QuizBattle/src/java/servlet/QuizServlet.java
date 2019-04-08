@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package servlet;
 
 import beans.Account;
@@ -27,6 +23,7 @@ public class QuizServlet extends HttpServlet {
     private Client client;
     private DateTimeFormatter dtf;
     private Account newAccount;
+    private Account loginAccount;
     private int userid;
 
     @Override
@@ -45,7 +42,7 @@ public class QuizServlet extends HttpServlet {
         System.out.println("hier");
         request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -79,9 +76,11 @@ public class QuizServlet extends HttpServlet {
         if(request.getParameter("login") != null) {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
+            loginAccount = new Account(username, "", pass, 0, null);
+            client.logIn(newAccount);
         }
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Short description";
