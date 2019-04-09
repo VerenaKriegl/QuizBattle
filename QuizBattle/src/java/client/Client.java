@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +76,7 @@ public class Client {
     public void connect() {
         try {
             
-                socket = new Socket("10.151.77.50", 9999);
+                socket = new Socket("localhost", 9999);
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
                 ServerMessages sm = new ServerMessages();

@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -68,16 +69,24 @@ public class QuizServlet extends HttpServlet {
             String mail = request.getParameter("mail");
             String pass = request.getParameter("pass");
             String date = request.getParameter("dateOfBirth");
-            LocalDate dateOfBirth = (LocalDate) dtf.parse(date);
+            LocalDate dateOfBirth = LocalDate.parse(date);
+            dateOfBirth.format(dtf);
+            JOptionPane.showMessageDialog(null, dateOfBirth);
             newAccount = new Account(username, mail, pass, userid, dateOfBirth);
             userid++;
             client.registrate(newAccount);
+            if(false) {
+                getServletConfig().getServletContext().
+                    getRequestDispatcher("/jsp/MainMenu.jsp").
+                    forward(request, response);
+            } else {
+                JOptionPane.showMessageDialog(null, "account exists");
+            }
         }
         if(request.getParameter("login") != null) {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
             loginAccount = new Account(username, pass, "", 0, null);
-            System.out.println("logged in");
             client.logIn(newAccount);
         }
     }
