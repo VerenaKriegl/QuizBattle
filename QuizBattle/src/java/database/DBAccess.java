@@ -132,10 +132,9 @@ public class DBAccess {
     }
     
     public int getHighestUserId() throws SQLException {
-        Statement statement = stmtPool.getStatement();
-        String query = "SELECT MAX(userid) FROM account;";
-        ResultSet rs = statement.executeQuery(query);
-        int highestUserId = rs.getInt("userid");
+        PreparedStatement pStat = stmtPool.getPreparedStatement(DB_StatementType.GET_HIGHEST_USERID);
+        ResultSet rs = pStat.executeQuery();
+        int highestUserId = rs.getInt(1);
         
         return highestUserId;
     }
