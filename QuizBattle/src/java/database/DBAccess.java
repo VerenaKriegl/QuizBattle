@@ -27,7 +27,6 @@ public class DBAccess {
         }
     }
     
-    
     public void dropEntry(String sqlQuery) throws SQLException {
         Statement statement = stmtPool.getStatement();
         statement.execute(sqlQuery);
@@ -130,5 +129,14 @@ public class DBAccess {
         }
         stmtPool.releaseStatement(pStat);
         return account;
+    }
+    
+    public int getHighestUserId() throws SQLException {
+        Statement statement = stmtPool.getStatement();
+        String query = "SELECT MAX(userid) FROM account;";
+        ResultSet rs = statement.executeQuery(query);
+        int highestUserId = rs.getInt("userid");
+        
+        return highestUserId;
     }
 }
