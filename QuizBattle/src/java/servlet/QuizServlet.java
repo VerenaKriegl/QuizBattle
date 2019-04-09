@@ -1,4 +1,3 @@
-
 package servlet;
 
 import beans.Account;
@@ -25,7 +24,8 @@ public class QuizServlet extends HttpServlet {
     private DateTimeFormatter dtf;
     private Account newAccount;
     private Account loginAccount;
-    private int userid;
+    private int userid = 30;
+    
 
     @Override
     public void init(ServletConfig config)
@@ -34,7 +34,9 @@ public class QuizServlet extends HttpServlet {
         System.out.println("hier");
         client = new Client();
         dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        userid = 1;
+        
+        
+        System.out.println(userid);
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +45,7 @@ public class QuizServlet extends HttpServlet {
         System.out.println("hier");
         request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -51,14 +53,16 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
+            return;
+            
         }
-        if(request.getParameter("login") != null) {
+        if (request.getParameter("login") != null) {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
-        } else {
-            processRequest(request, response);
+            
         }
+        processRequest(request, response);
     }
 
     @Override
@@ -71,26 +75,27 @@ public class QuizServlet extends HttpServlet {
             String date = request.getParameter("dateOfBirth");
             LocalDate dateOfBirth = LocalDate.parse(date);
             dateOfBirth.format(dtf);
-            JOptionPane.showMessageDialog(null, dateOfBirth);
-            newAccount = new Account(username, mail, pass, userid, dateOfBirth);
+            userid = client.getHighestId();
+
             userid++;
+            newAccount = new Account(username, mail, pass, userid, dateOfBirth);
             client.registrate(newAccount);
-            if(false) {
+            if (false) {
                 getServletConfig().getServletContext().
-                    getRequestDispatcher("/jsp/MainMenu.jsp").
-                    forward(request, response);
+                        getRequestDispatcher("/jsp/MainMenu.jsp").
+                        forward(request, response);
             } else {
                 JOptionPane.showMessageDialog(null, "account exists");
             }
         }
-        if(request.getParameter("login") != null) {
+        if (request.getParameter("login") != null) {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
-            loginAccount = new Account(username, pass, "", 0, null);
-            client.logIn(newAccount);
+            loginAccount = new Account(username, pass, null, 0, null);
+            client.logIn(loginAccount);
         }
     }
-    
+
     @Override
     public String getServletInfo() {
         return "Short description";

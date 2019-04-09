@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,12 +22,20 @@ public class Client {
 
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    private int highestId;
+
+    public int getHighestId() {
+        return highestId;
+    }    
 
     public static void main(String[] args) {
         new Client();
+        
     }
-    public Client() {
+    public Client() { 
         connect();
+        //logIn(new Account("Hans", "abcd", null, 0, null));
+       // registrate(new Account("adsf", "sadf", "asdfökj", 10, LocalDate.now()));
     }
     
     public void logout()
@@ -34,6 +43,7 @@ public class Client {
         try {
             oos.writeObject("logout");
             oos.flush();
+            
             
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -76,7 +86,7 @@ public class Client {
     public void connect() {
         try {
             
-                socket = new Socket("localhost", 9999);
+                socket = new Socket("172.20.10.2", 9999);
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 ois = new ObjectInputStream(socket.getInputStream());
                 ServerMessages sm = new ServerMessages();
@@ -96,11 +106,18 @@ public class Client {
                     String message = (String) ois.readObject();
                     if(message.equals("Auf wiedersehen!"))
                     {
-                        oos.close();
+                        /*oos.close();
                         ois.close();
-                        socket.close();
+                        socket.close(); */
                     }
-                    System.out.println("Server message: "+message);
+                    else if(message.equals("highestID"))
+                    {
+                        highestId = (int)ois.readObject();
+                    }
+                    else
+                    {
+                        System.out.println("Server message: "+message);
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Server {
 
     public ServerSocket serverSocket = null;
-
+    private DBAccess dba = new DBAccess();
     private Map<Integer, ArrayList<String>> mapGames = new HashMap<>();
     private ArrayList<String> listGameUser;
     private Map<String, ObjectOutputStream> mapClients = new HashMap<>();
@@ -43,7 +43,7 @@ public class Server {
 
     private void startServer() {
         try {
-            InetAddress inetAddress = InetAddress.getByName("10.151.77.50");
+            InetAddress inetAddress = InetAddress.getByName("172.20.10.2");
             serverSocket = new ServerSocket(9999, 70, inetAddress);
             AcceptClient ac = new AcceptClient(serverSocket);
             ac.start();
@@ -63,18 +63,19 @@ public class Server {
         @Override
         public void run() {
             try {
-
+                
                 while (true) {
                     Socket socket = ss.accept();
                     System.out.println("connected");
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                    
                     ClientCommunicatoin cc = new ClientCommunicatoin(oos, ois, socket);
                     cc.start();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
         }
     }
 
@@ -83,6 +84,7 @@ public class Server {
         private ObjectOutputStream oos;
         private ObjectInputStream ois;
         private Socket s;
+
         private ClientCommunicatoin(ObjectOutputStream oos, ObjectInputStream ois, Socket s) {
             this.oos = oos;
             this.ois = ois;
@@ -92,47 +94,62 @@ public class Server {
         @Override
         public void run() {
             try {
-                DBAccess dba = new DBAccess();
+                int highestID = dba.getHighestUserId();
+                oos.writeObject("highestID");
+                oos.flush();
+                oos.writeObject(highestID);
+                oos.flush();
+                boolean isOk = false;
                 String username = null;
-
-                String type = (String) ois.readObject();
-                if (type.equals("registration")) {
-                    Account account = (Account) ois.readObject();
-                    username = account.getUsername();
-                    mapClients.put(account.getUsername(), oos);
-                    oos.writeObject("Account erstellt");
-                    oos.flush();
-
-                } else if (type.equals("login")) {
-                    Account account = (Account) ois.readObject();
-                    if (mapClients.containsKey(account.getUsername())) {
-                        oos.writeObject("Sind sind bereits über ein anderes Gerät eingeloggt!");
+                String type;
+                do {
+                    type = (String) ois.readObject();
+                    if (type.equals("registration")) {
+                        Account account = (Account) ois.readObject();
+                        username = account.getUsername();
+                        dba.addAccount(account);
+                        mapClients.put(account.getUsername(), oos);
+                        oos.writeObject("Account erstellt");
                         oos.flush();
-                    } else {
+                        isOk=true;
+                    } else if (type.equals("login")) {
+                        Account account = (Account) ois.readObject();
                         Account loginAccount = dba.getAccountByUsername(account.getUsername());
                         if (loginAccount.getPassword().equals(account.getPassword())) {
                             username = loginAccount.getUsername();
                             mapClients.put(username, oos);
                             oos.writeObject("Herzlich willkommen");
                             oos.flush();
+                            isOk=true;
                         }
-                        while (true) {
-                            type = (String) ois.readObject();
-                            if (type.equals("logout")) {
-                                mapClients.remove(username);
-                                oos.writeObject("Auf wiedersehen!");
-                                oos.flush();
-                                break;
-                            } else if (type.equals("startgame")) {
-                                startGame(username);
-                            }
-                        }
-                        System.out.println("Hier!");
-                        oos.close();
-                        ois.close();
-                        s.close();
+                    }
+                    if(!isOk)
+                    {
+                        oos.writeObject("fehlgeschlagen");
+                        oos.flush();
+                    }
+                    else
+                    {
+                        System.out.println("funktioniert");
+                    }
+                } while (!isOk);
+
+                while (true) {
+                    type = (String) ois.readObject();
+                    if (type.equals("logout")) {
+                        mapClients.remove(username);
+                        oos.writeObject("Auf wiedersehen!");
+                        oos.flush();
+                        break;
+                    } else if (type.equals("startgame")) {
+                        startGame(username);
                     }
                 }
+                System.out.println("Hier!");
+                /*oos.close();
+                ois.close();
+                s.close(); */
+
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {

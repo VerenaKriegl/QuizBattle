@@ -134,8 +134,11 @@ public class DBAccess {
     public int getHighestUserId() throws SQLException {
         PreparedStatement pStat = stmtPool.getPreparedStatement(DB_StatementType.GET_HIGHEST_USERID);
         ResultSet rs = pStat.executeQuery();
-        int highestUserId = rs.getInt(1);
-        
+        int highestUserId=0;
+        if(rs.next())
+        {
+            highestUserId = rs.getInt(1);
+        }
         return highestUserId;
     }
 }
