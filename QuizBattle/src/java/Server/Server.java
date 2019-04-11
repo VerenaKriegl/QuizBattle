@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Server;
 
 import beans.Account;
@@ -17,8 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,29 +20,39 @@ import java.util.logging.Logger;
  */
 public class Server {
 
-    public ServerSocket serverSocket = null;
-    private DBAccess dba = new DBAccess();
-    private Map<Integer, ArrayList<String>> mapGames = new HashMap<>();
-    private ArrayList<String> listGameUser;
-    private Map<String, ObjectOutputStream> mapClients = new HashMap<>();
+    public ServerSocket serverSocket;
+    private DBAccess dba;
+    private Map<Integer, ArrayList<String>> mapGames;
+    private ArrayList<String> players;
+    private Map<String, ObjectOutputStream> mapClients;                         
+    private boolean running;
 
     public static void main(String[] args) {
         new Server();
     }
 
     public Server() {
+        dba = new DBAccess();
+        mapGames = new HashMap<>();
+        mapClients = new HashMap<>();
         startServer();
-
+    }
+    
+    private void log(String message) {
+        System.out.println("Server Log: " + message);
     }
 
     private void startServer() {
         try {
-            InetAddress inetAddress = InetAddress.getByName("172.20.10.2");
+            running = true;
+            
+            InetAddress inetAddress = InetAddress.getByName("192.168.43.131"); //172.20.10.2
             serverSocket = new ServerSocket(9999, 70, inetAddress);
-            AcceptClient ac = new AcceptClient(serverSocket);
-            ac.start();
+
+            AcceptClient acceptClient = new AcceptClient(serverSocket);
+            acceptClient.start();
         } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to start server");
         }
     }
 
@@ -63,19 +67,20 @@ public class Server {
         @Override
         public void run() {
             try {
-                
-                while (true) {
+                log("is running");
+                while (running) {
                     Socket socket = ss.accept();
-                    System.out.println("connected");
+                    log("client connected");
+                    
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                    
+
                     ClientCommunicatoin cc = new ClientCommunicatoin(oos, ois, socket);
                     cc.start();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+                log("Exception: unable to accept client");
+            }
         }
     }
 
@@ -83,12 +88,12 @@ public class Server {
 
         private ObjectOutputStream oos;
         private ObjectInputStream ois;
-        private Socket s;
+        private Socket socket;
 
-        private ClientCommunicatoin(ObjectOutputStream oos, ObjectInputStream ois, Socket s) {
+        private ClientCommunicatoin(ObjectOutputStream oos, ObjectInputStream ois, Socket socket) {
             this.oos = oos;
             this.ois = ois;
-            this.s = s;
+            this.socket = socket;
         }
 
         @Override
@@ -99,76 +104,65 @@ public class Server {
                 oos.flush();
                 oos.writeObject(highestID);
                 oos.flush();
-                boolean isOk = false;
-                String username = null;
-                String type;
+                boolean ok = false;
+                String username = "";
+                String type = "";
                 do {
                     type = (String) ois.readObject();
-                    if (type.equals("registration")) {
-                        Account account = (Account) ois.readObject();
-                        username = account.getUsername();
-                        dba.addAccount(account);
-                        mapClients.put(account.getUsername(), oos);
-                        oos.writeObject("Account erstellt");
+                    if (type.equals("signup")) {
+                        Account newAccount = (Account) ois.readObject();
+                        username = newAccount.getUsername();
+                        dba.addAccount(newAccount);
+                        mapClients.put(username, oos);
+                        oos.writeObject("signedup");
                         oos.flush();
-                        isOk=true;
+                        ok = true;
+                        log(username + " signed up");
                     } else if (type.equals("login")) {
-                        Account account = (Account) ois.readObject();
-                        Account loginAccount = dba.getAccountByUsername(account.getUsername());
-                        if (loginAccount.getPassword().equals(account.getPassword())) {
+                        Account recievedAccount = (Account) ois.readObject();
+                        Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
+                        if (loginAccount.getPassword().equals(recievedAccount.getPassword())) {
                             username = loginAccount.getUsername();
                             mapClients.put(username, oos);
-                            oos.writeObject("Herzlich willkommen");
+                            oos.writeObject("loggedin");
                             oos.flush();
-                            isOk=true;
+                            ok = true;
+                            log(username + " logged in");
                         }
                     }
-                    if(!isOk)
-                    {
-                        oos.writeObject("fehlgeschlagen");
+                    if (!ok) {
+                        oos.writeObject("failed");
                         oos.flush();
-                    }
-                    else
-                    {
-                        System.out.println("funktioniert");
-                    }
-                } while (!isOk);
+                    } 
+                } while (!ok);
 
-                while (true) {
+                while (running) {
                     type = (String) ois.readObject();
                     if (type.equals("logout")) {
                         mapClients.remove(username);
-                        oos.writeObject("Auf wiedersehen!");
+                        oos.writeObject("loggedout");
                         oos.flush();
                         break;
                     } else if (type.equals("startgame")) {
                         startGame(username);
                     }
                 }
-                System.out.println("Hier!");
-                /*oos.close();
-                ois.close();
-                s.close(); */
-
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("after while()");
+            } catch (IOException | ClassNotFoundException | SQLException ex) {
+                log("Exception: unable to communicate with client");            
             }
         }
 
         private void startGame(String username) {
-            boolean availableGame = false;
+            boolean gameStarted = false;
 
             if (mapGames.isEmpty()) {
-                listGameUser = new ArrayList<>();
-                listGameUser.add(username);
-                System.out.println("Username: " + username);
-                mapGames.put(1, listGameUser);
-                WaitForPlayer wfp = new WaitForPlayer(1);
-                wfp.start();
+                players = new ArrayList<>();
+                players.add(username);
+                log("Username: " + username);
+                mapGames.put(1, players);
+                WaitForPlayer waitForPlayer = new WaitForPlayer(1);
+                waitForPlayer.start();
             } else {
                 for (ArrayList list : mapGames.values()) {
                     if (list.size() == 1) {
@@ -176,45 +170,42 @@ public class Server {
                             if (list.equals(mapGames.get(mapKey))) {
                                 mapGames.remove(mapKey, list);
                                 list.add(username);
-                                listGameUser = list;
-                                mapGames.put(mapKey, listGameUser);
-                                availableGame = true;
+                                players = list;
+                                mapGames.put(mapKey, players);
+                                gameStarted = true;
                             }
                         }
                         break;
                     } else {
-                        System.out.println("voll");
+                        log("Opponent already found");
                     }
                 }
-                if (!availableGame) {
+                if (!gameStarted) {
                     int gameCount = mapGames.size() + 1;
-                    listGameUser = new ArrayList<>();
-                    listGameUser.add(username);
-                    mapGames.put(gameCount, listGameUser);
-                    WaitForPlayer wfp = new WaitForPlayer(1);
-                    wfp.start();
+                    players = new ArrayList<>();
+                    players.add(username);
+                    mapGames.put(gameCount, players);
+                    WaitForPlayer waitForPlayer = new WaitForPlayer(1);
+                    waitForPlayer.start();
                 }
             }
-
         }
     }
 
     class PlayGame extends Thread {
 
-        private ArrayList<String> playerGame;
+        private ArrayList<String> players;
 
-        public PlayGame(ArrayList<String> playerGame) {
-            this.playerGame = playerGame;
-
+        public PlayGame(ArrayList<String> players) {
+            this.players = players;
         }
 
         @Override
         public void run() {
-            for (String player : playerGame) {
+            for (String player : players) {
                 System.out.println(player);
             }
         }
-
     }
 
     class WaitForPlayer extends Thread {
@@ -231,21 +222,17 @@ public class Server {
             while (isOnePlayer) {
                 try {
                     if (mapGames.get(gameCount).size() == 2) {
-                        System.out.println("Spieler gefunden");
+                        log("Opponent found");
+                        
+                        PlayGame playGame = new PlayGame(mapGames.get(gameCount));
+                        playGame.start();
+                        
                         isOnePlayer = false;
-                        System.out.println(mapGames.size());
-                        ArrayList<String> list = mapGames.get(gameCount);
-                        PlayGame pg = new PlayGame(mapGames.get(gameCount));
-                        pg.start();
                     }
                 } catch (Exception ex) {
-
+                    log("Exception: unable to find opponent");
                 }
-
             }
-
         }
-
     }
-
 }

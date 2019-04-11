@@ -76,9 +76,9 @@ public class DBAccess {
         Statement statement = stmtPool.getStatement();
         Date sqlDate = Date.valueOf(account.getDateOfBirth());
         String sqlString = "INSERT INTO account"
-                + "(userid, username, password, dateOfBirth, mailAddress) "
-                + "VALUES ('" + account.getUserid()
-                + "','" + account.getUsername()
+                + "(userid, username, password, dateofbirth, mailaddress) "
+                + "VALUES (" + account.getUserid()
+                + ",'" + account.getUsername()
                 + "', '" + account.getPassword()
                 + "', '" + sqlDate
                 + "', '" + account.getMailAddress()
@@ -135,8 +135,7 @@ public class DBAccess {
         PreparedStatement pStat = stmtPool.getPreparedStatement(DB_StatementType.GET_HIGHEST_USERID);
         ResultSet rs = pStat.executeQuery();
         int highestUserId=0;
-        if(rs.next())
-        {
+        if(rs.next()) {
             highestUserId = rs.getInt(1);
         }
         return highestUserId;

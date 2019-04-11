@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
 import beans.Account;
@@ -10,9 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,74 +18,75 @@ public class Client {
 
     public int getHighestId() {
         return highestId;
-    }    
+    }
 
     public static void main(String[] args) {
         new Client();
-        
+
     }
-    public Client() { 
+
+    public Client() {
         connect();
         //logIn(new Account("Hans", "abcd", null, 0, null));
-       // registrate(new Account("adsf", "sadf", "asdfökj", 10, LocalDate.now()));
+        // registrate(new Account("adsf", "sadf", "asdfökj", 10, LocalDate.now()));
     }
-    
-    public void logout()
-    {
+
+    private void log(String message) {
+        System.out.println("Client Log: " + message);
+    }
+
+    public void logout() {
         try {
             oos.writeObject("logout");
             oos.flush();
-            
-            
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to logout");
         }
-        
+
     }
-    
-    public void startGame()
-    {
+
+    public void startGame() {
         try {
             oos.writeObject("startgame");
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to start game");
         }
     }
- 
-    public void registrate(Account account) {
+
+    public void signup(Account account) {
         try {
-            oos.writeObject("registration");
+            oos.writeObject("signup");
             oos.flush();
             oos.writeObject(account);
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to sign up");
         }
     }
-    public void logIn(Account account)
-    {
+
+    public void login(Account account) {
         try {
             oos.writeObject("login");
             oos.flush();
             oos.writeObject(account);
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to login");
         }
     }
     private Socket socket;
+
     public void connect() {
         try {
-            
-                socket = new Socket("172.20.10.2", 9999);
-                oos = new ObjectOutputStream(socket.getOutputStream());
-                ois = new ObjectInputStream(socket.getInputStream());
-                ServerMessages sm = new ServerMessages();
-                sm.start();
-            
+            socket = new Socket("192.168.43.131", 9999); //172.20.10.2
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+            ServerMessages sm = new ServerMessages();
+            sm.start();
+
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to connect to server");
         }
     }
 
@@ -101,31 +94,21 @@ public class Client {
 
         @Override
         public void run() {
-            try {   
+            try {
                 while (true) {
                     String message = (String) ois.readObject();
-                    if(message.equals("Auf wiedersehen!"))
-                    {
-                        /*oos.close();
-                        ois.close();
-                        socket.close(); */
-                    }
-                    else if(message.equals("highestID"))
-                    {
-                        highestId = (int)ois.readObject();
-                    }
-                    else
-                    {
-                        System.out.println("Server message: "+message);
+                    if (message.equals("signedup")) {
+                        log("You are signed up!");
+                    } else if (message.equals("highestID")) {
+                        highestId = (int) ois.readObject();
+                        System.out.println(highestId);
+                    } else {
+                        log(message);
                     }
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | ClassNotFoundException ex) {
+                log("Exception: unable to read recived object");
             }
         }
-
     }
-
 }

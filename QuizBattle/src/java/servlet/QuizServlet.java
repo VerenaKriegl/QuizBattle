@@ -24,25 +24,18 @@ public class QuizServlet extends HttpServlet {
     private DateTimeFormatter dtf;
     private Account newAccount;
     private Account loginAccount;
-    private int userid = 30;
-    
+    private int userid;
 
     @Override
     public void init(ServletConfig config)
             throws ServletException {
         super.init(config);
-        System.out.println("hier");
-        client = new Client();
         dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        
-        
-        System.out.println(userid);
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        System.out.println("hier");
         request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
     }
 
@@ -53,14 +46,13 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
-            return;
-            
+            client = new Client();
         }
         if (request.getParameter("login") != null) {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
-            
+            client = new Client();
         }
         processRequest(request, response);
     }
@@ -69,6 +61,9 @@ public class QuizServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (request.getParameter("signup") != null) {
+            userid = client.getHighestId();
+            System.out.println(userid);
+            
             String username = request.getParameter("username");
             String mail = request.getParameter("mail");
             String pass = request.getParameter("pass");
@@ -79,7 +74,7 @@ public class QuizServlet extends HttpServlet {
 
             userid++;
             newAccount = new Account(username, mail, pass, userid, dateOfBirth);
-            client.registrate(newAccount);
+            client.signup(newAccount);
             if (false) {
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/MainMenu.jsp").
@@ -92,7 +87,7 @@ public class QuizServlet extends HttpServlet {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
             loginAccount = new Account(username, pass, null, 0, null);
-            client.logIn(loginAccount);
+            client.login(loginAccount);
         }
     }
 
