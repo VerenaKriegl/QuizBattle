@@ -73,7 +73,8 @@ public class QuizServlet extends HttpServlet {
             userid = client.getHighestId();
 
             userid++;
-            newAccount = new Account(username, mail, pass, userid, dateOfBirth);
+            newAccount = new Account(username, pass, mail, userid, dateOfBirth);
+            System.out.println(pass);
             client.signup(newAccount);
             if (client.isSignedUp()) {
                 if(client.getErrorType().equals("username")) {
