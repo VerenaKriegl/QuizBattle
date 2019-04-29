@@ -75,12 +75,15 @@ public class QuizServlet extends HttpServlet {
             userid++;
             newAccount = new Account(username, mail, pass, userid, dateOfBirth);
             client.signup(newAccount);
-            if (false) {
+            if (client.isSignedUp()) {
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/MainMenu.jsp").
                         forward(request, response);
             } else {
-                JOptionPane.showMessageDialog(null, "account exists");
+                JOptionPane.showMessageDialog(null, "Registration failed! Try another username!");
+                getServletConfig().getServletContext().
+                        getRequestDispatcher("/jsp/Registration.jsp").
+                        forward(request, response);
             }
         }
         if (request.getParameter("login") != null) {

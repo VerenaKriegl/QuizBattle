@@ -15,6 +15,11 @@ public class Client {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private int highestId;
+    private boolean signedUp;
+
+    public boolean isSignedUp() {
+        return signedUp;
+    }
 
     public int getHighestId() {
         return highestId;
@@ -22,7 +27,6 @@ public class Client {
 
     public static void main(String[] args) {
         new Client();
-
     }
 
     public Client() {
@@ -97,7 +101,11 @@ public class Client {
             try {
                 while (true) {
                     String message = (String) ois.readObject();
-                    if (message.equals("signedup")) {
+                    if (message.equals("!signedup")) {
+                        signedUp = false;
+                        log("Sign up failed!");
+                    } else if(message.equals("signedup")) {
+                        signedUp = true;
                         log("You are signed up!");
                     } else if (message.equals("highestID")) {
                         highestId = (int) ois.readObject();
