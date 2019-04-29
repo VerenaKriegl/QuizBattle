@@ -82,7 +82,7 @@ public class Client {
 
     public void connect() {
         try {
-            socket = new Socket("192.168.43.131", 9999); //172.20.10.2
+            socket = new Socket("172.20.10.2", 9999);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             ServerMessages sm = new ServerMessages();

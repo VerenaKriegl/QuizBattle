@@ -1,4 +1,3 @@
-
 package Server;
 
 import beans.Account;
@@ -26,7 +25,7 @@ public class Server {
     private DBAccess dba;
     private Map<Integer, ArrayList<String>> mapGames;
     private ArrayList<String> players;
-    private Map<String, ObjectOutputStream> mapClients; 
+    private Map<String, ObjectOutputStream> mapClients;
     private ArrayList<Account> accountList = new ArrayList<>();
     private boolean running;
 
@@ -40,7 +39,7 @@ public class Server {
         mapClients = new HashMap<>();
         startServer();
     }
-    
+
     private void log(String message) {
         System.out.println("Server Log: " + message);
     }
@@ -77,7 +76,7 @@ public class Server {
                 while (running) {
                     Socket socket = ss.accept();
                     log("client connected");
-                    
+
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
@@ -102,6 +101,17 @@ public class Server {
             this.socket = socket;
         }
 
+        private void errorMessage(String errorType) {
+            try {
+                oos.writeObject("!signedup");
+                oos.flush();
+                oos.writeObject(errorType);
+                oos.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         @Override
         public void run() {
             try {
@@ -116,36 +126,35 @@ public class Server {
                 boolean registrated = true;
                 do {
                     type = (String) ois.readObject();
-                    if (type.equals("signup")) 
-                    {
+                    if (type.equals("signup")) {
                         Account newAccount = (Account) ois.readObject();
-                        for(Account account : accountList)
-                        {
-                            if(account.getUsername().equals(newAccount.getUsername()))
-                            {
-                                oos.writeObject("!signedup");
-                                oos.flush();
-                                oos.writeObject("username");
-                                oos.flush();
-                                registrated = false;
-                                break;
-                            }                           
-                        }
-                        if(registrated)
-                        {
-                            
+                        if (newAccount.getPassword().length() <= 7) {
+                            registrated = false;
+                            errorMessage("pass");
+                        } else {
+                            for (Account account : accountList) {
+                                if (account.getUsername().equals(newAccount.getUsername())) {
+                                    errorMessage("username");
+                                    registrated = false;
+                                    break;
+                                } else if (account.getMailAddress().equals(newAccount.getMailAddress())) {
+                                    errorMessage("mail");
+                                    registrated = false;
+                                    break;
+                                }
+                            }
+                            if (registrated) {
+
                                 username = newAccount.getUsername();
                                 dba.addAccount(newAccount);
                                 mapClients.put(username, oos);
                                 oos.writeObject("signedup");
                                 oos.flush();
-                                oos.writeObject("Registriert");
-                                oos.flush();
+
                                 ok = true;
                                 log(username + " signed up");
-                            
+                            }
                         }
-                        
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
                         Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
@@ -161,7 +170,7 @@ public class Server {
                     if (!ok) {
                         oos.writeObject("failed");
                         oos.flush();
-                    } 
+                    }
                 } while (!ok);
 
                 while (running) {
@@ -177,7 +186,7 @@ public class Server {
                 }
                 log("after while()");
             } catch (IOException | ClassNotFoundException | SQLException ex) {
-                log("Exception: unable to communicate with client");            
+                log("Exception: unable to communicate with client");
             }
         }
 
@@ -251,10 +260,10 @@ public class Server {
                 try {
                     if (mapGames.get(gameCount).size() == 2) {
                         log("Opponent found");
-                        
+
                         PlayGame playGame = new PlayGame(mapGames.get(gameCount));
                         playGame.start();
-                        
+
                         isOnePlayer = false;
                     }
                 } catch (Exception ex) {
