@@ -16,17 +16,22 @@ public class Client {
     private ObjectOutputStream oos;
     private int highestId;
     private boolean signedUp;
+    private String errorType;
 
     public Client() {
         connect();
     }
 
+    public int getHighestId() {
+        return highestId;
+    }
+    
     public boolean isSignedUp() {
         return signedUp;
     }
     
-    public int getHighestId() {
-        return highestId;
+    public String getErrorType() {
+        return errorType;
     }
 
     private void log(String message) {
@@ -98,6 +103,7 @@ public class Client {
                     if (message.equals("!signedup")) {
                         signedUp = false;
                         log("Sign up failed!");
+                        errorType = (String) ois.readObject();
                     } else if(message.equals("signedup")) {
                         signedUp = true;
                         log("You are signed up!");
