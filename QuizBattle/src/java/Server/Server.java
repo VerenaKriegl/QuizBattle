@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,7 +26,8 @@ public class Server {
     private DBAccess dba;
     private Map<Integer, ArrayList<String>> mapGames;
     private ArrayList<String> players;
-    private Map<String, ObjectOutputStream> mapClients;                         
+    private Map<String, ObjectOutputStream> mapClients; 
+    private ArrayList<Account> accountList = new ArrayList<>();
     private boolean running;
 
     public static void main(String[] args) {
@@ -45,14 +48,17 @@ public class Server {
     private void startServer() {
         try {
             running = true;
-            
-            InetAddress inetAddress = InetAddress.getByName("192.168.43.131"); //172.20.10.2
+            accountList = dba.getAllAccounts();
+            System.out.println(accountList.size());
+            InetAddress inetAddress = InetAddress.getByName("172.20.10.2"); //172.20.10.2
             serverSocket = new ServerSocket(9999, 70, inetAddress);
 
             AcceptClient acceptClient = new AcceptClient(serverSocket);
             acceptClient.start();
         } catch (IOException ex) {
             log("Exception: unable to start server");
+        } catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -107,17 +113,39 @@ public class Server {
                 boolean ok = false;
                 String username = "";
                 String type = "";
+                boolean registrated = true;
                 do {
                     type = (String) ois.readObject();
-                    if (type.equals("signup")) {
+                    if (type.equals("signup")) 
+                    {
                         Account newAccount = (Account) ois.readObject();
-                        username = newAccount.getUsername();
-                        dba.addAccount(newAccount);
-                        mapClients.put(username, oos);
-                        oos.writeObject("signedup");
-                        oos.flush();
-                        ok = true;
-                        log(username + " signed up");
+                        for(Account account : accountList)
+                        {
+                            if(account.getUsername().equals(newAccount.getUsername()))
+                            {
+                                oos.writeObject("!signedup");
+                                oos.flush();
+                                oos.writeObject("username");
+                                oos.flush();
+                                registrated = false;
+                                break;
+                            }                           
+                        }
+                        if(registrated)
+                        {
+                            
+                                username = newAccount.getUsername();
+                                dba.addAccount(newAccount);
+                                mapClients.put(username, oos);
+                                oos.writeObject("signedup");
+                                oos.flush();
+                                oos.writeObject("Registriert");
+                                oos.flush();
+                                ok = true;
+                                log(username + " signed up");
+                            
+                        }
+                        
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
                         Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());

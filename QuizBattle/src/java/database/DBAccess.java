@@ -140,4 +140,15 @@ public class DBAccess {
         }
         return highestUserId;
     }
+    public ArrayList getAllAccounts() throws SQLException
+    {
+        Statement statement = stmtPool.getStatement();
+        ArrayList<Account> accountList = new ArrayList<>();
+        ResultSet rs = statement.executeQuery("SELECT * FROM account");
+        while(rs.next())
+        {
+            accountList.add(new Account(rs.getString("username"), rs.getString("password"), rs.getString("mailAddress"), Integer.parseInt(rs.getString("userid")), LocalDate.now()));
+        }
+        return accountList;
+    }
 }
