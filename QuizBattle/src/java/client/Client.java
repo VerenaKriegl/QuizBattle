@@ -17,22 +17,16 @@ public class Client {
     private int highestId;
     private boolean signedUp;
 
+    public Client() {
+        connect();
+    }
+
     public boolean isSignedUp() {
         return signedUp;
     }
-
+    
     public int getHighestId() {
         return highestId;
-    }
-
-    public static void main(String[] args) {
-        new Client();
-    }
-
-    public Client() {
-        connect();
-        //logIn(new Account("Hans", "abcd", null, 0, null));
-        // registrate(new Account("adsf", "sadf", "asdfökj", 10, LocalDate.now()));
     }
 
     private void log(String message) {
@@ -115,7 +109,7 @@ public class Client {
                     }
                 }
             } catch (IOException | ClassNotFoundException ex) {
-                log("Exception: unable to read recived object");
+                log("Exception: unable to read received object");
             }
         }
     }
