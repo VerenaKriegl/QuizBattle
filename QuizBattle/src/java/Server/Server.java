@@ -128,6 +128,7 @@ public class Server {
                     type = (String) ois.readObject();
                     if (type.equals("signup")) {
                         Account newAccount = (Account) ois.readObject();
+                        System.out.println(newAccount.getPassword());
                         if (newAccount.getPassword().length() <= 7) {
                             registrated = false;
                             errorMessage("pass");
@@ -143,18 +144,19 @@ public class Server {
                                     break;
                                 }
                             }
-                            if (registrated) {
-
-                                username = newAccount.getUsername();
-                                dba.addAccount(newAccount);
-                                mapClients.put(username, oos);
-                                oos.writeObject("signedup");
-                                oos.flush();
-
-                                ok = true;
-                                log(username + " signed up");
-                            }
                         }
+                        if (registrated) {
+
+                            username = newAccount.getUsername();
+                            dba.addAccount(newAccount);
+                            mapClients.put(username, oos);
+                            oos.writeObject("signedup");
+                            oos.flush();
+
+                            ok = true;
+                            log(username + " signed up");
+                        }
+
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
                         Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
