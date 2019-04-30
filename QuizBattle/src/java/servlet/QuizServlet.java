@@ -100,6 +100,9 @@ public class QuizServlet extends HttpServlet {
             String pass = request.getParameter("pass");
             loginAccount = new Account(username, pass, null, 0, null);
             client.login(loginAccount);
+            getServletConfig().getServletContext().
+                        getRequestDispatcher("/jsp/Registration.jsp").
+                        forward(request, response);
         }
     }
 
