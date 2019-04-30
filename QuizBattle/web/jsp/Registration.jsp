@@ -77,7 +77,7 @@
    
         </style>
     </head>
-    <body>
+    <body> 
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
                 <h1 class="w3-animate-bottom" style="text-align: center;">Registrieren</h1>
