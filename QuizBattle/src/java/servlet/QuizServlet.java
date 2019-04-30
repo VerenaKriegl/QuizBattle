@@ -25,7 +25,7 @@ public class QuizServlet extends HttpServlet {
     private Account newAccount;
     private Account loginAccount;
     private int userid;
-
+    private boolean isConnected = false;
     @Override
     public void init(ServletConfig config)
             throws ServletException {
@@ -46,13 +46,19 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
-            client = new Client();
-        }
+            if(!isConnected)
+            {
+                client = new Client();
+            }
+            }
         if (request.getParameter("login") != null) {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
-            client = new Client();
+            if(!isConnected)
+            {
+                client = new Client();
+            }
         }
         processRequest(request, response);
     }
@@ -95,7 +101,7 @@ public class QuizServlet extends HttpServlet {
                         forward(request, response);
             //}
         }
-        if (request.getParameter("login") != null) {
+        else if (request.getParameter("login") != null) {
             String username = request.getParameter("username");
             String pass = request.getParameter("pass");
             loginAccount = new Account(username, pass, null, 0, null);
@@ -103,6 +109,11 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/MainMenu.jsp").
                         forward(request, response);
+        }
+        else if (request.getParameter("startGame") != null)
+        {
+            client.startGame();
+            getServletConfig().getServletContext().getRequestDispatcher("/jsp/BattleView.jsp").forward(request, response);
         }
     }
 

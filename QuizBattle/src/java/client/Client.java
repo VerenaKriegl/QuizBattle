@@ -92,7 +92,13 @@ public class Client {
             log("Exception: unable to connect to server");
         }
     }
-
+    boolean opponentFound = false;
+    public boolean getOpponentFound()
+    {
+        return opponentFound;
+    }
+    
+    
     class ServerMessages extends Thread {
 
         @Override
@@ -110,7 +116,13 @@ public class Client {
                     } else if (message.equals("highestID")) {
                         highestId = (int) ois.readObject();
                         System.out.println(highestId);
-                    } else {
+                    } 
+                    else if (message.equals("opponent found"))
+                    {
+                        System.out.println("opponent found");
+                        opponentFound = true;
+                    }
+                    else {
                         log(message);
                     }
                 }

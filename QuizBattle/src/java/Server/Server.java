@@ -23,8 +23,8 @@ public class Server {
 
     public ServerSocket serverSocket;
     private DBAccess dba;
-    private Map<Integer, ArrayList<String>> mapGames;
-    private ArrayList<String> players;
+    private Map<Integer, ArrayList<ObjectOutputStream>> mapGames;
+    private ArrayList<ObjectOutputStream> players;
     private Map<String, ObjectOutputStream> mapClients;
     private ArrayList<Account> accountList = new ArrayList<>();
     private boolean running;
@@ -156,10 +156,11 @@ public class Server {
                             ok = true;
                             log(username + " signed up");
                         }
-
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
+                        String recPas = recievedAccount.getPassword();
                         Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
+                        String logPas = loginAccount.getPassword();
                         if (loginAccount.getPassword().equals(recievedAccount.getPassword())) {
                             username = loginAccount.getUsername();
                             mapClients.put(username, oos);
@@ -173,8 +174,9 @@ public class Server {
                         oos.writeObject("failed");
                         oos.flush();
                     }
+                    
                 } while (!ok);
-
+                System.out.println("hier");
                 while (running) {
                     type = (String) ois.readObject();
                     if (type.equals("logout")) {
@@ -197,7 +199,7 @@ public class Server {
 
             if (mapGames.isEmpty()) {
                 players = new ArrayList<>();
-                players.add(username);
+                players.add(oos);
                 log("Username: " + username);
                 mapGames.put(1, players);
                 WaitForPlayer waitForPlayer = new WaitForPlayer(1);
@@ -208,9 +210,9 @@ public class Server {
                         for (int mapKey : mapGames.keySet()) {
                             if (list.equals(mapGames.get(mapKey))) {
                                 mapGames.remove(mapKey, list);
-                                list.add(username);
-                                players = list;
-                                mapGames.put(mapKey, players);
+                                list.add(oos);
+                                
+                                mapGames.put(mapKey, list);
                                 gameStarted = true;
                             }
                         }
@@ -222,7 +224,7 @@ public class Server {
                 if (!gameStarted) {
                     int gameCount = mapGames.size() + 1;
                     players = new ArrayList<>();
-                    players.add(username);
+                    players.add(oos);
                     mapGames.put(gameCount, players);
                     WaitForPlayer waitForPlayer = new WaitForPlayer(1);
                     waitForPlayer.start();
@@ -233,17 +235,30 @@ public class Server {
 
     class PlayGame extends Thread {
 
-        private ArrayList<String> players;
+        private ArrayList<ObjectOutputStream> players = new ArrayList<>();
 
-        public PlayGame(ArrayList<String> players) {
+        public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
 
         @Override
         public void run() {
-            for (String player : players) {
-                System.out.println(player);
+
+            if(players.get(0) instanceof ObjectOutputStream)
+            {
+                System.out.println("objectstream");
             }
+            System.out.println(players.toString());
+            
+            for (ObjectOutputStream oos : players) {
+                try {
+                    oos.writeObject("opponent found");
+                    oos.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+           // System.out.println("Größe: "+players.size());
         }
     }
 
@@ -258,6 +273,7 @@ public class Server {
 
         @Override
         public void run() {
+            System.out.println(players.size());
             while (isOnePlayer) {
                 try {
                     if (mapGames.get(gameCount).size() == 2) {
