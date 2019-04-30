@@ -50,7 +50,7 @@
             width: 600px;
         }
         .divCenter {
-            width: 800px;
+            width: 100%;
             height: 800px;
 
             position:absolute;
@@ -78,26 +78,25 @@
         </style>
     </head>
     <body>
-       
-        <h1 class="w3-animate-bottom" style="text-align: center;">Registrieren!</h1>
         <form action="QuizServlet" method="POST">
             <div class="divCenter">
+                <h1 class="w3-animate-bottom" style="text-align: center;">Registrieren</h1>
                 <table style = "margin-top: 40px" align="center" style="vertical-align: middle;">
                     <tr>
                         <td class="w3-animate-left">Userame: </td>
-                        <td class="w3-animate-left"><input type="text" name="username" value="" required="required" /></td>
+                        <td class="w3-animate-left"><input type="text" name="username" value="" required /></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-right">Mail: </td>
-                        <td class="w3-animate-right"><input type="text" name="mail" value="" required="required" /></td>
+                        <td class="w3-animate-right"><input type="text" name="mail" value="" required /></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-left">Passwort: </td>
-                        <td class="w3-animate-left"><input type="password" name="pass" value="" required="required" /></td>
+                        <td class="w3-animate-left"><input type="password" name="pass" value="" minlength="8" required /></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-right">Geburtsdatum: </td>
-                        <td class="w3-animate-right"><input type="date" name="dateOfBirth" value="" required="required" /></td>
+                        <td class="w3-animate-right"><input type="date" name="dateOfBirth" value="" required /></td>
                     </tr>
                 </table>
                 <div align="center">
