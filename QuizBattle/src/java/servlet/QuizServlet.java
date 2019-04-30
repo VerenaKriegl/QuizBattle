@@ -76,7 +76,7 @@ public class QuizServlet extends HttpServlet {
             newAccount = new Account(username, pass, mail, userid, dateOfBirth);
             System.out.println(pass);
             client.signup(newAccount);
-            if (client.isSignedUp()) {
+            /*if (client.isSignedUp()) {
                 if(client.getErrorType().equals("username")) {
                     JOptionPane.showMessageDialog(null, "Registration failed", 
                             "Username is already being used! Try another one!", 
@@ -85,19 +85,15 @@ public class QuizServlet extends HttpServlet {
                     JOptionPane.showMessageDialog(null, "Registration failed", 
                             "Mail is already being used! Try another one!", 
                             userid);
-                } else if(client.getErrorType().equals("pass")) {
-                    JOptionPane.showMessageDialog(null, "Registration failed", 
-                            "Password requires min. of 8 characters!", 
-                            userid);
-                }
-                getServletConfig().getServletContext().
-                        getRequestDispatcher("/jsp/MainMenu.jsp").
-                        forward(request, response);
-            } else {
+                }*/
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/Registration.jsp").
                         forward(request, response);
-            }
+            /*} else {
+                getServletConfig().getServletContext().
+                        getRequestDispatcher("/jsp/MainMenu.jsp").
+                        forward(request, response);
+            }*/
         }
         if (request.getParameter("login") != null) {
             String username = request.getParameter("username");

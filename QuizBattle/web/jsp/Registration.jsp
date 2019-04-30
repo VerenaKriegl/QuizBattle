@@ -62,9 +62,6 @@
             max-height:100%;
             overflow:auto;
         }
-        .w3-animate-bottom{
-           animation:animatebottom 2s;
-        }
         .w3-animate-left{
            animation:animateleft 2s;
         }
@@ -84,19 +81,19 @@
                 <table style = "margin-top: 40px" align="center" style="vertical-align: middle;">
                     <tr>
                         <td class="w3-animate-left">Userame: </td>
-                        <td class="w3-animate-left"><input type="text" name="username" value="" required /></td>
+                        <td class="w3-animate-left"><input type="text" name="username" value="" required/></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-right">Mail: </td>
-                        <td class="w3-animate-right"><input type="text" name="mail" value="" required /></td>
+                        <td class="w3-animate-right"><input type="text" name="mail" value="" required/></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-left">Passwort: </td>
-                        <td class="w3-animate-left"><input type="password" name="pass" value="" minlength="8" required /></td>
+                        <td class="w3-animate-left"><input type="password" name="pass" value="" minlength="8" required/></td>
                     </tr>
                     <tr>
                         <td class="w3-animate-right">Geburtsdatum: </td>
-                        <td class="w3-animate-right"><input type="date" name="dateOfBirth" value="" required /></td>
+                        <td class="w3-animate-right"><input type="date" name="dateOfBirth" value="" required/></td>
                     </tr>
                 </table>
                 <div align="center">
