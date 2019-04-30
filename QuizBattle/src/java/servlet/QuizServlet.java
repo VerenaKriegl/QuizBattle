@@ -85,15 +85,15 @@ public class QuizServlet extends HttpServlet {
                     JOptionPane.showMessageDialog(null, "Registration failed", 
                             "Mail is already being used! Try another one!", 
                             userid);
-                }*/
+                }
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/Registration.jsp").
                         forward(request, response);
-            /*} else {
+            } else {*/
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/MainMenu.jsp").
                         forward(request, response);
-            }*/
+            //}
         }
         if (request.getParameter("login") != null) {
             String username = request.getParameter("username");
@@ -101,7 +101,7 @@ public class QuizServlet extends HttpServlet {
             loginAccount = new Account(username, pass, null, 0, null);
             client.login(loginAccount);
             getServletConfig().getServletContext().
-                        getRequestDispatcher("/jsp/Registration.jsp").
+                        getRequestDispatcher("/jsp/MainMenu.jsp").
                         forward(request, response);
         }
     }
