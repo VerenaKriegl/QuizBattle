@@ -150,7 +150,7 @@ public class Server {
                             username = newAccount.getUsername();
                             dba.addAccount(newAccount);
                             mapClients.put(username, oos);
-                            oos.writeObject("signedup");
+                            oos.writeObject("loggedin");
                             oos.flush();
 
                             ok = true;

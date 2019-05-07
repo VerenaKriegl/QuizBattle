@@ -15,7 +15,7 @@ public class Client {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private int highestId;
-    private boolean signedUp;
+    private boolean loggedIn;
     private String errorType;
 
     public Client() {
@@ -26,8 +26,8 @@ public class Client {
         return highestId;
     }
     
-    public boolean isSignedUp() {
-        return signedUp;
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
     
     public String getErrorType() {
@@ -106,13 +106,12 @@ public class Client {
             try {
                 while (true) {
                     String message = (String) ois.readObject();
-                    if (message.equals("!signedup")) {
-                        signedUp = false;
-                        log("Sign up failed!");
-                        errorType = (String) ois.readObject();
-                    } else if(message.equals("signedup")) {
-                        signedUp = true;
-                        log("You are signed up!");
+                    if(message.equals("failed"))
+                    {
+                        log("Login or registration failed!");
+                    } else if(message.equals("loggedin")) {
+                        loggedIn = true;
+                        log("You are logged in!");
                     } else if (message.equals("highestID")) {
                         highestId = (int) ois.readObject();
                         System.out.println(highestId);
