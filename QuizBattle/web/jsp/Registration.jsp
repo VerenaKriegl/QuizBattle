@@ -73,6 +73,11 @@
         }
    
         </style>
+        <script>
+            function showErrorMessage() {
+                alert("Username oder EMail schon vorhanden!");
+            }
+        </script>
     </head>
     <body> 
         <form action="QuizServlet" method="POST">
