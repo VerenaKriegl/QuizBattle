@@ -84,7 +84,7 @@ public class QuizServlet extends HttpServlet {
             System.out.println(pass);
             client.signup(newAccount);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(QuizServlet.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -160,8 +160,13 @@ public class Server {
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
                         String recPas = recievedAccount.getPassword();
+                        System.out.println(recievedAccount.getUsername());
                         Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
-                        String logPas = loginAccount.getPassword();
+                        if(loginAccount == null){
+                            log("error");
+                        }
+                        else{
+                            String logPas = loginAccount.getPassword();
                         if (loginAccount.getPassword().equals(recievedAccount.getPassword())) {
                             username = loginAccount.getUsername();
                             mapClients.put(username, oos);
@@ -170,6 +175,8 @@ public class Server {
                             ok = true;
                             log(username + " logged in");
                         }
+                        }
+                        
                     }
                     if (!ok) {
                         oos.writeObject("failed");
