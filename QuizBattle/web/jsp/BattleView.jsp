@@ -23,7 +23,7 @@
                 width: 150px;
                 height: 150px;
                 margin: -75px 0 0 -75px;
-                border: 16px solid white;
+                border: 16px solid lightsalmon;
                 border-radius: 50%;
                 border-top: 16px solid white;
                 width: 120px;
