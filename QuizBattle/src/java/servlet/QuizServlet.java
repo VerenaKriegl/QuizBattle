@@ -84,11 +84,11 @@ public class QuizServlet extends HttpServlet {
             System.out.println(pass);
             client.signup(newAccount);
             try {
-                this.wait();
+                Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(QuizServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (signedup) {
+            if (!client.isLoggedIn()) {
                 request.setAttribute("errorType", client.getErrorType());
                 getServletConfig().getServletContext().
                         getRequestDispatcher("/jsp/Registration.jsp").
@@ -103,9 +103,23 @@ public class QuizServlet extends HttpServlet {
             String pass = request.getParameter("pass");
             loginAccount = new Account(username, pass, null, 0, null);
             client.login(loginAccount);
-            getServletConfig().getServletContext().
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(QuizServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(!client.isLoggedIn())
+            {
+                request.setAttribute("errorType", client.getErrorType());
+                getServletConfig().getServletContext().getRequestDispatcher("/jsp/Login.jsp").forward(request, response);
+            }
+            else
+            {
+                getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/MainMenu.jsp").
                     forward(request, response);
+            }
+            
         } else if (request.getParameter("startGame") != null) {
             client.startGame();
             getServletConfig().getServletContext().
@@ -116,7 +130,6 @@ public class QuizServlet extends HttpServlet {
     
     public void setSignedUp(boolean signedup) {
         this.signedup = signedup;
-        this.notify();
     }
 
     @Override

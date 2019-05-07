@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import servlet.QuizServlet;
 
 /**
  *
@@ -15,8 +16,8 @@ public class Client {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private int highestId;
-    private boolean loggedIn;
     private String errorType;
+    private boolean loggedIn;
 
     public Client() {
         connect();
@@ -108,6 +109,7 @@ public class Client {
                     String message = (String) ois.readObject();
                     if(message.equals("failed"))
                     {
+                        loggedIn = false;
                         log("Login or registration failed!");
                     } else if(message.equals("loggedin")) {
                         loggedIn = true;

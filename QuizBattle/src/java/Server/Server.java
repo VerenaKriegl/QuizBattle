@@ -123,8 +123,9 @@ public class Server {
                 boolean ok = false;
                 String username = "";
                 String type = "";
-                boolean registrated = true;
+                
                 do {
+                    boolean registrated = true;
                     type = (String) ois.readObject();
                     if (type.equals("signup")) {
                         Account newAccount = (Account) ois.readObject();
