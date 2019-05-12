@@ -1,6 +1,7 @@
 package client;
 
 import beans.Account;
+import configFiles.Config;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -83,7 +84,7 @@ public class Client {
 
     public void connect() {
         try {
-            socket = new Socket("172.20.10.2", 9999);
+            socket = new Socket(Config.IP_ADDRESS, 9999);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             ServerMessages sm = new ServerMessages();

@@ -1,6 +1,7 @@
 package Server;
 
 import beans.Account;
+import configFiles.Config;
 import database.DBAccess;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -49,7 +50,7 @@ public class Server {
             running = true;
             accountList = dba.getAllAccounts();
             System.out.println(accountList.size());
-            InetAddress inetAddress = InetAddress.getByName("172.20.10.2"); //172.20.10.2
+            InetAddress inetAddress = InetAddress.getByName(Config.IP_ADDRESS); //172.20.10.2
             serverSocket = new ServerSocket(9999, 70, inetAddress);
 
             AcceptClient acceptClient = new AcceptClient(serverSocket);

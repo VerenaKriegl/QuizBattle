@@ -5,8 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
+import configFiles.Config;
 
-public class DB_ConnectionPool implements DB_Config {
+public class DB_ConnectionPool implements Config {
 
     private static DB_ConnectionPool theInstace;
 
