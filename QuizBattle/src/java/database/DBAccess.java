@@ -48,16 +48,16 @@ public class DBAccess {
 
     public void createTableQuestions() throws SQLException {
         Statement statement = stmtPool.getStatement();
-        String sqlString = "CREATE TABLE questions ("
+        String sqlString = "CREATE TABLE question ("
                 + "questionid INT,"
                 + "question VARCHAR(300),"
-                + "firstAnswer VARCHAR(50),"
-                + "secondAnswer VARCHAR(50),"
-                + "thirdAnswer VARCHAR(50),"
-                + "fourthAnswer VARCHAR(50),"
+                + "firstFalseAnswer VARCHAR(50),"
+                + "secondFalseAnswer VARCHAR(50),"
+                + "thirdFalseAnswer VARCHAR(50),"
+                + "rightAnswer VARCHAR(50),"
                 + "categoryname VARCHAR(50),"
                 + "PRIMARY KEY (questionid, categoryname));";
-        String sqlForeignKey = "ALTER TABLE questions ADD CONSTRAINT question_category FOREIGN KEY(categoryname) REFERENCES category(categoryname);";
+        String sqlForeignKey = "ALTER TABLE question ADD CONSTRAINT question_category FOREIGN KEY(categoryname) REFERENCES category(categoryname);";
         statement.execute(sqlString);
         statement.execute(sqlForeignKey);
         statement.close();
@@ -100,19 +100,20 @@ public class DBAccess {
 
     public void addQuestions(Question question, String category) throws SQLException {
         Statement statement = stmtPool.getStatement();
-        String sqlString = "INSERT INTO questions"
-                + "(questionid, question, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer, categoryname)"
+        String sqlString = "INSERT INTO question"
+                + "(questionid, question, firstfalseanswer, secondfalseanswer, thirdfalseanswer, rightanswer, categoryname)"
                 + "VALUES ('" + question.getQuestionid()
                 + "','" + question.getQuestion()
-                + "','" + question.getRightAnswer()
                 + "','" + question.getWrongAnwers().get(0)
                 + "','" + question.getWrongAnwers().get(1)
                 + "','" + question.getWrongAnwers().get(2)
+                + "','" + question.getRightAnswer()
                 + "','" + category
                 + "');";
         statement.execute(sqlString);
         statement.close();
     }
+    
 
     public Account getAccountByUsername(String username) throws SQLException {
         PreparedStatement pStat = stmtPool.getPreparedStatement(DB_StatementType.GET_ACCOUNT_BY_USERNAME);
