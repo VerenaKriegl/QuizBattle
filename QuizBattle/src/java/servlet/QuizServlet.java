@@ -122,17 +122,23 @@ public class QuizServlet extends HttpServlet {
             
         } else if (request.getParameter("startGame") != null) {
             client.startGame();
-            while(!client.isOpponentFound()) {
-                getServletConfig().getServletContext().
-                    getRequestDispatcher("/jsp/LoadingView.jsp").
-                    forward(request, response);
+            while(!opponentFound) {
+                if(loadingCount==0)
+                {
+                    getServletConfig().getServletContext().
+                        getRequestDispatcher("/jsp/LoadingView.jsp").
+                        forward(request, response);
+                    loadingCount++;
+                }
+                opponentFound = client.isOpponentFound();
             }
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/BattleView.jsp").
                     forward(request, response);
         }
     }
-    
+    private int loadingCount = 0;
+    private boolean opponentFound = false;
     public void setSignedUp(boolean signedup) {
         this.signedup = signedup;
     }
