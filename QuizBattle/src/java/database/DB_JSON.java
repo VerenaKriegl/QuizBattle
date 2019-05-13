@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+ 
 public class DB_JSON {
 
     private void getRequest() throws IOException, JSONException, SQLException {

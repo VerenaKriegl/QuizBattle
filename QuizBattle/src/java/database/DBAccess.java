@@ -15,7 +15,7 @@ public class DBAccess {
 
     private DB_StatementPool stmtPool = DB_StatementPool.getInstance();
     private ArrayList<Account> accounts = new ArrayList<>();
-
+ 
     public static void main(String[] args) {
         DBAccess dba = new DBAccess();
         try {
