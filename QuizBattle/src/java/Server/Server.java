@@ -1,6 +1,7 @@
 package Server;
 
 import beans.Account;
+import beans.Question;
 import configFiles.Config;
 import database.DBAccess;
 import java.io.IOException;
@@ -245,11 +246,11 @@ public class Server {
     class PlayGame extends Thread {
 
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
-
+       
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
-
+       
         @Override
         public void run() {
 
@@ -267,7 +268,11 @@ public class Server {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-           // System.out.println("Größe: "+players.size());
+            // System.out.println("Größe: "+players.size());
+            
+            
+            
+            
         }
     }
 

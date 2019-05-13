@@ -37,7 +37,12 @@ public class Client {
         return errorType;
     }
 
-    public boolean isOpponentFound() {
+    public boolean isOpponentFound() 
+    {
+        if(opponentFound)
+        {
+            System.out.println("hier");
+        }
         return opponentFound;
     }
 
