@@ -26,7 +26,7 @@ public class QuizServlet extends HttpServlet {
     private Account newAccount;
     private Account loginAccount;
     private int userid;
-    private boolean isConnected = false;
+    private boolean connected = false;
     private boolean signedup;
 
     @Override
@@ -49,7 +49,7 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
-            if (!isConnected) {
+            if (!connected) {
                 client = new Client();
             }
         }
@@ -57,7 +57,7 @@ public class QuizServlet extends HttpServlet {
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
-            if (!isConnected) {
+            if (!connected) {
                 client = new Client();
             }
         }
@@ -122,6 +122,11 @@ public class QuizServlet extends HttpServlet {
             
         } else if (request.getParameter("startGame") != null) {
             client.startGame();
+            while(!client.isOpponentFound()) {
+                getServletConfig().getServletContext().
+                    getRequestDispatcher("/jsp/LoadingView.jsp").
+                    forward(request, response);
+            }
             getServletConfig().getServletContext().
                     getRequestDispatcher("/jsp/BattleView.jsp").
                     forward(request, response);

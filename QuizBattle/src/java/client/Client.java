@@ -19,6 +19,7 @@ public class Client {
     private int highestId;
     private String errorType;
     private boolean loggedIn;
+    private boolean opponentFound;
 
     public Client() {
         connect();
@@ -27,13 +28,17 @@ public class Client {
     public int getHighestId() {
         return highestId;
     }
-    
+
     public boolean isLoggedIn() {
         return loggedIn;
     }
-    
+
     public String getErrorType() {
         return errorType;
+    }
+
+    public boolean isOpponentFound() {
+        return opponentFound;
     }
 
     private void log(String message) {
@@ -94,13 +99,7 @@ public class Client {
             log("Exception: unable to connect to server");
         }
     }
-    boolean opponentFound = false;
-    public boolean getOpponentFound()
-    {
-        return opponentFound;
-    }
-    
-    
+
     class ServerMessages extends Thread {
 
         @Override
@@ -108,23 +107,19 @@ public class Client {
             try {
                 while (true) {
                     String message = (String) ois.readObject();
-                    if(message.equals("failed"))
-                    {
+                    if (message.equals("failed")) {
                         loggedIn = false;
                         log("Login or registration failed!");
-                    } else if(message.equals("loggedin")) {
+                    } else if (message.equals("loggedin")) {
                         loggedIn = true;
                         log("You are logged in!");
                     } else if (message.equals("highestID")) {
                         highestId = (int) ois.readObject();
                         System.out.println(highestId);
-                    } 
-                    else if (message.equals("opponent found"))
-                    {
+                    } else if (message.equals("opponent found")) {
                         System.out.println("opponent found");
                         opponentFound = true;
-                    }
-                    else {
+                    } else {
                         log(message);
                     }
                 }
