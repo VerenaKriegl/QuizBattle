@@ -6,27 +6,26 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import servlet.QuizServlet;
 
 /**
  *
- * @author tobias
+ * @author Tobias
  */
 public class Client {
 
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private int highestId;
+    private int highestUserID;
     private String errorType;
     private boolean loggedIn;
-    private boolean opponentFound;
+    private boolean opponentFound = false;
 
     public Client() {
         connect();
     }
 
     public int getHighestId() {
-        return highestId;
+        return highestUserID;
     }
 
     public boolean isLoggedIn() {
@@ -41,7 +40,7 @@ public class Client {
     {
         if(opponentFound)
         {
-            System.out.println("hier");
+            System.out.println("Boolean in Client: "+opponentFound);
         }
         return opponentFound;
     }
@@ -93,6 +92,7 @@ public class Client {
     private Socket socket;
 
     public void connect() {
+        /* Verbindung zum Server herstellen */
         try {
             socket = new Socket(Config.IP_ADDRESS, 9999);
             oos = new ObjectOutputStream(socket.getOutputStream());
@@ -106,9 +106,9 @@ public class Client {
     }
 
     class ServerMessages extends Thread {
-
+        /* Thread zur Kommunikation mit dem Server */
         @Override
-        public void run() {
+        public void  run() {
             try {
                 while (true) {
                     String message = (String) ois.readObject();
@@ -119,8 +119,8 @@ public class Client {
                         loggedIn = true;
                         log("You are logged in!");
                     } else if (message.equals("highestID")) {
-                        highestId = (int) ois.readObject();
-                        System.out.println(highestId);
+                        highestUserID = (int) ois.readObject();
+                        System.out.println(highestUserID);
                     } else if (message.equals("opponent found")) {
                         System.out.println("opponent found");
                         opponentFound = true;

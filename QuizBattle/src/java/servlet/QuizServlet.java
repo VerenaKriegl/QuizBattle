@@ -16,11 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author tobias
+ * @author Tobias
  */
 @WebServlet(name = "QuizServlet", urlPatterns = {"/QuizServlet"})
 public class QuizServlet extends HttpServlet {
 
+    private boolean opponentFound = false;
+    private int loadingCount = 0;
     private Client client;
     private DateTimeFormatter dtf;
     private Account newAccount;
@@ -46,7 +48,7 @@ public class QuizServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (request.getParameter("registration") != null) {
-            getServletConfig().getServletContext().
+            request.
                     getRequestDispatcher("/jsp/Registration.jsp").
                     forward(request, response);
             if (!connected) {
@@ -54,7 +56,7 @@ public class QuizServlet extends HttpServlet {
             }
         }
         if (request.getParameter("login") != null) {
-            getServletConfig().getServletContext().
+            request.
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
             if (!connected) {
@@ -90,11 +92,11 @@ public class QuizServlet extends HttpServlet {
             }
             if (!client.isLoggedIn()) {
                 request.setAttribute("errorType", client.getErrorType());
-                getServletConfig().getServletContext().
+                request.
                         getRequestDispatcher("/jsp/Registration.jsp").
                         forward(request, response);
             } else {
-                getServletConfig().getServletContext().
+                request.
                         getRequestDispatcher("/jsp/MainMenu.jsp").
                         forward(request, response);
             }
@@ -108,37 +110,33 @@ public class QuizServlet extends HttpServlet {
             } catch (InterruptedException ex) {
                 Logger.getLogger(QuizServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(!client.isLoggedIn())
-            {
+            if (!client.isLoggedIn()) {
                 request.setAttribute("errorType", client.getErrorType());
-                getServletConfig().getServletContext().getRequestDispatcher("/jsp/Login.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/Login.jsp").forward(request, response);
+            } else {
+                request.
+                        getRequestDispatcher("/jsp/MainMenu.jsp").
+                        forward(request, response);
             }
-            else
-            {
-                getServletConfig().getServletContext().
-                    getRequestDispatcher("/jsp/MainMenu.jsp").
-                    forward(request, response);
-            }
-            
+
         } else if (request.getParameter("startGame") != null) {
             client.startGame();
-            while(!opponentFound) {
-                if(loadingCount==0)
-                {
-                    getServletConfig().getServletContext().
-                        getRequestDispatcher("/jsp/LoadingView.jsp").
-                        forward(request, response);
+            opponentFound = client.isOpponentFound();
+            while (!opponentFound) {
+                if (loadingCount == 0) {
+                    request.getRequestDispatcher("/jsp/LoadingView.jsp").forward(request, response);
                     loadingCount++;
                 }
                 opponentFound = client.isOpponentFound();
             }
-            getServletConfig().getServletContext().
-                    getRequestDispatcher("/jsp/BattleView.jsp").
-                    forward(request, response);
+            if (client.isOpponentFound()) {
+                System.out.println("out of loop");
+                request.getRequestDispatcher("/jsp/BatteView.jsp").forward(request, response);
+                System.out.println("openend BattleView.jsp");
+            }
         }
     }
-    private int loadingCount = 0;
-    private boolean opponentFound = false;
+
     public void setSignedUp(boolean signedup) {
         this.signedup = signedup;
     }

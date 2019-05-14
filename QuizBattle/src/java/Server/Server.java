@@ -1,7 +1,6 @@
 package Server;
 
 import beans.Account;
-import beans.Question;
 import configFiles.Config;
 import database.DBAccess;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tobias
+ * @author Tobias
  */
 public class Server {
 

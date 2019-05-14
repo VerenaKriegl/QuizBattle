@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import java.util.ArrayList;
 
 /**
  *
- * @author krieg
+ * @author Verena
  */
 public class Question {
+    /* Datenhaltungsklasse für alle Fragen mit den jeweiligen Antwortmöglichkeiten */
     private String question;
     private String rightAnswer; 
     private ArrayList<String> wrongAnwers;
@@ -54,7 +50,5 @@ public class Question {
 
     public void setQuestionid(int questionid) {
         this.questionid = questionid;
-    }
-
-    
+    }  
 }
