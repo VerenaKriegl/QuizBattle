@@ -30,6 +30,7 @@ public class QuizServlet extends HttpServlet {
     private int userid;
     private boolean connected = false;
     private boolean signedup;
+    private int counter = 0;
 
     @Override
     public void init(ServletConfig config)
@@ -40,8 +41,6 @@ public class QuizServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
     }
 
     @Override
@@ -54,14 +53,15 @@ public class QuizServlet extends HttpServlet {
             if (!connected) {
                 client = new Client();
             }
-        }
-        if (request.getParameter("login") != null) {
+        } else if (request.getParameter("login") != null) {
             request.
                     getRequestDispatcher("/jsp/Login.jsp").
                     forward(request, response);
             if (!connected) {
                 client = new Client();
             }
+        } else {
+            request.getRequestDispatcher("/jsp/StartPage.jsp").forward(request, response);
         }
         processRequest(request, response);
     }
@@ -125,15 +125,15 @@ public class QuizServlet extends HttpServlet {
             while (!opponentFound) {
                 if (loadingCount == 0) {
                     request.getRequestDispatcher("/jsp/LoadingView.jsp").forward(request, response);
+                    processRequest(request, response);
                     loadingCount++;
                 }
                 opponentFound = client.isOpponentFound();
             }
-            if (client.isOpponentFound()) {
-                System.out.println("out of loop");
-                request.getRequestDispatcher("/jsp/BatteView.jsp").forward(request, response);
-                System.out.println("openend BattleView.jsp");
-            }
+            System.out.println("out of loop");
+            request.getRequestDispatcher("/jsp/BattleView.jsp").forward(request, response);
+            processRequest(request, response);
+            System.out.println("openend BattleView.jsp");
         }
     }
 
