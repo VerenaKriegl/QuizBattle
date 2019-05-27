@@ -21,6 +21,11 @@ public class Account implements Serializable{
         this.dateOfBirth = dateOfBirth;
     } 
 
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    
     public String getUsername() {
         return username;
     }

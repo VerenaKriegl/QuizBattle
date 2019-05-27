@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.util.Scanner;
 
 /**
  *
@@ -63,6 +65,8 @@ public class Client {
         try {
             oos.writeObject("startgame");
             oos.flush();
+            GameCommunication gameCommunication = new GameCommunication();
+            gameCommunication.start();
         } catch (IOException ex) {
             log("Exception: unable to start game");
         }
@@ -104,6 +108,16 @@ public class Client {
             log("Exception: unable to connect to server");
         }
     }
+    class GameCommunication extends Thread
+    {
+
+        @Override
+        public void run() {
+            Scanner sc = new Scanner(System.in);
+            String answerQuestion = sc.nextLine();
+        }
+        
+    }
 
     class ServerMessages extends Thread {
         /* Thread zur Kommunikation mit dem Server */
@@ -132,5 +146,10 @@ public class Client {
                 log("Exception: unable to read received object");
             }
         }
+    }
+    public static void main(String[] args) {
+        Client c = new Client();
+        c.login(new Account("adsf", "sadf", null, 0, LocalDate.MIN));
+        c.startGame();
     }
 }

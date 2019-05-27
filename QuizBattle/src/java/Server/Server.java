@@ -48,17 +48,14 @@ public class Server {
     private void startServer() {
         try {
             running = true;
-            accountList = dba.getAllAccounts();
-            System.out.println(accountList.size());
+
             InetAddress inetAddress = InetAddress.getByName(Config.IP_ADDRESS); //172.20.10.2
             serverSocket = new ServerSocket(9999, 70, inetAddress);
 
             AcceptClient acceptClient = new AcceptClient(serverSocket);
             acceptClient.start();
         } catch (IOException ex) {
-            log("Exception: unable to start server");
-        } catch (SQLException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to start server" + ex);
         }
     }
 
@@ -113,85 +110,85 @@ public class Server {
             }
         }
 
+        private boolean login(Account account) throws SQLException {
+            System.out.println(account.getUsername());
+            Account loginAccount = dba.getAccountByUsername(account.getUsername());
+            if (loginAccount.getPassword().equals(account.getPassword())) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+        private void sendMessage(String message) {
+            try {
+                oos.writeObject(message);
+                oos.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        private boolean registrate(Account account) {
+            for (Account existAccount : accountList) {
+                if (existAccount.getUsername().equals(account.getUsername()) || existAccount.getMailAddress().equals(account.getMailAddress())) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         @Override
         public void run() {
             try {
                 int highestID = dba.getHighestUserId();
-                oos.writeObject("highestID");
-                oos.flush();
-                oos.writeObject(highestID);
-                oos.flush();
-                boolean ok = false;
+                accountList = dba.getAllAccounts();
+
                 String username = "";
                 String type = "";
-                
+
+                boolean registrated = false;
+                boolean loggedIn = false;
+
                 do {
-                    boolean registrated = true;
                     type = (String) ois.readObject();
                     if (type.equals("signup")) {
                         Account newAccount = (Account) ois.readObject();
-                        System.out.println(newAccount.getPassword());
-                        if (newAccount.getPassword().length() <= 7) {
-                            registrated = false;
-                            errorMessage("pass");
-                        } else {
-                            for (Account account : accountList) {
-                                if (account.getUsername().equals(newAccount.getUsername())) {
-                                    errorMessage("username");
-                                    registrated = false;
-                                    break;
-                                } else if (account.getMailAddress().equals(newAccount.getMailAddress())) {
-                                    errorMessage("mail");
-                                    registrated = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (registrated) {
+                        registrated = registrate(newAccount);
+                        newAccount.setUserid(highestID + 1);
 
+                        if (registrated) {
                             username = newAccount.getUsername();
                             dba.addAccount(newAccount);
                             mapClients.put(username, oos);
-                            oos.writeObject("loggedin");
-                            oos.flush();
-
-                            ok = true;
+                            sendMessage("loggedin");
                             log(username + " signed up");
+                        } else {
+                            sendMessage("Registrierung fehlgeschlagen!");
                         }
+
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
-                        String recPas = recievedAccount.getPassword();
-                        System.out.println(recievedAccount.getUsername());
-                        Account loginAccount = dba.getAccountByUsername(recievedAccount.getUsername());
-                        if(loginAccount == null){
-                            log("error");
-                        }
-                        else{
-                            String logPas = loginAccount.getPassword();
-                        if (loginAccount.getPassword().equals(recievedAccount.getPassword())) {
-                            username = loginAccount.getUsername();
+                        loggedIn = login(recievedAccount);
+                        if (loggedIn) {
+                            username = recievedAccount.getUsername();
+                            accountList.add(recievedAccount);
                             mapClients.put(username, oos);
-                            oos.writeObject("loggedin");
-                            oos.flush();
-                            ok = true;
+                            sendMessage("loggedin");
                             log(username + " logged in");
+                        } else {
+                            sendMessage("Anmeldung fehlgeschlagen!");
                         }
-                        }
-                        
                     }
-                    if (!ok) {
-                        oos.writeObject("failed");
-                        oos.flush();
-                    }
-                    
-                } while (!ok);
-                System.out.println("hier");
+                } while (!registrated && !loggedIn);
+
                 while (running) {
                     type = (String) ois.readObject();
                     if (type.equals("logout")) {
                         mapClients.remove(username);
-                        oos.writeObject("loggedout");
-                        oos.flush();
+                        sendMessage("loggedout");
                         break;
                     } else if (type.equals("startgame")) {
                         startGame(username);
@@ -199,45 +196,42 @@ public class Server {
                 }
                 log("after while()");
             } catch (IOException | ClassNotFoundException | SQLException ex) {
-                log("Exception: unable to communicate with client");
+                log("Exception: unable to communicate with client: " + ex);
+            }      
+        }
+
+        private void createNewGame() {
+            players = new ArrayList<>();
+            players.add(oos);
+            mapGames.put(mapGames.size()+1, players);
+            WaitForPlayer waitForPlayer = new WaitForPlayer(mapGames.size());
+            waitForPlayer.start();
+            System.out.println("Spiel erzeugt!");
+        }
+
+        private boolean joinGame() {
+            for (ArrayList gamePlayer : mapGames.values()) {
+                if (gamePlayer.size() == 1) {
+                    for (int gameNumber : mapGames.keySet()) {
+                        gamePlayer.add(oos);
+                        mapGames.replace(gameNumber, gamePlayer);
+                        System.out.println("Spiel gefunden!");
+                        return true;
+                    }
+                }
             }
+            return false;
         }
 
         private void startGame(String username) {
-            boolean gameStarted = false;
-
             if (mapGames.isEmpty()) {
-                players = new ArrayList<>();
-                players.add(oos);
-                log("Username: " + username);
-                mapGames.put(1, players);
-                WaitForPlayer waitForPlayer = new WaitForPlayer(1);
-                waitForPlayer.start();
+                createNewGame();
             } else {
-                for (ArrayList list : mapGames.values()) {
-                    if (list.size() == 1) {
-                        for (int mapKey : mapGames.keySet()) {
-                            if (list.equals(mapGames.get(mapKey))) {
-                                mapGames.remove(mapKey, list);
-                                list.add(oos);
-                                
-                                mapGames.put(mapKey, list);
-                                gameStarted = true;
-                            }
-                        }
-                        break;
-                    } else {
-                        log("Opponent already found");
-                    }
-                }
-                if (!gameStarted) {
-                    int gameCount = mapGames.size() + 1;
-                    players = new ArrayList<>();
-                    players.add(oos);
-                    mapGames.put(gameCount, players);
-                    WaitForPlayer waitForPlayer = new WaitForPlayer(1);
-                    waitForPlayer.start();
-                }
+               boolean gameJoined = joinGame();
+               if(!gameJoined)
+               {
+                   createNewGame();
+               }
             }
         }
     }
@@ -245,20 +239,13 @@ public class Server {
     class PlayGame extends Thread {
 
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
-       
+
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
-       
+
         @Override
         public void run() {
-
-            if(players.get(0) instanceof ObjectOutputStream)
-            {
-                System.out.println("objectstream");
-            }
-            System.out.println(players.toString());
-            
             for (ObjectOutputStream oos : players) {
                 try {
                     oos.writeObject("opponent found");
@@ -267,11 +254,6 @@ public class Server {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            // System.out.println("Größe: "+players.size());
-            
-            
-            
-            
         }
     }
 
@@ -286,7 +268,6 @@ public class Server {
 
         @Override
         public void run() {
-            System.out.println(players.size());
             while (isOnePlayer) {
                 try {
                     if (mapGames.get(gameCount).size() == 2) {
