@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,17 +40,15 @@ public class Client {
         return errorType;
     }
 
-    public boolean isOpponentFound() 
-    {
-        if(opponentFound)
-        {
-            System.out.println("Boolean in Client: "+opponentFound);
+    public boolean isOpponentFound() {
+        if (opponentFound) {
+            System.out.println("Boolean in Client: " + opponentFound);
         }
         return opponentFound;
     }
 
     private void log(String message) {
-        System.out.println("Client Log: " + message);
+        System.out.println(message);
     }
 
     public void logout() {
@@ -108,21 +108,31 @@ public class Client {
             log("Exception: unable to connect to server");
         }
     }
-    class GameCommunication extends Thread
-    {
+
+    class GameCommunication extends Thread {
 
         @Override
         public void run() {
-            Scanner sc = new Scanner(System.in);
-            String answerQuestion = sc.nextLine();
+            try {
+                while (true) {
+                    Scanner sc = new Scanner(System.in);
+                    String answerQuestion = sc.nextLine();
+                    System.out.println(answerQuestion);
+                    oos.writeObject(answerQuestion);
+                    oos.flush();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+
     }
 
     class ServerMessages extends Thread {
         /* Thread zur Kommunikation mit dem Server */
+
         @Override
-        public void  run() {
+        public void run() {
             try {
                 while (true) {
                     String message = (String) ois.readObject();
@@ -147,6 +157,7 @@ public class Client {
             }
         }
     }
+
     public static void main(String[] args) {
         Client c = new Client();
         c.login(new Account("adsf", "sadf", null, 0, LocalDate.MIN));

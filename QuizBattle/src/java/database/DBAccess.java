@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DBAccess {
 
@@ -46,6 +48,8 @@ public class DBAccess {
         statement.close();
     }
 
+    
+    
     public void createTableCategory() throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         String sqlString = "CREATE TABLE category ("
@@ -112,6 +116,22 @@ public class DBAccess {
         }
         DBStatementPool.releaseStatement(pStat);
         return account;
+    }
+    
+    public ArrayList getCategory()
+    {
+        ArrayList<Category> listCategory = new ArrayList<>();
+        try {
+            Statement statement = DBStatementPool.getStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM category");
+            while(rs.next())
+            {
+                listCategory.add(new Category(rs.getString("categoryname"), rs.getInt("categoryid")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listCategory;
     }
 
     public int getHighestUserId() throws SQLException {

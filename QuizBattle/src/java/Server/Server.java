@@ -1,6 +1,7 @@
 package Server;
 
 import beans.Account;
+import beans.Category;
 import configFiles.Config;
 import database.DBAccess;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +29,7 @@ public class Server {
     private Map<Integer, ArrayList<ObjectOutputStream>> mapGames;
     private ArrayList<ObjectOutputStream> players;
     private Map<String, ObjectOutputStream> mapClients;
+    private Map<ObjectOutputStream, ObjectInputStream> mapInputClients;
     private ArrayList<Account> accountList = new ArrayList<>();
     private boolean running;
 
@@ -38,6 +41,7 @@ public class Server {
         dba = new DBAccess();
         mapGames = new HashMap<>();
         mapClients = new HashMap<>();
+        mapInputClients = new HashMap<>();
         startServer();
     }
 
@@ -163,6 +167,7 @@ public class Server {
                             username = newAccount.getUsername();
                             dba.addAccount(newAccount);
                             mapClients.put(username, oos);
+                            mapInputClients.put(oos, ois);
                             sendMessage("loggedin");
                             log(username + " signed up");
                         } else {
@@ -176,6 +181,7 @@ public class Server {
                             username = recievedAccount.getUsername();
                             accountList.add(recievedAccount);
                             mapClients.put(username, oos);
+                            mapInputClients.put(oos, ois);
                             sendMessage("loggedin");
                             log(username + " logged in");
                         } else {
@@ -191,7 +197,7 @@ public class Server {
                         sendMessage("loggedout");
                         break;
                     } else if (type.equals("startgame")) {
-                        startGame(username);
+                        startGame();
                     }
                 }
                 log("after while()");
@@ -223,7 +229,7 @@ public class Server {
             return false;
         }
 
-        private void startGame(String username) {
+        private void startGame() {
             if (mapGames.isEmpty()) {
                 createNewGame();
             } else {
@@ -239,10 +245,13 @@ public class Server {
     class PlayGame extends Thread {
 
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
-
+        private ObjectOutputStream currentPlayer;
+        private ObjectInputStream ois;
+        private ArrayList<Category> listCategory = new ArrayList<Category>();
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
+        //
 
         @Override
         public void run() {
@@ -252,8 +261,31 @@ public class Server {
                     oos.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }   
+          currentPlayer = players.get(0);
+          
+            for(int i = 0; i <= 1; i++)
+            {
+                try {
+                    currentPlayer.writeObject("Choose the Category by number");
+                    listCategory = dba.getCategory();
+                    for(Category category : listCategory)
+                    {
+                        currentPlayer.writeObject(""+category.getCategoryid()+" , "+category.getCategoryname());
+                    }
+                    currentPlayer.flush();
+                    ois = mapInputClients.get(currentPlayer);
+                    Object cat = ois.readObject();
+                    //String category = (String) ois.readObject();
+                    System.out.println(cat);
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
         }
     }
 
@@ -261,7 +293,7 @@ public class Server {
 
         private int gameCount;
         private boolean isOnePlayer = true;
-
+        
         public WaitForPlayer(int gameCount) {
             this.gameCount = gameCount;
         }
@@ -273,7 +305,7 @@ public class Server {
                     if (mapGames.get(gameCount).size() == 2) {
                         log("Opponent found");
 
-                        PlayGame playGame = new PlayGame(mapGames.get(gameCount));
+                        PlayGame playGame = new PlayGame(mapGames.get(gameCount));                    
                         playGame.start();
 
                         isOnePlayer = false;
