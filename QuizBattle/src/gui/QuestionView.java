@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,8 +26,12 @@ import javax.swing.JPanel;
 public class QuestionView extends JFrame {
     private Question question;
 
-    public QuestionView(String title) {
+    public QuestionView(String title, Question question) {
         super(title);
+        this.question = question;
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setSize(800, 600);
         initComponents();
     }
 
@@ -33,18 +39,25 @@ public class QuestionView extends JFrame {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
         c.setBackground(Color.white);
-        String question = "Frage: ";
-        String rightAnswer = "rightAnswer";
-        String firstFalseAnswer = "falseAnswer";
-        String secondFalseAnswer = "falseAnswer";
-        String thirdFalseAnswer = "falseAnswer";
+        String question = this.question.getQuestion();
+        String rightAnswer = this.question.getRightAnswer();
+        ArrayList<String> wrongAnswers = this.question.getWrongAnwers();
+        String firstFalseAnswer = wrongAnswers.get(0);
+        String secondFalseAnswer = wrongAnswers.get(1);
+        String thirdFalseAnswer = wrongAnswers.get(2);
 
         JLabel lbQuestion = new JLabel(question);
         lbQuestion.setFont(new Font("Serif", Font.BOLD, 28));
+        Random rand = new Random();
+        int randomNumber = rand.nextInt((4-1)+1)+1;
         JButton btRightAnswer = new JButton(rightAnswer);
+        btRightAnswer.addActionListener(e -> onRightAnswerClicked());
         JButton btFirstFalseAnswer = new JButton(firstFalseAnswer);
+        btFirstFalseAnswer.addActionListener(e -> onFirstFalseAnswerClicked());
         JButton btSecondFalseAnswer = new JButton(secondFalseAnswer);
+        btSecondFalseAnswer.addActionListener(e -> onSecondFalseAnswerClicked());
         JButton btThirdFalseAnswer = new JButton(thirdFalseAnswer);
+        btThirdFalseAnswer.addActionListener(e -> onThirdFalseAnswerClicked());
 
         c.add(lbQuestion, BorderLayout.NORTH);
 
@@ -66,11 +79,27 @@ public class QuestionView extends JFrame {
     }
 
     public static void main(String[] args) {
-        QuestionView questionView = new QuestionView("Question");
+        QuestionView questionView = new QuestionView("Question", null);
         questionView.setVisible(true);
         questionView.setDefaultCloseOperation(EXIT_ON_CLOSE);
         questionView.setLocationRelativeTo(null);
         questionView.setSize(800, 600);
+    }
+
+    private void onRightAnswerClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void onFirstFalseAnswerClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void onSecondFalseAnswerClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void onThirdFalseAnswerClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class Timer implements Runnable {

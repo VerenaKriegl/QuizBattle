@@ -6,6 +6,7 @@
 package gui;
 
 import beans.Category;
+import beans.Question;
 import client.Client;
 import java.util.ArrayList;
 
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 public class GUIBuilder {
     LoadingView loadingView = null;
     
-    public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
-        ChooseCategory chooseCategory = new ChooseCategory("Category", categories);
+    public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories, Client client){
+        ChooseCategory chooseCategory = new ChooseCategory("Category", categories, client);
         chooseCategory.setVisible(true);
         return chooseCategory;
     }
@@ -31,5 +32,14 @@ public class GUIBuilder {
         if(loadingView.isVisible()){
             loadingView.setVisible(false);
         }
+    }
+    
+    public void closeCategoryView(ChooseCategory chooseCategory){
+        chooseCategory.setVisible(false);
+    }
+    
+    public void openQuestionView(Question question){
+        QuestionView questionView = new QuestionView("Question", question);
+        questionView.setVisible(true);
     }
 }

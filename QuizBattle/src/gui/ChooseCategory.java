@@ -6,8 +6,10 @@
 package gui;
 
 import beans.Category;
+import client.Client;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JButton;
@@ -22,15 +24,17 @@ import javax.swing.JLabel;
 public class ChooseCategory extends JFrame {
 
     private ArrayList<Category> categories;
-    private String categoryName;
+    private String cat = null;
+    private Client client;
 
-    public ChooseCategory(String title, ArrayList categories) {
+    public ChooseCategory(String title, ArrayList categories, Client client) {
         super(title);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(500, 500);
         this.categories = categories;
+        this.client = client;
         initComponents();
     }
 
@@ -43,16 +47,31 @@ public class ChooseCategory extends JFrame {
 
         Random rand = new Random();
 
-        for (int i = 0; i < 3; i++) {
-            int categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
-            JButton btCategory = new JButton(categories.get(categoryID).getCategoryname());
-            btCategory.addActionListener(e -> clickedCategoryName());
-            categoryName = categories.get(categoryID).getCategoryname();
-            c.add(btCategory);
-        }
+        int categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
+        String catName1 = categories.get(categoryID).getCategoryname();
+        JButton btCategoryOne = new JButton(categories.get(categoryID).getCategoryname());
+        btCategoryOne.addActionListener(e -> setCategoryName(catName1));
+
+        categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
+        String catName2 = categories.get(categoryID).getCategoryname();
+        JButton btCategoryTwo = new JButton(categories.get(categoryID).getCategoryname());
+        btCategoryTwo.addActionListener(e -> setCategoryName(catName2));
+
+        categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
+        String catName3 = categories.get(categoryID).getCategoryname();
+        JButton btCategoryThree = new JButton(categories.get(categoryID).getCategoryname());
+        btCategoryThree.addActionListener(e -> setCategoryName(catName3));
+
+        c.add(btCategoryThree);
+        c.add(btCategoryOne);
+        c.add(btCategoryTwo);
     }
 
-    public String clickedCategoryName() {
-        return categoryName;
+    public void setCategoryName(String cat) {
+        client.choosedCategoryName(cat);
+    }
+
+    public static void main(String[] args) {
+        ChooseCategory cat = new ChooseCategory("cat", null, null);
     }
 }

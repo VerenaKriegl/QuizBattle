@@ -2,6 +2,7 @@ package client;
 
 import beans.Account;
 import beans.Category;
+import beans.Question;
 import configFiles.Config;
 import gui.BattleViewGUI;
 import gui.ChooseCategory;
@@ -30,6 +31,7 @@ public class Client {
     private String errorType;
     private boolean loggedIn = false;
     private GUIBuilder gui;
+    private ChooseCategory choosecategory;
 
     public Client() {
         connect();
@@ -40,7 +42,7 @@ public class Client {
     }
 
     public boolean isLoggedIn() {
-        System.out.println("Getter: "+loggedIn);
+        System.out.println("Getter: " + loggedIn);
         return loggedIn;
     }
 
@@ -84,16 +86,17 @@ public class Client {
             log("Exception: unable to sign up");
         }
     }
-    
-    public void setGUIBuilder(GUIBuilder gui){
+
+    public void setGUIBuilder(GUIBuilder gui) {
         this.gui = gui;
     }
-    
-    public void choosedCategoryName(String categoryName){
+
+    public void choosedCategoryName(String categoryName) {
         try {
             oos.writeObject("categoryName");
             oos.flush();
             oos.writeObject(categoryName);
+            System.out.println("Client: " + categoryName);
             oos.flush();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,11 +148,14 @@ public class Client {
         }
 
     }
+    
+    public void h(ArrayList<Category> categories){
+        choosecategory = gui.openChooseCategoryGUI(categories, this);
+    }
 
     class ServerMessages extends Thread {
 
         /* Thread zur Kommunikation mit dem Server */
-
         @Override
         public void run() {
             try {
@@ -164,13 +170,14 @@ public class Client {
                     } else if (message.equals("highestID")) {
                         highestUserID = (int) ois.readObject();
                         System.out.println(highestUserID);
-                    } else if (message.equals("opponent found")) {
                     } else if (message.equals("choose category")) {
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
                         gui.closeLoadingView();
-                        ChooseCategory choosecategory = gui.openChooseCategoryGUI(categories);
-                        String choosedCategory = choosecategory.clickedCategoryName();
-                        choosedCategoryName(choosedCategory);
+                        h(categories);
+                    } else if (message.equals("question")) {
+                        Question question = (Question) ois.readObject();
+                        gui.closeCategoryView(choosecategory);
+                        gui.openQuestionView(question);
                     } else {
                         log(message);
                     }

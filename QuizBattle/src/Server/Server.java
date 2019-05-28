@@ -2,6 +2,7 @@ package Server;
 
 import beans.Account;
 import beans.Category;
+import beans.Question;
 import configFiles.Config;
 import database.DBAccess;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -199,13 +201,13 @@ public class Server {
                         break;
                     } else if (type.equals("startgame")) {
                         startGame();
-                    }else if(type.equals("categoryName")){
+                    } else if (type.equals("categoryName")) {
                         ArrayList<Category> listCategory = dba.getCategory();
                         String categoryName = (String) ois.readObject();
                         for (Category cat : listCategory) {
                             if (cat.getCategoryname().equals(categoryName)) {
-                              //  getQuestionFromDB();
-                                System.out.println("CategoryName: "+categoryName);
+                                getQuestionFromDB(categoryName,oos);
+                                System.out.println("CategoryName: " + categoryName);
                                 break;
                             }
                         }
@@ -250,6 +252,23 @@ public class Server {
                 }
             }
         }
+
+        private void getQuestionFromDB(String catname, ObjectOutputStream oos) {
+            try {
+                int count = dba.getMaxCountFromQuestionsPerCategory(catname);
+                Random rand = new Random();
+                int randomQuestionNumber = rand.nextInt((count - 0) + 0) + 0;
+                Question question = dba.getQuestionByCategory(catname, randomQuestionNumber);
+                oos.writeObject("question");
+                oos.flush();
+                oos.writeObject(question);
+                oos.flush();
+            } catch (SQLException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     class PlayGame extends Thread {
@@ -280,10 +299,6 @@ public class Server {
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-
-        private void getQuestionFromDB() {
-
         }
     }
 

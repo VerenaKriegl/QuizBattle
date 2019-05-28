@@ -57,14 +57,15 @@ public class DBAccess {
         statement.close();
     }
     
-    public Question getQuestionByCategory(String categoryname) throws SQLException{
-        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORY);
+    public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException{
+        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORYNAME_AND_QUESTIONID);
         Question questionObject = null;
-        pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
+        pStat.setString(1, categoryname);
+        pStat.setInt(2, questionid);//Werte für Fragezeichen einsetzen
         ResultSet rs = pStat.executeQuery();
         while (rs.next()) {
             String question = rs.getString("question");
-            int questionID = rs.getInt("gestionid");
+            int questionID = rs.getInt("questionid");
             String firstFalseAnswer = rs.getString("firstfalseanswer");
             String secondFalseAnswer = rs.getString("secondfalseanswer");
             String thirdFalseAnswer = rs.getString("thirdfalseanswer");
