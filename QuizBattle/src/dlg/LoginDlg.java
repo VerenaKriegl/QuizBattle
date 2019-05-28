@@ -88,8 +88,10 @@ public class LoginDlg extends JDialog {
             
             LoadingView loadingView = new LoadingView("Loading", client);
             loadingView.setVisible(true);
-            client = new Client(loadingView);
+            client = new Client();
             client.login(getLoginAccount());
+            
+           
         } else {
             JOptionPane.showMessageDialog(this, "Fill all the fields!",
                     "Unable to proceed", 1);

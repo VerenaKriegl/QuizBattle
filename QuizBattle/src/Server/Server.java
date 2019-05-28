@@ -265,8 +265,8 @@ public class Server {
             }
             currentPlayer = players.get(0);
 
-            for (int i = 0; i <= 1; i++) {
                 try {
+                    
                     currentPlayer.writeObject("choose category");
                     currentPlayer.flush();
                     listCategory = dba.getCategory();
@@ -274,51 +274,34 @@ public class Server {
                     currentPlayer.flush();
 
                     ois = mapInputClients.get(currentPlayer);
-                    WaitForCategory waitForCategory = new WaitForCategory(ois, listCategory);
-                    waitForCategory.start();
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-        }
-    }
-
-    class WaitForCategory extends Thread {
-
-        private ObjectInputStream ois;
-        private boolean waitForDecision = true;
-        private ArrayList<Category> categories;
-
-        public WaitForCategory(ObjectInputStream ois, ArrayList<Category> categories) {
-            this.ois = ois;
-            this.categories = categories;
-        }
-
-        @Override
-        public void run() {
-            while(waitForDecision){
-                try {
-                    String message = (String) ois.readObject();
-                    if(message.equals("categoryName")){
-                        String categoryName = (String) ois.readObject();
-                        for(Category cat : categories){
-                            if(cat.getCategoryname().equals(categoryName)){
-                                getQuestions(cat);
-                                waitForDecision = false;
-                                break;
+                    boolean waitForDecision = true;
+                    while (waitForDecision) {
+                        String message = (String) ois.readObject();
+                        if (message.equals("categoryName")) {
+                            String categoryName = (String) ois.readObject();
+                            for (Category cat : listCategory) {
+                                if (cat.getCategoryname().equals(categoryName)) {
+                                    getQuestionFromDB();
+                                    waitForDecision = false;
+                                    break;
+                                }
                             }
-                        }
+                       }
                     }
+                    
                 } catch (IOException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            
+        }
+        
+        private void getQuestionFromDB(){
+            
         }
     }
-
+    
     class WaitForPlayer extends Thread {
 
         private int gameCount;

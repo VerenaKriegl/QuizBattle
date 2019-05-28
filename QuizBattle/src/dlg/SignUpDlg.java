@@ -112,8 +112,9 @@ public class SignUpDlg extends JDialog {
                 setVisible(false);
                 LoadingView loadingView = new LoadingView("Loading", client);
                 loadingView.setVisible(true);
-                client = new Client(loadingView);
+                client = new Client();
                 client.signup(getNewAccount());
+                
             } catch (ParseException ex) {
                 Logger.getLogger(SignUpDlg.class.getName()).log(Level.SEVERE, null, ex);
             }

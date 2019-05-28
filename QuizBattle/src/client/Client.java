@@ -29,10 +29,8 @@ public class Client {
     private String errorType;
     private boolean loggedIn;
     private boolean opponentFound = false;
-    private LoadingView loadingView;
 
-    public Client(LoadingView loadingView) {
-        this.loadingView = loadingView;
+    public Client() {
         connect();
     }
 
@@ -164,7 +162,7 @@ public class Client {
                         opponentFound = true;
                     } else if (message.equals("choose category")) {
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
-                        loadingView.setVisible(false);
+                        // loadingView.setVisible(false);
                         ChooseCategory chooseCategory = new ChooseCategory("Category", categories);
                         chooseCategory.setVisible(true);
                         String choosedCategory = chooseCategory.clickedCategoryName();

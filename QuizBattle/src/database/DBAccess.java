@@ -58,20 +58,37 @@ public class DBAccess {
     }
     
     public Question getQuestionByCategory(String categoryname) throws SQLException{
-        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_ACCOUNT_BY_USERNAME);
-        Account account = null;
+        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORY);
+        Question questionObject = null;
         pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
         ResultSet rs = pStat.executeQuery();
         while (rs.next()) {
             String question = rs.getString("question");
-            java.sql.Date sqlDate = rs.getDate("dateOfBirth");
-            LocalDate date = sqlDate.toLocalDate();
-            int userid = rs.getInt("userid");
-            String email = rs.getString("mailAddress");
-            account = new Account(username, password, email, userid, date);
+            int questionID = rs.getInt("gestionid");
+            String firstFalseAnswer = rs.getString("firstfalseanswer");
+            String secondFalseAnswer = rs.getString("secondfalseanswer");
+            String thirdFalseAnswer = rs.getString("thirdfalseanswer");
+            ArrayList<String> falseAnswers = new ArrayList<>();
+            falseAnswers.add(firstFalseAnswer);
+            falseAnswers.add(secondFalseAnswer);
+            falseAnswers.add(thirdFalseAnswer);
+            String rightAnswer = rs.getString("rightanswer");
+            questionObject = new Question(question, rightAnswer, falseAnswers, questionID);
+            
         }
         DBStatementPool.releaseStatement(pStat);
-        return account;
+        return questionObject;
+    }
+    
+    public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException{
+        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_COUNT_BY_CATEGORY);
+        pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
+        ResultSet rs = pStat.executeQuery();
+        int questionCount = 0;
+        if (rs.next()) {
+            questionCount = rs.getInt(1);
+        }
+        return questionCount;
     }
 
     public ArrayList getCategory() {

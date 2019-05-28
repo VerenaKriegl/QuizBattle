@@ -1,12 +1,13 @@
 package beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Verena
  */
-public class Question {
+public class Question implements Serializable{
     /* Datenhaltungsklasse für alle Fragen mit den jeweiligen Antwortmöglichkeiten */
     private String question;
     private String rightAnswer; 
