@@ -5,6 +5,7 @@ import beans.Category;
 import configFiles.Config;
 import gui.BattleViewGUI;
 import gui.ChooseCategory;
+import gui.GUIBuilder;
 import gui.LoadingView;
 import gui.QuestionView;
 import java.io.IOException;
@@ -27,8 +28,8 @@ public class Client {
     private ObjectOutputStream oos;
     private int highestUserID;
     private String errorType;
-    private boolean loggedIn;
-    private boolean opponentFound = false;
+    private boolean loggedIn = false;
+    private GUIBuilder gui;
 
     public Client() {
         connect();
@@ -39,6 +40,7 @@ public class Client {
     }
 
     public boolean isLoggedIn() {
+        System.out.println("Getter: "+loggedIn);
         return loggedIn;
     }
 
@@ -81,6 +83,10 @@ public class Client {
         } catch (IOException ex) {
             log("Exception: unable to sign up");
         }
+    }
+    
+    public void setGUIBuilder(GUIBuilder gui){
+        this.gui = gui;
     }
     
     public void choosedCategoryName(String categoryName){
@@ -159,13 +165,11 @@ public class Client {
                         highestUserID = (int) ois.readObject();
                         System.out.println(highestUserID);
                     } else if (message.equals("opponent found")) {
-                        opponentFound = true;
                     } else if (message.equals("choose category")) {
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
-                        // loadingView.setVisible(false);
-                        ChooseCategory chooseCategory = new ChooseCategory("Category", categories);
-                        chooseCategory.setVisible(true);
-                        String choosedCategory = chooseCategory.clickedCategoryName();
+                        gui.closeLoadingView();
+                        ChooseCategory choosecategory = gui.openChooseCategoryGUI(categories);
+                        String choosedCategory = choosecategory.clickedCategoryName();
                         choosedCategoryName(choosedCategory);
                     } else {
                         log(message);

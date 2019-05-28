@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -196,9 +195,20 @@ public class Server {
                     if (type.equals("logout")) {
                         mapClients.remove(username);
                         sendMessage("loggedout");
+                        running = false;
                         break;
                     } else if (type.equals("startgame")) {
                         startGame();
+                    }else if(type.equals("categoryName")){
+                        ArrayList<Category> listCategory = dba.getCategory();
+                        String categoryName = (String) ois.readObject();
+                        for (Category cat : listCategory) {
+                            if (cat.getCategoryname().equals(categoryName)) {
+                              //  getQuestionFromDB();
+                                System.out.println("CategoryName: "+categoryName);
+                                break;
+                            }
+                        }
                     }
                 }
                 log("after while()");
@@ -255,53 +265,28 @@ public class Server {
 
         @Override
         public void run() {
-            for (ObjectOutputStream oos : players) {
-                try {
+            try {
+                for (ObjectOutputStream oos : players) {
                     oos.writeObject("opponent found");
                     oos.flush();
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                currentPlayer = players.get(0);
+
+                currentPlayer.writeObject("choose category");
+                currentPlayer.flush();
+                listCategory = dba.getCategory();
+                currentPlayer.writeObject(listCategory);
+                currentPlayer.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
-            currentPlayer = players.get(0);
-
-                try {
-                    
-                    currentPlayer.writeObject("choose category");
-                    currentPlayer.flush();
-                    listCategory = dba.getCategory();
-                    currentPlayer.writeObject(listCategory);
-                    currentPlayer.flush();
-
-                    ois = mapInputClients.get(currentPlayer);
-                    boolean waitForDecision = true;
-                    while (waitForDecision) {
-                        String message = (String) ois.readObject();
-                        if (message.equals("categoryName")) {
-                            String categoryName = (String) ois.readObject();
-                            for (Category cat : listCategory) {
-                                if (cat.getCategoryname().equals(categoryName)) {
-                                    getQuestionFromDB();
-                                    waitForDecision = false;
-                                    break;
-                                }
-                            }
-                       }
-                    }
-                    
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            
         }
-        
-        private void getQuestionFromDB(){
-            
+
+        private void getQuestionFromDB() {
+
         }
     }
-    
+
     class WaitForPlayer extends Thread {
 
         private int gameCount;

@@ -2,12 +2,15 @@ package dlg;
 
 import beans.Account;
 import client.Client;
+import gui.GUIBuilder;
 import gui.LoadingView;
 import gui.StartPage;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -84,14 +87,24 @@ public class LoginDlg extends JDialog {
         if (!tfUsername.getText().equals("") || !pfPassword.getText().equals("")) {
             ok = true;
             setVisible(false);
-            
-            
-            LoadingView loadingView = new LoadingView("Loading", client);
-            loadingView.setVisible(true);
+
             client = new Client();
             client.login(getLoginAccount());
-            
-           
+            int count = 0;
+            while (!client.isLoggedIn() && count < 50) {
+                //wait
+            }
+            if (client.isLoggedIn()) {
+                GUIBuilder guiBuilder = new GUIBuilder();
+                guiBuilder.openLoadingViewGUI(client);
+                client.setGUIBuilder(guiBuilder);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Password or username is wrong!",
+                    "Unable to proceed", 1);
+            }
+
         } else {
             JOptionPane.showMessageDialog(this, "Fill all the fields!",
                     "Unable to proceed", 1);

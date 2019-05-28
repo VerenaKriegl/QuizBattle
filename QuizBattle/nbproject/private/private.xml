@@ -3,22 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/beans/Account.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/beans/Quiz.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/gui/QuestionView.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/database/DB_ConnectionPool.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/beans/Question.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/client/Client.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/configFiles/Config.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/database/DB_StatementType.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/Server/Server.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/gui/StartPage.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/database/DB_StatementPool.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/gui/ChooseCategory.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/beans/Category.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/gui/LoadingView.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/gui/BattleViewGUI.java</file>
-            <file>file:/C:/Users/krieg/OneDrive/Dokumente/POS/4BHIF/GUI/src/database/DBAccess.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/database/DB_StatementType.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/beans/Question.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/GUIBuilder.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/Server/Server.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/client/Client.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/LoadingView.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/dlg/SignUpDlg.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/dlg/LoginDlg.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/database/DBAccess.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/ChooseCategory.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/configFiles/Config.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/StartPage.java</file>
         </group>
     </open-files>
 </project-private>
