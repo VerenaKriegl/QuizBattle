@@ -29,7 +29,6 @@ import javax.swing.SpinnerDateModel;
  */
 public class SignUpDlg extends JDialog {
 
-    private Client client;
     private Account newAccount;
     private JTextField tfUsername;
     private JTextField tfMail;
@@ -38,11 +37,13 @@ public class SignUpDlg extends JDialog {
     private JSpinner dateOfBirth;
     private boolean ok;
     private StartPage startPage;
+    private Client client;
 
-    public SignUpDlg(StartPage startPage, boolean modal) {
+    public SignUpDlg(StartPage startPage, boolean modal, Client client) {
         super(startPage, modal);
 
         this.startPage = startPage;
+        this.client = client;
         this.pack();
         this.setTitle("Sign Up");
         this.setSize(new Dimension(300, 350));
@@ -112,7 +113,6 @@ public class SignUpDlg extends JDialog {
                 setVisible(false);
                 LoadingView loadingView = new LoadingView("Loading", client);
                 loadingView.setVisible(true);
-                client = new Client();
                 client.signup(getNewAccount());
                 
             } catch (ParseException ex) {

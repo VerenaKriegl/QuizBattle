@@ -31,13 +31,17 @@ import javax.swing.JLabel;
  * @author kriegl
  */
 public class StartPage extends JFrame {
-
     private Client client;
+    private GUIBuilder gui;
 
-    public StartPage(String title) {
+    public StartPage(String title, Client client, GUIBuilder gui) {
         super(title);
+        this.client = client;
+        this.gui = gui;
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setSize(500, 500);
         initComponents();
-        //  client = new Client();
     }
 
     private void initComponents() {
@@ -54,19 +58,12 @@ public class StartPage extends JFrame {
         c.add(btSignUp);
     }
 
-    public static void main(String[] args) {
-        StartPage startPage = new StartPage("StartPage");
-        startPage.setVisible(true);
-        startPage.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        startPage.setLocationRelativeTo(null);
-        startPage.setSize(500, 500);
-    }
-
+   
     private void login() {
         System.out.println("login");
         //Open login
         this.setVisible(false);
-        LoginDlg dlg = new LoginDlg(this, true);
+        LoginDlg dlg = new LoginDlg(this, true, client, gui);
         dlg.setVisible(true);
         if (dlg.isOk()) {
             dlg.getLoginAccount();
@@ -77,7 +74,8 @@ public class StartPage extends JFrame {
         System.out.println("signup");
         //Open Signup
         this.setVisible(false);
-        SignUpDlg dlg = new SignUpDlg(this, true);
+        System.out.println(client);
+        SignUpDlg dlg = new SignUpDlg(this, true, client);
         dlg.setVisible(true);
         if (dlg.isOK()) {
         }

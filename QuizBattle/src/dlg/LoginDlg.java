@@ -26,16 +26,19 @@ import javax.swing.JTextField;
  */
 public class LoginDlg extends JDialog {
 
-    private Client client;
     private boolean ok;
     private Account loginAccount;
     private JPasswordField pfPassword;
     private JTextField tfUsername;
     private StartPage startPage;
+    private Client client;
+    private GUIBuilder guiBuilder;
 
-    public LoginDlg(StartPage startPage, boolean modal) {
+    public LoginDlg(StartPage startPage, boolean modal, Client client, GUIBuilder gui) {
         super(startPage, modal);
         this.startPage = startPage;
+        this.client = client;
+        this.guiBuilder = gui;
         this.setTitle("Log-in Dialog");
         this.setLocationRelativeTo(null);
         this.setPreferredSize(new Dimension(500, 500));
@@ -87,16 +90,13 @@ public class LoginDlg extends JDialog {
         if (!tfUsername.getText().equals("") || !pfPassword.getText().equals("")) {
             ok = true;
             setVisible(false);
-
-            client = new Client();
             client.login(getLoginAccount());
             int count = 0;
             while (!client.isLoggedIn() && count < 50) {
                 //wait
             }
             if (client.isLoggedIn()) {
-                GUIBuilder guiBuilder = new GUIBuilder();
-                guiBuilder.openLoadingViewGUI(client);
+                guiBuilder.openLoadingViewGUI();
                 client.setGUIBuilder(guiBuilder);
             }
             else

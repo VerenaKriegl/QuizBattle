@@ -212,6 +212,13 @@ public class Server {
                             }
                         }
                     }
+                    else if(type.equals("answer")){
+                        String userAnswer = (String) ois.readObject();
+                        if(userAnswer.equals(question.getRightAnswer())){
+                            oos.writeObject("rightAnswer");
+                            oos.flush();
+                        }
+                    }
                 }
                 log("after while()");
             } catch (IOException | ClassNotFoundException | SQLException ex) {
@@ -241,6 +248,8 @@ public class Server {
             }
             return false;
         }
+        
+        private Question question;
 
         private void startGame() {
             if (mapGames.isEmpty()) {
@@ -258,7 +267,7 @@ public class Server {
                 int count = dba.getMaxCountFromQuestionsPerCategory(catname);
                 Random rand = new Random();
                 int randomQuestionNumber = rand.nextInt((count - 0) + 0) + 0;
-                Question question = dba.getQuestionByCategory(catname, randomQuestionNumber);
+                question = dba.getQuestionByCategory(catname, randomQuestionNumber);
                 oos.writeObject("question");
                 oos.flush();
                 oos.writeObject(question);
