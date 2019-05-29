@@ -4,16 +4,13 @@ import beans.Account;
 import beans.Category;
 import beans.Question;
 import configFiles.Config;
-import gui.BattleViewGUI;
 import gui.ChooseCategory;
 import gui.GUIBuilder;
-import gui.LoadingView;
 import gui.QuestionView;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -29,7 +26,6 @@ public class Client {
     private ObjectOutputStream oos;
     private int highestUserID;
     private String errorType;
-    private boolean loggedIn = false;
     private GUIBuilder gui;
     private ChooseCategory choosecategory;
     
@@ -40,11 +36,7 @@ public class Client {
     public int getHighestId() {
         return highestUserID;
     }
-    
-    public boolean isLoggedIn() {
-        System.out.println("Getter: " + loggedIn);
-        return loggedIn;
-    }
+ 
     
     public String getErrorType() {
         return errorType;
@@ -73,6 +65,7 @@ public class Client {
     
     public void startGame() {
         try {
+            gui.openLoadingViewGUI();
             oos.writeObject("startgame");
             oos.flush();
             GameCommunication gameCommunication = new GameCommunication();
@@ -88,7 +81,6 @@ public class Client {
             oos.flush();
             oos.writeObject(account);
             oos.flush();
-            startGame();
         } catch (IOException ex) {
             log("Exception: unable to sign up");
         }
@@ -116,7 +108,6 @@ public class Client {
             oos.flush();
             oos.writeObject(account);
             oos.flush();
-            startGame();
         } catch (IOException ex) {
             log("Exception: unable to login");
         }
@@ -165,24 +156,23 @@ public class Client {
                 while (true) {
                     String message = (String) ois.readObject();
                     if (message.equals("failed")) {
-                        loggedIn = false;
+                        System.out.println("hier");
+                        gui.openStartPage(true);
                         log("Login or registration failed!");
                     } else if (message.equals("loggedin")) {
-                        loggedIn = true;
+                        gui.openStartGame();
                         log("You are logged in!");
-                    } else if (message.equals("highestID")) {
-                        highestUserID = (int) ois.readObject();
-                        System.out.println(highestUserID);
-                    } else if (message.equals("choose category")) {
+                    }else if(message.equals("wait")){
+                        gui.closeLoadingView();
+                        gui.openPlayerWait();
+                    }else if (message.equals("choose category")) {
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
                     } else if (message.equals("question")) {
                         Question question = (Question) ois.readObject();
                         gui.closeCategoryView(choosecategory);
-                         questionview = gui.openQuestionView(question);
-                    } else if (message.equals("rightAnswer")) {
-                        
+                        gui.openQuestionView(question);
                     } else {
                         log(message);
                     }

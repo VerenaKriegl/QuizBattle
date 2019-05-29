@@ -106,7 +106,7 @@ public class Server {
 
         private void errorMessage(String errorType) {
             try {
-                oos.writeObject("!signedup");
+                oos.writeObject("failed");
                 oos.flush();
                 oos.writeObject(errorType);
                 oos.flush();
@@ -118,9 +118,11 @@ public class Server {
         private boolean login(Account account) throws SQLException {
             System.out.println(account.getUsername());
             Account loginAccount = dba.getAccountByUsername(account.getUsername());
-            if (loginAccount.getPassword().equals(account.getPassword())) {
+            if (loginAccount == null) {
+                return false;
+            }else if(loginAccount.getPassword().equals(account.getPassword())){
                 return true;
-            } else {
+            }else {
                 return false;
             }
 
@@ -187,7 +189,7 @@ public class Server {
                             sendMessage("loggedin");
                             log(username + " logged in");
                         } else {
-                            sendMessage("Anmeldung fehlgeschlagen!");
+                            sendMessage("failed");
                         }
                     }
                 } while (!registrated && !loggedIn);
@@ -215,9 +217,10 @@ public class Server {
                     else if(type.equals("answer")){
                         String userAnswer = (String) ois.readObject();
                         if(userAnswer.equals(question.getRightAnswer())){
-                            oos.writeObject("rightAnswer");
-                            oos.flush();
-                        }
+                            //Punkte vergeben
+                        }else{
+                            
+                        }     
                     }
                 }
                 log("after while()");
@@ -280,10 +283,12 @@ public class Server {
         }
     }
 
+
     class PlayGame extends Thread {
 
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
         private ObjectOutputStream currentPlayer;
+        private ObjectOutputStream secondPlayer;
         private ObjectInputStream ois;
         private ArrayList<Category> listCategory = new ArrayList<Category>();
 
@@ -299,7 +304,10 @@ public class Server {
                     oos.flush();
                 }
                 currentPlayer = players.get(0);
+                secondPlayer = players.get(1);
 
+                secondPlayer.writeObject("wait");
+                secondPlayer.flush();
                 currentPlayer.writeObject("choose category");
                 currentPlayer.flush();
                 listCategory = dba.getCategory();

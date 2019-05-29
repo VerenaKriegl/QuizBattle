@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -60,14 +61,8 @@ public class StartPage extends JFrame {
 
    
     private void login() {
-        System.out.println("login");
-        //Open login
         this.setVisible(false);
-        LoginDlg dlg = new LoginDlg(this, true, client, gui);
-        dlg.setVisible(true);
-        if (dlg.isOk()) {
-            dlg.getLoginAccount();
-        }
+        gui.openLoginDlg();
     }
 
     private void signUp() {
@@ -79,5 +74,9 @@ public class StartPage extends JFrame {
         dlg.setVisible(true);
         if (dlg.isOK()) {
         }
+    }
+
+    public void setJOptionPane() {
+        JOptionPane.showMessageDialog(this, "Login or registration failed!", "Error", JOptionPane.ERROR_MESSAGE);
     }
 }

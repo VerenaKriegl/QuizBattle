@@ -3,6 +3,7 @@ package gui;
 import beans.Category;
 import beans.Question;
 import client.Client;
+import dlg.LoginDlg;
 import java.util.ArrayList;
 
 /**
@@ -11,6 +12,10 @@ import java.util.ArrayList;
  */
 public class GUIBuilder {
     private LoadingView loadingView = null;
+    private StartGame startGame;
+    private StartPage startPage;
+    private LoginDlg loginDlg;
+    private QuestionView questionView;
     private Client client;
     
     public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
@@ -21,15 +26,46 @@ public class GUIBuilder {
     public GUIBuilder()
     {
         client = new Client();
-        StartPage startPage = new StartPage("StartPage", client, this);
-        startPage.setVisible(true);
+        client.setGUIBuilder(this);
+        openStartPage(false);
+    }
+    
+    
+    public void openStartPage(boolean loginFailed)
+    {
+      if(!loginFailed)
+      {
+          startPage = new StartPage("StartPage", client, this);
+          startPage.setVisible(true);
+      }
+      else
+      {
+          startPage.setVisible(true);
+          startPage.setJOptionPane();
+      }
+    }
+    
+    public void openLoginDlg()
+    {
+        loginDlg = new LoginDlg(startPage, true, client, this);
+        loginDlg.setVisible(true);
+    }
+    
+    public void openPlayerWait()
+    {
+        PlayerWait playerWait = new PlayerWait();
+        playerWait.setVisible(true);
     }
     
     public void openLoadingViewGUI(){
         loadingView = new LoadingView("Loading", client);
         loadingView.setVisible(true);
     }
-    
+    public void openStartGame()
+    {
+        startGame = new StartGame(client);
+        startGame.setVisible(true);
+    }
     public void closeLoadingView(){
         if(loadingView.isVisible()){
             loadingView.setVisible(false);
@@ -40,10 +76,14 @@ public class GUIBuilder {
         chooseCategory.setVisible(false);
     }
     
-    public QuestionView openQuestionView(Question question){
-        QuestionView questionView = new QuestionView("Question", question, client);
+    public void closeQuestionView()
+    {
+        questionView.setVisible(false);
+    }
+    
+    public void openQuestionView(Question question){
+        questionView = new QuestionView("Question", question, client);
         questionView.setVisible(true);
-        return questionView;
     }
     
     public static void main(String[] args) {

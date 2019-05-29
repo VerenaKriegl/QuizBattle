@@ -109,12 +109,8 @@ public class SignUpDlg extends JDialog {
     private void onSignUp() {
         if (pfPass.getText().equals(pfConfirmPass.getText())) {
             try {
-                ok = true;
-                setVisible(false);
-                LoadingView loadingView = new LoadingView("Loading", client);
-                loadingView.setVisible(true);
                 client.signup(getNewAccount());
-                
+                this.setVisible(false);
             } catch (ParseException ex) {
                 Logger.getLogger(SignUpDlg.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -63,11 +63,11 @@ public class QuestionView extends JFrame {
         JButton btRightAnswer = new JButton(rightAnswer);
         btRightAnswer.addActionListener(e -> onRightAnswerClicked(rightAnswer, btRightAnswer));
         JButton btFirstFalseAnswer = new JButton(firstFalseAnswer);
-        btFirstFalseAnswer.addActionListener(e -> onFirstFalseAnswerClicked(wrongAnswers.get(0)));
+        btFirstFalseAnswer.addActionListener(e -> onFirstFalseAnswerClicked(wrongAnswers.get(0), btFirstFalseAnswer));
         JButton btSecondFalseAnswer = new JButton(secondFalseAnswer);
-        btSecondFalseAnswer.addActionListener(e -> onSecondFalseAnswerClicked(wrongAnswers.get(1)));
+        btSecondFalseAnswer.addActionListener(e -> onSecondFalseAnswerClicked(wrongAnswers.get(1), btSecondFalseAnswer));
         JButton btThirdFalseAnswer = new JButton(thirdFalseAnswer);
-        btThirdFalseAnswer.addActionListener(e -> onThirdFalseAnswerClicked(wrongAnswers.get(2)));
+        btThirdFalseAnswer.addActionListener(e -> onThirdFalseAnswerClicked(wrongAnswers.get(2), btThirdFalseAnswer));
 
         JPanel plAnswers = new JPanel(new GridLayout(2, 2));
         if (randomNumber == 4) {
@@ -114,31 +114,34 @@ public class QuestionView extends JFrame {
     private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
         try {
             System.out.println("Rigth Answer clicked");
-            client.setAnswer(rightAnswer);
             btRightAnswer.setBackground(Color.green);
+            client.setAnswer(rightAnswer);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void onFirstFalseAnswerClicked(String wrongAnswer) {
+    private void onFirstFalseAnswerClicked(String wrongAnswer, JButton wrongButton) {
         try {
+            wrongButton.setBackground(Color.red);          
             client.setAnswer(wrongAnswer);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void onSecondFalseAnswerClicked(String wrongAnswer) {
-        try {
-            client.setAnswer(wrongAnswer);
+    private void onSecondFalseAnswerClicked(String wrongAnswer,JButton wrongButton) {
+        try {          
+            wrongButton.setBackground(Color.red);
+            client.setAnswer(wrongAnswer);    
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void onThirdFalseAnswerClicked(String wrongAnswer) {
-        try {
+    private void onThirdFalseAnswerClicked(String wrongAnswer,JButton wrongButton) {
+         try {
+            wrongButton.setBackground(Color.red);          
             client.setAnswer(wrongAnswer);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);

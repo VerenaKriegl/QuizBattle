@@ -88,24 +88,9 @@ public class LoginDlg extends JDialog {
 
     private void onOk() {
         if (!tfUsername.getText().equals("") || !pfPassword.getText().equals("")) {
-            ok = true;
             setVisible(false);
             client.login(getLoginAccount());
-            int count = 0;
-            while (!client.isLoggedIn() && count < 50) {
-                //wait
-            }
-            if (client.isLoggedIn()) {
-                guiBuilder.openLoadingViewGUI();
-                client.setGUIBuilder(guiBuilder);
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this, "Password or username is wrong!",
-                    "Unable to proceed", 1);
-            }
-
-        } else {
+            } else {
             JOptionPane.showMessageDialog(this, "Fill all the fields!",
                     "Unable to proceed", 1);
         }
