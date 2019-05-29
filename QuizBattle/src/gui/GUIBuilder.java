@@ -16,6 +16,7 @@ public class GUIBuilder {
     private StartPage startPage;
     private LoginDlg loginDlg;
     private QuestionView questionView;
+    private PlayerWait playerWait;
     private Client client;
     
     public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
@@ -53,7 +54,7 @@ public class GUIBuilder {
     
     public void openPlayerWait()
     {
-        PlayerWait playerWait = new PlayerWait();
+        playerWait = new PlayerWait();
         playerWait.setVisible(true);
     }
     
@@ -88,5 +89,13 @@ public class GUIBuilder {
     
     public static void main(String[] args) {
         new GUIBuilder();
+    }
+
+    public void closePlayerWait() 
+    {
+        if(playerWait != null)
+        {
+            playerWait.setVisible(false);
+        }
     }
 }

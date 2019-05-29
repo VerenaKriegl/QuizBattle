@@ -47,8 +47,7 @@ public class Client {
     }
     
     public void setAnswer(String answer) throws IOException {
-        oos.writeObject("answer");
-        oos.flush();
+        gui.closeQuestionView();
         oos.writeObject(answer);
         oos.flush();
     }
@@ -92,8 +91,6 @@ public class Client {
     
     public void choosedCategoryName(String categoryName) {
         try {
-            oos.writeObject("categoryName");
-            oos.flush();
             oos.writeObject(categoryName);
             System.out.println("Client: " + categoryName);
             oos.flush();
@@ -166,6 +163,7 @@ public class Client {
                         gui.closeLoadingView();
                         gui.openPlayerWait();
                     }else if (message.equals("choose category")) {
+                        gui.closePlayerWait();
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);

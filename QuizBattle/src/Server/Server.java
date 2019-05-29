@@ -120,9 +120,9 @@ public class Server {
             Account loginAccount = dba.getAccountByUsername(account.getUsername());
             if (loginAccount == null) {
                 return false;
-            }else if(loginAccount.getPassword().equals(account.getPassword())){
+            } else if (loginAccount.getPassword().equals(account.getPassword())) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
 
@@ -194,33 +194,19 @@ public class Server {
                     }
                 } while (!registrated && !loggedIn);
 
-                while (running) {
+                boolean isAvailable = true;
+                while (isAvailable) {
                     type = (String) ois.readObject();
                     if (type.equals("logout")) {
                         mapClients.remove(username);
                         sendMessage("loggedout");
                         running = false;
+                        isAvailable = false;
                         break;
                     } else if (type.equals("startgame")) {
+                        System.out.println("hier");
                         startGame();
-                    } else if (type.equals("categoryName")) {
-                        ArrayList<Category> listCategory = dba.getCategory();
-                        String categoryName = (String) ois.readObject();
-                        for (Category cat : listCategory) {
-                            if (cat.getCategoryname().equals(categoryName)) {
-                                getQuestionFromDB(categoryName,oos);
-                                System.out.println("CategoryName: " + categoryName);
-                                break;
-                            }
-                        }
-                    }
-                    else if(type.equals("answer")){
-                        String userAnswer = (String) ois.readObject();
-                        if(userAnswer.equals(question.getRightAnswer())){
-                            //Punkte vergeben
-                        }else{
-                            
-                        }     
+                        isAvailable = false;
                     }
                 }
                 log("after while()");
@@ -239,6 +225,7 @@ public class Server {
         }
 
         private boolean joinGame() {
+            System.out.println("hier");
             for (ArrayList gamePlayer : mapGames.values()) {
                 if (gamePlayer.size() == 1) {
                     for (int gameNumber : mapGames.keySet()) {
@@ -251,8 +238,6 @@ public class Server {
             }
             return false;
         }
-        
-        private Question question;
 
         private void startGame() {
             if (mapGames.isEmpty()) {
@@ -265,57 +250,93 @@ public class Server {
             }
         }
 
-        private void getQuestionFromDB(String catname, ObjectOutputStream oos) {
-            try {
-                int count = dba.getMaxCountFromQuestionsPerCategory(catname);
-                Random rand = new Random();
-                int randomQuestionNumber = rand.nextInt((count - 0) + 0) + 0;
-                question = dba.getQuestionByCategory(catname, randomQuestionNumber);
-                oos.writeObject("question");
-                oos.flush();
-                oos.writeObject(question);
-                oos.flush();
-            } catch (SQLException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
-
 
     class PlayGame extends Thread {
 
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
         private ObjectOutputStream currentPlayer;
         private ObjectOutputStream secondPlayer;
-        private ObjectInputStream ois;
+        private Question question;
         private ArrayList<Category> listCategory = new ArrayList<Category>();
 
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
 
-        @Override
-        public void run() {
+        private void getQuestionFromDB(String catname, ObjectOutputStream oos) {
             try {
-                for (ObjectOutputStream oos : players) {
-                    oos.writeObject("opponent found");
-                    oos.flush();
-                }
-                currentPlayer = players.get(0);
-                secondPlayer = players.get(1);
-
-                secondPlayer.writeObject("wait");
-                secondPlayer.flush();
-                currentPlayer.writeObject("choose category");
+                int count = dba.getMaxCountFromQuestionsPerCategory(catname);
+                Random rand = new Random();
+                int randomQuestionNumber = rand.nextInt((count - 0) + 0) + 0;
+                question = dba.getQuestionByCategory(catname, randomQuestionNumber);
+                currentPlayer.writeObject("question");
                 currentPlayer.flush();
-                listCategory = dba.getCategory();
-                currentPlayer.writeObject(listCategory);
+                currentPlayer.writeObject(question);
                 currentPlayer.flush();
+            } catch (SQLException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        @Override
+        public void run() {
+            try {
+                int countPlayer = 0;
+                firstPlayer();
+                for (int i = 0; i <= 1; i++) {
+                    if (countPlayer > 0) {
+                        nextPlayer();
+                    }
+                    sendCategory();
+                    ObjectInputStream inputCurrentPlayer = mapInputClients.get(currentPlayer);
+                    ArrayList<Category> listCategory = dba.getCategory();
+                    String categoryName = (String) inputCurrentPlayer.readObject();
+                    for (Category cat : listCategory) {
+                        if (cat.getCategoryname().equals(categoryName)) {
+                            getQuestionFromDB(categoryName, currentPlayer);
+                            System.out.println("CategoryName: " + categoryName);
+                            break;
+                        }
+                    }
+
+                    String userAnswer = (String) inputCurrentPlayer.readObject();
+                    if (userAnswer.equals(question.getRightAnswer())) {
+                        //Punkte vergeben
+                    } else {
+
+                    }
+
+                    countPlayer++;
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        private void firstPlayer() {
+            currentPlayer = players.get(0);
+            secondPlayer = players.get(1);
+        }
+
+        private void nextPlayer() {
+            ObjectOutputStream help = currentPlayer;
+            currentPlayer = secondPlayer;
+            secondPlayer = help;
+        }
+
+        private void sendCategory() throws IOException {
+            secondPlayer.writeObject("wait");
+            secondPlayer.flush();
+            currentPlayer.writeObject("choose category");
+            currentPlayer.flush();
+            listCategory = dba.getCategory();
+            currentPlayer.writeObject(listCategory);
+            currentPlayer.flush();
         }
     }
 
