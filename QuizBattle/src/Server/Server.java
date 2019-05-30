@@ -29,7 +29,7 @@ public class Server {
     private DBAccess dba;
     private Map<Integer, ArrayList<ObjectOutputStream>> mapGames;
     private ArrayList<ObjectOutputStream> players;
-    private Map<String, ObjectOutputStream> mapClients;
+    private Map<ObjectOutputStream, String> mapClients;
     private Map<ObjectOutputStream, ObjectInputStream> mapInputClients;
     private ArrayList<Account> accountList = new ArrayList<>();
     private boolean running;
@@ -170,7 +170,7 @@ public class Server {
                         if (registrated) {
                             username = newAccount.getUsername();
                             dba.addAccount(newAccount);
-                            mapClients.put(username, oos);
+                            mapClients.put(oos, username);
                             mapInputClients.put(oos, ois);
                             sendMessage("loggedin");
                             log(username + " signed up");
@@ -184,7 +184,7 @@ public class Server {
                         if (loggedIn) {
                             username = recievedAccount.getUsername();
                             accountList.add(recievedAccount);
-                            mapClients.put(username, oos);
+                            mapClients.put(oos, username);
                             mapInputClients.put(oos, ois);
                             sendMessage("loggedin");
                             log(username + " logged in");
@@ -253,7 +253,8 @@ public class Server {
     }
 
     class PlayGame extends Thread {
-
+        private int score = 0;
+        private Map<ObjectOutputStream, Integer> mapScore = new HashMap<>();
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
         private ObjectOutputStream currentPlayer;
         private ObjectOutputStream secondPlayer;
@@ -283,10 +284,13 @@ public class Server {
 
         @Override
         public void run() {
+            
             try {
                 int countPlayer = 0;
                 firstPlayer();
-                for (int i = 0; i <= 1; i++) {
+                mapScore.put(currentPlayer, score);
+                mapScore.put(secondPlayer, score);
+                for (int i = 0; i <= 5; i++) {
                     if (countPlayer > 0) {
                         nextPlayer();
                     }
@@ -304,11 +308,10 @@ public class Server {
 
                     String userAnswer = (String) inputCurrentPlayer.readObject();
                     if (userAnswer.equals(question.getRightAnswer())) {
-                        //Punkte vergeben
-                    } else {
-
-                    }
-
+                        score = mapScore.get(currentPlayer);
+                        score += 1;
+                        mapScore.replace(currentPlayer, score);
+                    } 
                     countPlayer++;
                 }
             } catch (IOException ex) {
@@ -331,6 +334,10 @@ public class Server {
 
         private void sendCategory() throws IOException {
             secondPlayer.writeObject("wait");
+            secondPlayer.flush();
+            secondPlayer.writeObject(mapScore.get(secondPlayer));
+            secondPlayer.flush();
+            secondPlayer.writeObject(mapScore.get(currentPlayer));
             secondPlayer.flush();
             currentPlayer.writeObject("choose category");
             currentPlayer.flush();

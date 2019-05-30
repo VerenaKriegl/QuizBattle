@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 public class QuestionView extends JFrame {
 
     private Question question;
+    private Thread threadCountdownTimer;
     private Client client;
 
     public QuestionView(String title, Question question, Client client) {
@@ -63,11 +64,11 @@ public class QuestionView extends JFrame {
         JButton btRightAnswer = new JButton(rightAnswer);
         btRightAnswer.addActionListener(e -> onRightAnswerClicked(rightAnswer, btRightAnswer));
         JButton btFirstFalseAnswer = new JButton(firstFalseAnswer);
-        btFirstFalseAnswer.addActionListener(e -> onFirstFalseAnswerClicked(wrongAnswers.get(0), btFirstFalseAnswer));
+        btFirstFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(0), btFirstFalseAnswer));
         JButton btSecondFalseAnswer = new JButton(secondFalseAnswer);
-        btSecondFalseAnswer.addActionListener(e -> onSecondFalseAnswerClicked(wrongAnswers.get(1), btSecondFalseAnswer));
+        btSecondFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(1), btSecondFalseAnswer));
         JButton btThirdFalseAnswer = new JButton(thirdFalseAnswer);
-        btThirdFalseAnswer.addActionListener(e -> onThirdFalseAnswerClicked(wrongAnswers.get(2), btThirdFalseAnswer));
+        btThirdFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(2), btThirdFalseAnswer));
 
         JPanel plAnswers = new JPanel(new GridLayout(2, 2));
         if (randomNumber == 4) {
@@ -99,7 +100,7 @@ public class QuestionView extends JFrame {
         imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
         JLabel lbImageHolder = new JLabel(imageIcon);
         c.add(lbImageHolder, BorderLayout.SOUTH);
-        Thread threadCountdownTimer = new Thread(new Timer());
+        threadCountdownTimer = new Thread(new Timer(this));
         threadCountdownTimer.start();
     }
 
@@ -113,6 +114,7 @@ public class QuestionView extends JFrame {
 
     private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
         try {
+            threadCountdownTimer.interrupt();
             System.out.println("Rigth Answer clicked");
             btRightAnswer.setBackground(Color.green);
             client.setAnswer(rightAnswer);
@@ -121,45 +123,39 @@ public class QuestionView extends JFrame {
         }
     }
 
-    private void onFirstFalseAnswerClicked(String wrongAnswer, JButton wrongButton) {
+    private void onWrongAnswer(String wrongAnswer, JButton button)
+    {
         try {
-            wrongButton.setBackground(Color.red);          
             client.setAnswer(wrongAnswer);
-        } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void onSecondFalseAnswerClicked(String wrongAnswer,JButton wrongButton) {
-        try {          
-            wrongButton.setBackground(Color.red);
-            client.setAnswer(wrongAnswer);    
-        } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void onThirdFalseAnswerClicked(String wrongAnswer,JButton wrongButton) {
-         try {
-            wrongButton.setBackground(Color.red);          
-            client.setAnswer(wrongAnswer);
+            threadCountdownTimer.interrupt();
+            this.setVisible(false);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     class Timer implements Runnable {
-
+        private QuestionView questionView;
+        public Timer(QuestionView questionView)
+        {
+            this.questionView = questionView;
+        }
         @Override
         public void run() {
-            for (int i = 0; i < 15; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                for (int i = 0; i < 15; i++) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                client.setAnswer("wrong");
+                JOptionPane.showMessageDialog(questionView, "Time expired","Time expired", JOptionPane.ERROR_MESSAGE);
+     
+            } catch (IOException ex) {
+                Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
             }
-            JOptionPane.showMessageDialog(null, "Time passed!", "Deine Zeit ist abgelaufen!", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

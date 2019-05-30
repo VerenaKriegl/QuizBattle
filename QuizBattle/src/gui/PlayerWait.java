@@ -5,25 +5,34 @@
  */
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
  * @author tobia
  */
 public class PlayerWait extends JFrame{
-    public PlayerWait()
+    private JPanel panelScore;
+    private JPanel panelImage;
+    public PlayerWait(int scorePlayerOne,int scorePlayerTwo)
     {
         this.setSize(new Dimension(500, 500));
         JLabel background=new JLabel(new ImageIcon("src/images/backgroundImage.png"));
-        this.setLayout(new GridLayout(1, 1));
-        this.add(background);
+        this.setLayout(new BorderLayout());
+        panelScore = new JPanel();
+        panelScore.setLayout(new GridLayout(2, 1));
+        panelScore.add(new JLabel("Your score: "+scorePlayerOne));
+        panelScore.add(new JLabel("Score of your enemy: "+scorePlayerTwo));
+        panelImage = new JPanel();
+        panelImage.add(background);
+        this.add(panelScore, BorderLayout.NORTH);
+        this.add(panelImage, BorderLayout.CENTER);
     }
-    public static void main(String[] args) {
-        new PlayerWait().setVisible(true);
-    }
+    
 }

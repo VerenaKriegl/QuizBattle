@@ -160,8 +160,10 @@ public class Client {
                         gui.openStartGame();
                         log("You are logged in!");
                     }else if(message.equals("wait")){
+                        int scorePlayerOne = (int)ois.readObject();
+                        int scorePlayerTwo = (int)ois.readObject();
                         gui.closeLoadingView();
-                        gui.openPlayerWait();
+                        gui.openPlayerWait(scorePlayerOne, scorePlayerTwo);
                     }else if (message.equals("choose category")) {
                         gui.closePlayerWait();
                         ArrayList<Category> categories = (ArrayList) ois.readObject();

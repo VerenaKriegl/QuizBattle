@@ -52,9 +52,9 @@ public class GUIBuilder {
         loginDlg.setVisible(true);
     }
     
-    public void openPlayerWait()
+    public void openPlayerWait(int scorePlayerOne, int scorePlayerTwo)
     {
-        playerWait = new PlayerWait();
+        playerWait = new PlayerWait(scorePlayerOne, scorePlayerTwo);
         playerWait.setVisible(true);
     }
     
