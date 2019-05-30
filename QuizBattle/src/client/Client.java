@@ -32,6 +32,14 @@ public class Client {
     public Client() {
         connect();
     }
+    
+    public int getScorePlayerOne(){
+        return scorePlayerOne;
+    }
+    
+    public int getScorePlayerTwo(){
+        return scorePlayerTwo;
+    }
 
     public int getHighestId() {
         return highestUserID;
@@ -154,7 +162,8 @@ public class Client {
     private QuestionView questionview;
     private int count = 0;
     private String username, usernameFromOpponent;
-    private int scorePlayerOne, scorePlayerTwo;
+    private int scorePlayerOne = 0;
+    private int scorePlayerTwo = 0;
     class ServerMessages extends Thread {
 
         /* Thread zur Kommunikation mit dem Server */
@@ -182,6 +191,8 @@ public class Client {
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
                     }else if(message.equals("battleview")){
+                        scorePlayerOne = (int)ois.readObject();
+                        scorePlayerTwo = (int)ois.readObject();
                         if(gui.isBattleViewOpen())
                         {
                             gui.closeBattleView();

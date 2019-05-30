@@ -58,8 +58,8 @@ public class BattleView extends JFrame {
         JLabel lbPlayerOne = new JLabel(player1);
         JLabel lbPlayerTwo = new JLabel(player2);
 
-        JLabel lbScorePlayerOne = new JLabel(""+scorePlayerOne);
-        JLabel lbScorePlayerTwo = new JLabel(""+scorePlayerTwo);
+        JLabel lbScorePlayerOne = new JLabel(""+client.getScorePlayerOne());
+        JLabel lbScorePlayerTwo = new JLabel(""+client.getScorePlayerTwo());
 
         JLabel lbTextHolder = new JLabel("-");
 

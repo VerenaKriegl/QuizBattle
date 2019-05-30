@@ -372,7 +372,12 @@ public class Server {
                 currentRoundWaiter = currentPlayer;
                 inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
                 playerWait(currentRoundWaiter);
+
                 currentRoundPlayer.writeObject("battleview");
+                currentRoundPlayer.flush();
+                currentRoundPlayer.writeObject(mapScore.get(currentRoundPlayer));
+                currentRoundPlayer.flush();
+                currentRoundPlayer.writeObject(mapScore.get(currentRoundWaiter));
                 currentRoundPlayer.flush();
                 ready = (String) inputCurrentPlayer.readObject();
                 sendQuestion(question);
