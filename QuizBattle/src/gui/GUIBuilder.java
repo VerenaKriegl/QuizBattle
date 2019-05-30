@@ -18,6 +18,7 @@ public class GUIBuilder {
     private QuestionView questionView;
     private PlayerWait playerWait;
     private Client client;
+    private BattleView battleView;
     
     public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
         ChooseCategory chooseCategory = new ChooseCategory("Category", categories, client);
@@ -96,6 +97,17 @@ public class GUIBuilder {
         if(playerWait != null)
         {
             playerWait.setVisible(false);
+        }
+    }
+
+    public void openBattleView(String username, String usernameFromOpponent, int scorePlayerOne, int scorePlayerTwo) {
+        battleView = new BattleView(username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
+        battleView.setVisible(true);
+    }
+
+    public void closeBattleView() {
+        if(battleView != null){
+            battleView.setVisible(false);
         }
     }
 }

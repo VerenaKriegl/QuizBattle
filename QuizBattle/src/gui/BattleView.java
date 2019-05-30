@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.PopupMenu;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,10 +22,18 @@ import javax.swing.JPanel;
  */
 public class BattleView extends JFrame {
 
-    public BattleView() {
+    private String player1;
+    private String player2;
+    private int scorePlayerOne, scorePlayerTwo;
+   
+    public BattleView(String username, String usernameFromOpponent, int scorePlayerOne,int scorePlayerTwo) {
         setSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.player1 = username;
+        this.player2 = usernameFromOpponent;
+        this.scorePlayerOne = scorePlayerOne;
+        this.scorePlayerTwo = scorePlayerTwo;
 
         initComponents();
     }
@@ -39,12 +50,12 @@ public class BattleView extends JFrame {
     private JPanel getPlayers() {
         JPanel plScore = new JPanel();
         plScore.setLayout(new GridLayout(1, 5));
+        
+        JLabel lbPlayerOne = new JLabel(player1);
+        JLabel lbPlayerTwo = new JLabel(player2);
 
-        JLabel lbPlayerOne = new JLabel("Player1");
-        JLabel lbPlayerTwo = new JLabel("Player2");
-
-        JLabel lbScorePlayerOne = new JLabel("3");
-        JLabel lbScorePlayerTwo = new JLabel("5");
+        JLabel lbScorePlayerOne = new JLabel(""+scorePlayerOne);
+        JLabel lbScorePlayerTwo = new JLabel(""+scorePlayerTwo);
 
         JLabel lbTextHolder = new JLabel("-");
 
@@ -62,9 +73,7 @@ public class BattleView extends JFrame {
         return lbHeadline;
     }
 
-    public static void main(String[] args) {
-        new BattleView().setVisible(true);
-    }
+   
 
     private JButton getPlayButton() {
         JButton btPlay = new JButton("Play");

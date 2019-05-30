@@ -100,8 +100,8 @@ public class QuestionView extends JFrame {
         imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
         JLabel lbImageHolder = new JLabel(imageIcon);
         c.add(lbImageHolder, BorderLayout.SOUTH);
-        threadCountdownTimer = new Thread(new Timer(this));
-        threadCountdownTimer.start();
+//        threadCountdownTimer = new Thread(new Timer(this));
+//        threadCountdownTimer.start();
     }
 
     public static void main(String[] args) {
@@ -114,7 +114,7 @@ public class QuestionView extends JFrame {
 
     private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
         try {
-            threadCountdownTimer.interrupt();
+//            threadCountdownTimer.stop();
             System.out.println("Rigth Answer clicked");
             btRightAnswer.setBackground(Color.green);
             client.setAnswer(rightAnswer);
@@ -127,35 +127,35 @@ public class QuestionView extends JFrame {
     {
         try {
             client.setAnswer(wrongAnswer);
-            threadCountdownTimer.interrupt();
+//            threadCountdownTimer.stop();
             this.setVisible(false);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    class Timer implements Runnable {
-        private QuestionView questionView;
-        public Timer(QuestionView questionView)
-        {
-            this.questionView = questionView;
-        }
-        @Override
-        public void run() {
-            try {
-                for (int i = 0; i < 15; i++) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                client.setAnswer("wrong");
-                JOptionPane.showMessageDialog(questionView, "Time expired","Time expired", JOptionPane.ERROR_MESSAGE);
-     
-            } catch (IOException ex) {
-                Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
+//    class Timer implements Runnable {
+//        private QuestionView questionView;
+//        public Timer(QuestionView questionView)
+//        {
+//            this.questionView = questionView;
+//        }
+//        @Override
+//        public void run() {
+//            try {
+//                for (int i = 0; i < 15; i++) {
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                client.setAnswer("wrong");
+//                JOptionPane.showMessageDialog(questionView, "Time expired","Time expired", JOptionPane.ERROR_MESSAGE);
+//     
+//            } catch (IOException ex) {
+//                Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
 }
