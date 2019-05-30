@@ -104,11 +104,9 @@ public class QuestionView extends JFrame {
         imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
         JLabel lbImageHolder = new JLabel(imageIcon);
         c.add(lbImageHolder, BorderLayout.SOUTH);
-//        threadCountdownTimer = new Thread(new Timer(this));
-//        threadCountdownTimer.start();
-
+        sw = new StopWatch(this);
     }
-
+    private StopWatch sw;
     public static void main(String[] args) {
         QuestionView questionView = new QuestionView("Question", null, null);
         questionView.setVisible(true);
@@ -120,7 +118,7 @@ public class QuestionView extends JFrame {
     private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
 
         try {
-            //            threadCountdownTimer.stop();
+            buttonClicked = true;
             System.out.println("Rigth Answer clicked");
             client.setAnswer(rightAnswer);
         } catch (IOException ex) {
@@ -131,11 +129,50 @@ public class QuestionView extends JFrame {
 
     private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
+            buttonClicked = true;
             System.out.println("false answer clicked");
             client.setAnswer(wrongAnswer);
             this.setVisible(false);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public boolean isButtonClicked()
+    {
+        return buttonClicked;
+    }
+    private boolean buttonClicked=false;
+    private int count = 15;
+
+    class StopWatch {
+        private QuestionView questionView;
+        
+        public StopWatch(QuestionView questionView) {
+            this.questionView = questionView;
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println(count);
+                    if (count > 0) {
+                        count--;
+                    }
+                    if(!buttonClicked)
+                    {
+                        this.cancel();
+                    }
+                    
+                    if (count == 0) {
+                        try {
+                            JOptionPane.showMessageDialog(questionView, "time is up", "Error", JOptionPane.INFORMATION_MESSAGE);
+                            client.setAnswer("wrong");
+                        } catch (IOException ex) {
+                            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            };
+            timer.schedule(task, 0, 1000);
         }
     }
 }
