@@ -27,12 +27,26 @@ import java.util.logging.Logger;
 public class Server {
 
     public ServerSocket serverSocket;
+    
+    //verantwortlich für den Datenbankzugriff
     private DBAccess dba;
+    
+    //In dieser Map sind alle Games über eine SpielID identifizierbar
     private Map<Integer, ArrayList<ObjectOutputStream>> mapGames;
+    
+    //In players sind zwei ObjectOutputStreams
     private ArrayList<ObjectOutputStream> players;
+    
+    //Alle Clients werden in dieser Map gespeichert
     private Map<ObjectOutputStream, String> mapClients;
+    
+    //Inputstream wird über den Outputstream gefunden
     private Map<ObjectOutputStream, ObjectInputStream> mapInputClients;
+    
+    //Hier werden alle Accounts gespeichert, für login und registrierung erforderlich
     private ArrayList<Account> accountList = new ArrayList<>();
+    
+    //prüft, ob der Client noch immer verbunden ist
     private boolean running;
 
     public static void main(String[] args) {
@@ -50,7 +64,7 @@ public class Server {
     private void log(String message) {
         System.out.println("Server Log: " + message);
     }
-
+    //erstellen des ServerSocket und starten vom AcceptClient Thread
     private void startServer() {
         try {
             running = true;
@@ -64,13 +78,14 @@ public class Server {
             log("Exception: unable to start server" + ex);
         }
     }
-
+    
+    //Herstellen einer Socketverbindung mit einem client
     class AcceptClient extends Thread {
 
-        private ServerSocket ss;
+        private ServerSocket serverSocket;
 
-        public AcceptClient(ServerSocket ss) {
-            this.ss = ss;
+        public AcceptClient(ServerSocket serverSocket) {
+            this.serverSocket = serverSocket;
         }
 
         @Override
@@ -78,7 +93,7 @@ public class Server {
             try {
                 log("is running");
                 while (running) {
-                    Socket socket = ss.accept();
+                    Socket socket = serverSocket.accept();
                     log("client connected");
 
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -92,7 +107,7 @@ public class Server {
             }
         }
     }
-
+    
     class ClientCommunicatoin extends Thread {
 
         private ObjectOutputStream oos;
@@ -104,7 +119,7 @@ public class Server {
             this.ois = ois;
             this.socket = socket;
         }
-
+        //bei einem Exceptions an den Client
         private void errorMessage(String errorType) {
             try {
                 oos.writeObject("failed");
@@ -115,7 +130,7 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        //überprüft, ob sich der Benutzer einloggen kann
         private boolean login(Account account) throws SQLException {
             System.out.println(account.getUsername());
             Account loginAccount = dba.getAccountByUsername(account.getUsername());
@@ -128,7 +143,7 @@ public class Server {
             }
 
         }
-
+        //übermittel generelle Nachrichten an den Client
         private void sendMessage(String message) {
             try {
                 oos.writeObject(message);
@@ -137,7 +152,7 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        //überprüft, ob sich der Benutzer registrieren kann
         private boolean registrate(Account account) {
             for (Account existAccount : accountList) {
                 if (existAccount.getUsername().equals(account.getUsername()) || existAccount.getMailAddress().equals(account.getMailAddress())) {
@@ -151,7 +166,9 @@ public class Server {
         @Override
         public void run() {
             try {
+                //erforderlich für die UserId eines Accounts in der Datenbank
                 int highestID = dba.getHighestUserId();
+                //Abfrage aus der Datenbank von allen Account Datensätzen
                 accountList = dba.getAllAccounts();
 
                 String username = "";
@@ -160,6 +177,7 @@ public class Server {
                 boolean registrated = false;
                 boolean loggedIn = false;
 
+                //login und registrieren
                 do {
                     type = (String) ois.readObject();
                     System.out.println(type.toString());
@@ -198,6 +216,7 @@ public class Server {
                 } while (!registrated && !loggedIn);
 
                 boolean isAvailable = true;
+                //warten auf Nachrichten vom Client
                 while (isAvailable) {
                     type = (String) ois.readObject();
                     if (type.equals("logout")) {
@@ -217,7 +236,7 @@ public class Server {
                 log("Exception: unable to communicate with client: " + ex);
             }
         }
-
+        //ein neues Spiel wird in der Map erstellt und der WaitForPlayer Thread aufgerufen
         private void createNewGame() {
             players = new ArrayList<>();
             players.add(oos);
@@ -226,7 +245,7 @@ public class Server {
             waitForPlayer.start();
             System.out.println("Spiel erzeugt!");
         }
-
+        //User tritt einem Spiel bei
         private boolean joinGame() {
             System.out.println("hier");
             for (ArrayList gamePlayer : mapGames.values()) {
@@ -241,7 +260,7 @@ public class Server {
             }
             return false;
         }
-
+        //Connected zwei Spieler miteinander
         private void startGame() {
             if (mapGames.isEmpty()) {
                 createNewGame();
@@ -254,23 +273,59 @@ public class Server {
         }
 
     }
+    //Thread wartet darauf, bis ein Spiel gestartet werden kann
+    class WaitForPlayer extends Thread {
 
+        private int gameCount;
+        private boolean isOnePlayer = true;
+
+        public WaitForPlayer(int gameCount) {
+            this.gameCount = gameCount;
+        }
+
+        @Override
+        public void run() {
+            while (isOnePlayer) {
+                try {
+                    if (mapGames.get(gameCount).size() == 2) {
+                        log("Opponent found");
+
+                        PlayGame playGame = new PlayGame(mapGames.get(gameCount));
+                        playGame.start();
+
+                        isOnePlayer = false;
+                    }
+                } catch (Exception ex) {
+                    log("Exception: unable to find opponent");
+                }
+            }
+        }
+    }
+    //Regelt ein Spiel
     class PlayGame extends Thread {
-
+        
         private int score = 0;
+        //ordnet jedem User einen Score zu
         private Map<ObjectOutputStream, Integer> mapScore = new HashMap<>();
+        //ArrayList der teilnehmenden Spieler
         private ArrayList<ObjectOutputStream> players = new ArrayList<>();
+        //Spieler der eine Runde gestartet hat
         private ObjectOutputStream currentPlayer;
+        //Spieler der die nächste Runde beginnt
         private ObjectOutputStream secondPlayer;
+        //Spieler der in der aktuellen Runde wartet
         private ObjectOutputStream currentRoundWaiter;
+        //Spieler der in der aktuellen Runde am Zug ist
         private ObjectOutputStream currentRoundPlayer;
+        //Question Object
         private Question question;
+        //Liste mit allen Categorien
         private ArrayList<Category> listCategory = new ArrayList<>();
 
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
         }
-
+        //vom der Datenbank wird eine Question genommen und an den Client gesendet
         private Question getQuestionFromDB(String catname, ObjectOutputStream oos) {
             try {
                 int count = dba.getMaxCountFromQuestionsPerCategory(catname);
@@ -291,14 +346,14 @@ public class Server {
                 firstPlayer();
                 mapScore.put(currentPlayer, score);
                 mapScore.put(secondPlayer, score);
-                play(5);
+                playRound(5);
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        //überprüfen der Antwort vom User
         private void checkUserAnswer(ObjectInputStream ois) throws IOException, ClassNotFoundException {
             String userAnswer = (String) ois.readObject();
             if (userAnswer.equals(question.getRightAnswer())) {
@@ -307,8 +362,8 @@ public class Server {
                 mapScore.replace(currentRoundPlayer, score);
             }
         }
-
-        private void calculateWinner() {
+        //Gewinner wird überprüft
+        private void calculateWinner() {    
             int scoreFromFirstPlayer = mapScore.get(currentRoundPlayer);
             int scoreFromSecondPlayer = mapScore.get(currentRoundWaiter);
 
@@ -341,8 +396,8 @@ public class Server {
                 }
             }
         }
-
-        private void play(int roundAmount) throws IOException, ClassNotFoundException {
+        //eigentlich Spiel
+        private void playRound(int roundAmount) throws IOException, ClassNotFoundException {
             int countPlayer = 0;
             for (int i = 0; i < roundAmount; i++) {
                 if (countPlayer > 0) {
@@ -379,7 +434,7 @@ public class Server {
             }
             calculateWinner();
         }
-
+        //Spieler, der am Zug ist, wird dieses Fenster angezeigt
         private void openBattleView() throws IOException {
             currentRoundPlayer.writeObject("battleview");
             currentRoundPlayer.flush();
@@ -388,51 +443,41 @@ public class Server {
             currentRoundPlayer.writeObject(mapScore.get(currentRoundWaiter));
             currentRoundPlayer.flush();
         }
-
+        //Frage wird an den User gesendet
         private void sendQuestion(Question question) throws IOException {
             currentRoundPlayer.writeObject("question");
             currentRoundPlayer.flush();
             currentRoundPlayer.writeObject(question);
             currentRoundPlayer.flush();
         }
-
-        private void sendUsernameFromOpponentFirst() {
+        //Usernamen werden an die Clients versendet
+        private void sendUsername(ObjectOutputStream outputStream) {
             try {
                 currentPlayer.writeObject("usernameOpponent");
                 currentPlayer.flush();
-                String usernameOpponent = mapClients.get(secondPlayer);
+                String usernameOpponent = mapClients.get(outputStream);
                 currentPlayer.writeObject(usernameOpponent);
                 currentPlayer.flush();
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        private void sendUsernameFromOpponentSecond() {
-            try {
-                secondPlayer.writeObject("usernameOpponent");
-                secondPlayer.flush();
-                String usernameOpponent = mapClients.get(currentPlayer);
-                secondPlayer.writeObject(usernameOpponent);
-                secondPlayer.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
+        
+        
+        //definiert wer das Spiel beginnt
         private void firstPlayer() {
 
             currentPlayer = players.get(0);
             secondPlayer = players.get(1);
 
-            sendUsernameFromOpponentFirst();
-            sendUsernameFromOpponentSecond();
+            sendUsername(currentPlayer);
+            sendUsername(secondPlayer);
 
             currentRoundPlayer = currentPlayer;
             currentRoundWaiter = secondPlayer;
 
         }
-
+        //wechseln des Spielers der die Runde beginnt
         private void nextPlayer() {
             ObjectOutputStream help = currentPlayer;
             currentPlayer = secondPlayer;
@@ -440,7 +485,7 @@ public class Server {
             currentRoundPlayer = currentPlayer;
             currentRoundWaiter = secondPlayer;
         }
-
+        //Wartebildschirm während ein anderer Spieler am Zug ist
         private void playerWait(ObjectOutputStream oos) throws IOException {
             oos.writeObject("wait");
             oos.flush();
@@ -449,7 +494,7 @@ public class Server {
             oos.writeObject(mapScore.get(currentRoundPlayer));
             oos.flush();
         }
-
+        //Categorien werden an den Client versendet
         private void sendCategory() throws IOException {
 
             currentRoundPlayer.writeObject("choose category");
@@ -457,34 +502,6 @@ public class Server {
             listCategory = dba.getCategory();
             currentRoundPlayer.writeObject(listCategory);
             currentRoundPlayer.flush();
-        }
-    }
-
-    class WaitForPlayer extends Thread {
-
-        private int gameCount;
-        private boolean isOnePlayer = true;
-
-        public WaitForPlayer(int gameCount) {
-            this.gameCount = gameCount;
-        }
-
-        @Override
-        public void run() {
-            while (isOnePlayer) {
-                try {
-                    if (mapGames.get(gameCount).size() == 2) {
-                        log("Opponent found");
-
-                        PlayGame playGame = new PlayGame(mapGames.get(gameCount));
-                        playGame.start();
-
-                        isOnePlayer = false;
-                    }
-                } catch (Exception ex) {
-                    log("Exception: unable to find opponent");
-                }
-            }
         }
     }
 }
