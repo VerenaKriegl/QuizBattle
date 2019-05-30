@@ -374,6 +374,10 @@ public class Server {
                 playerWait(currentRoundWaiter);
                 currentRoundPlayer.writeObject("battleview");
                 currentRoundPlayer.flush();
+                currentRoundPlayer.writeObject(mapScore.get(currentRoundPlayer));
+                currentRoundPlayer.flush();
+                currentRoundPlayer.writeObject(mapScore.get(currentRoundWaiter));
+                currentRoundPlayer.flush();
                 ready = (String) inputCurrentPlayer.readObject();
                 sendQuestion(question);
                 checkUserAnswer(inputCurrentPlayer);

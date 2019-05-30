@@ -182,12 +182,15 @@ public class Client {
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
                     }else if(message.equals("battleview")){
+                        int scorePlayerOne = (int)ois.readObject();
+                        int scorePlayerTwo = (int)ois.readObject();
                         if(gui.isBattleViewOpen())
                         {
                             gui.closeBattleView();
                         }
+                        
                         gui.closeLoadingView();
-                        gui.openBattleView(username, usernameFromOpponent, highestUserID, highestUserID);
+                        gui.openBattleView(username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
                         gui.setButton();
                     }
                     else if (message.equals("question")) {
