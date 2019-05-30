@@ -154,7 +154,7 @@ public class Client {
     private QuestionView questionview;
     private int count = 0;
     private String username, usernameFromOpponent;
-
+    private int scorePlayerOne, scorePlayerTwo;
     class ServerMessages extends Thread {
 
         /* Thread zur Kommunikation mit dem Server */
@@ -172,8 +172,8 @@ public class Client {
                         gui.openStartGame();
                         log("You are logged in!");
                     } else if (message.equals("wait")) {
-                        int scorePlayerOne = (int) ois.readObject();
-                        int scorePlayerTwo = (int) ois.readObject();
+                        scorePlayerOne = (int) ois.readObject();
+                        scorePlayerTwo = (int) ois.readObject();
                         gui.closeLoadingView();
                         gui.openBattleView(username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
                     } else if (message.equals("choose category")) {
@@ -182,8 +182,6 @@ public class Client {
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
                     }else if(message.equals("battleview")){
-                        int scorePlayerOne = (int)ois.readObject();
-                        int scorePlayerTwo = (int)ois.readObject();
                         if(gui.isBattleViewOpen())
                         {
                             gui.closeBattleView();
