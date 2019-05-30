@@ -9,10 +9,14 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -102,6 +106,7 @@ public class QuestionView extends JFrame {
         c.add(lbImageHolder, BorderLayout.SOUTH);
 //        threadCountdownTimer = new Thread(new Timer(this));
 //        threadCountdownTimer.start();
+
     }
 
     public static void main(String[] args) {
@@ -113,49 +118,24 @@ public class QuestionView extends JFrame {
     }
 
     private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
+
         try {
-//            threadCountdownTimer.stop();
+            //            threadCountdownTimer.stop();
             System.out.println("Rigth Answer clicked");
-            btRightAnswer.setBackground(Color.green);
             client.setAnswer(rightAnswer);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
-    private void onWrongAnswer(String wrongAnswer, JButton button)
-    {
+    private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
+            System.out.println("false answer clicked");
             client.setAnswer(wrongAnswer);
-//            threadCountdownTimer.stop();
             this.setVisible(false);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-//    class Timer implements Runnable {
-//        private QuestionView questionView;
-//        public Timer(QuestionView questionView)
-//        {
-//            this.questionView = questionView;
-//        }
-//        @Override
-//        public void run() {
-//            try {
-//                for (int i = 0; i < 15; i++) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                client.setAnswer("wrong");
-//                JOptionPane.showMessageDialog(questionView, "Time expired","Time expired", JOptionPane.ERROR_MESSAGE);
-//     
-//            } catch (IOException ex) {
-//                Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
 }
