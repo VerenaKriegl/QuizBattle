@@ -143,6 +143,7 @@ public class Client {
 
     }
     private QuestionView questionview;
+    private int count = 0;
 
     class ServerMessages extends Thread {
 
@@ -170,7 +171,14 @@ public class Client {
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
                     } else if (message.equals("question")) {
+                        
                         Question question = (Question) ois.readObject();
+                        if(count == 0){
+                            count++;
+                        }else{
+                            gui.closePlayerWait();
+                        }
+                        
                         gui.openQuestionView(question);
                         if (choosecategory == null) {
 
