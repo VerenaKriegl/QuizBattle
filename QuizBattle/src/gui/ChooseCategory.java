@@ -60,7 +60,7 @@ public class ChooseCategory extends JFrame {
         
         while(isAlreadyInUse)
         {
-            int categoryID = rand.nextInt((categories.size() - 1) + 1) + 1; 
+            int categoryID = rand.nextInt((categories.size()-1 - 0) + 0) + 0; 
             if(listCategory.contains(categoryID))
             {
                 System.out.println("already in use");
