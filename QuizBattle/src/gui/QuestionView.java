@@ -142,7 +142,7 @@ public class QuestionView extends JFrame {
         return buttonClicked;
     }
     private boolean buttonClicked=false;
-    private int count = 15;
+    private int count = 16;
 
     class StopWatch {
         private QuestionView questionView;
@@ -157,7 +157,7 @@ public class QuestionView extends JFrame {
                     if (count > 0) {
                         count--;
                     }
-                    if(!buttonClicked)
+                    if(buttonClicked)
                     {
                         this.cancel();
                     }
@@ -166,6 +166,8 @@ public class QuestionView extends JFrame {
                         try {
                             JOptionPane.showMessageDialog(questionView, "time is up", "Error", JOptionPane.INFORMATION_MESSAGE);
                             client.setAnswer("wrong");
+                            this.cancel();
+                           
                         } catch (IOException ex) {
                             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
                         }
