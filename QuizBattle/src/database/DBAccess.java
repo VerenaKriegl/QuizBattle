@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Verena Kriegl
+ */
 public class DBAccess {
 
     private DB_StatementPool DBStatementPool = DB_StatementPool.getInstance();
-    private ArrayList<Account> accounts = new ArrayList<>();
 
     public void createTableAccount() throws SQLException {
         Statement statement = DBStatementPool.getStatement();
@@ -56,12 +59,13 @@ public class DBAccess {
         statement.execute(sqlString);
         statement.close();
     }
-    
-    public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException{
+
+    public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORYNAME_AND_QUESTIONID);
         Question questionObject = null;
+        //Werte für Fragezeichen einsetzen
         pStat.setString(1, categoryname);
-        pStat.setInt(2, questionid);//Werte für Fragezeichen einsetzen
+        pStat.setInt(2, questionid);
         ResultSet rs = pStat.executeQuery();
         while (rs.next()) {
             String question = rs.getString("question");
@@ -75,13 +79,12 @@ public class DBAccess {
             falseAnswers.add(thirdFalseAnswer);
             String rightAnswer = rs.getString("rightanswer");
             questionObject = new Question(question, rightAnswer, falseAnswers, questionID);
-            
         }
         DBStatementPool.releaseStatement(pStat);
         return questionObject;
     }
-    
-    public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException{
+
+    public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_COUNT_BY_CATEGORY);
         pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
         ResultSet rs = pStat.executeQuery();
@@ -89,6 +92,7 @@ public class DBAccess {
         if (rs.next()) {
             questionCount = rs.getInt(1);
         }
+        DBStatementPool.releaseStatement(pStat);
         return questionCount;
     }
 
@@ -172,16 +176,18 @@ public class DBAccess {
         if (rs.next()) {
             highestUserId = rs.getInt(1);
         }
+        DBStatementPool.releaseStatement(pStat);
         return highestUserId;
     }
 
     public ArrayList getAllAccounts() throws SQLException {
-        Statement statement = DBStatementPool.getStatement();
+        Statement pStat = DBStatementPool.getStatement();
         ArrayList<Account> accountList = new ArrayList<>();
-        ResultSet rs = statement.executeQuery("SELECT * FROM account");
+        ResultSet rs = pStat.executeQuery("SELECT * FROM account");
         while (rs.next()) {
             accountList.add(new Account(rs.getString("username"), rs.getString("password"), rs.getString("mailAddress"), Integer.parseInt(rs.getString("userid")), LocalDate.now()));
         }
+        DBStatementPool.releaseStatement(pStat);
         return accountList;
     }
 }
