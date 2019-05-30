@@ -351,11 +351,10 @@ public class Server {
                     playerWait(currentRoundWaiter);
                 }
                 ObjectInputStream inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
-                currentRoundPlayer.writeObject("battleview");
-                currentRoundPlayer.flush();
+                openBattleView();
                 String ready = (String) inputCurrentPlayer.readObject();
                 sendCategory();
-                
+
                 ArrayList<Category> listCategory = dba.getCategory();
                 String categoryName = (String) inputCurrentPlayer.readObject();
                 for (Category cat : listCategory) {
@@ -372,19 +371,22 @@ public class Server {
                 currentRoundWaiter = currentPlayer;
                 inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
                 playerWait(currentRoundWaiter);
-
-                currentRoundPlayer.writeObject("battleview");
-                currentRoundPlayer.flush();
-                currentRoundPlayer.writeObject(mapScore.get(currentRoundPlayer));
-                currentRoundPlayer.flush();
-                currentRoundPlayer.writeObject(mapScore.get(currentRoundWaiter));
-                currentRoundPlayer.flush();
+                openBattleView();
                 ready = (String) inputCurrentPlayer.readObject();
                 sendQuestion(question);
                 checkUserAnswer(inputCurrentPlayer);
                 countPlayer++;
             }
             calculateWinner();
+        }
+
+        private void openBattleView() throws IOException {
+            currentRoundPlayer.writeObject("battleview");
+            currentRoundPlayer.flush();
+            currentRoundPlayer.writeObject(mapScore.get(currentRoundPlayer));
+            currentRoundPlayer.flush();
+            currentRoundPlayer.writeObject(mapScore.get(currentRoundWaiter));
+            currentRoundPlayer.flush();
         }
 
         private void sendQuestion(Question question) throws IOException {
