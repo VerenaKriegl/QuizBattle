@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 public class QuestionView extends JFrame {
 
     private Question question;
-    private Thread threadCountdownTimer;
     private Client client;
 
     public QuestionView(String title, Question question, Client client) {
@@ -115,10 +114,12 @@ public class QuestionView extends JFrame {
         questionView.setSize(800, 600);
     }
 
-    private void onRightAnswerClicked(String rightAnswer, JButton btRightAnswer) {
+    private void onRightAnswerClicked(String rightAnswer, JButton button) {
 
         try {
             buttonClicked = true;
+            button.setOpaque(true);
+            button.setBackground(Color.green);
             System.out.println("Rigth Answer clicked");
             client.setAnswer(rightAnswer);
         } catch (IOException ex) {
@@ -130,6 +131,8 @@ public class QuestionView extends JFrame {
     private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
             buttonClicked = true;
+            button.setOpaque(true);
+            button.setBackground(Color.red);
             System.out.println("false answer clicked");
             client.setAnswer(wrongAnswer);
             this.setVisible(false);
