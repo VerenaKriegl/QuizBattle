@@ -2,7 +2,7 @@ package dlg;
 
 import beans.Account;
 import client.Client;
-import gui.GUIBuilder;
+import start.GUIBuilder;
 import gui.LoadingView;
 import gui.StartPage;
 import java.awt.BorderLayout;
