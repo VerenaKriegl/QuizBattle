@@ -362,7 +362,6 @@ public class Server {
                         break;
                     }
                 }
-
                 checkUserAnswer(inputCurrentPlayer);
 
                 currentRoundPlayer = secondPlayer;

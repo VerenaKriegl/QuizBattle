@@ -196,6 +196,9 @@ public class Client {
                     else if(message.equals("loser")){
                         gui.closeBattleView();
                         gui.openLoserView();
+                    } else if(message.equals("equal")){
+                        gui.closeBattleView();
+                        gui.openEqualView();
                     }
                     else {
                         log(message);
