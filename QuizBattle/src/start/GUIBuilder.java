@@ -1,9 +1,19 @@
-package gui;
+package start;
 
 import beans.Category;
 import beans.Question;
 import client.Client;
 import dlg.LoginDlg;
+import gui.BattleView;
+import gui.ChooseCategory;
+import gui.EqualView;
+import gui.LoadingView;
+import gui.LoserView;
+import gui.PlayerWait;
+import gui.QuestionView;
+import gui.StartGame;
+import gui.StartPage;
+import gui.WinnerView;
 import java.util.ArrayList;
 
 /**

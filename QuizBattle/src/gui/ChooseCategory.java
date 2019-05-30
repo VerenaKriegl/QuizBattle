@@ -73,6 +73,7 @@ public class ChooseCategory extends JFrame {
                 isAlreadyInUse = false;
             }
         }
+        listCategory.clear();
         return button;
     }
     

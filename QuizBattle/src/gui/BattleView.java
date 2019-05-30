@@ -90,7 +90,7 @@ public class BattleView extends JFrame {
         client.getQuestion();
     }
 
-    void setPlayButton() 
+    public void setPlayButton() 
     {
         btPlay.setVisible(true);
     }

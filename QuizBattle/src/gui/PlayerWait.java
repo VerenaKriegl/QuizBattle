@@ -22,6 +22,7 @@ public class PlayerWait extends JFrame{
     private JPanel panelImage;
     public PlayerWait(int scorePlayerOne,int scorePlayerTwo)
     {
+        this.setLocationRelativeTo(null);
         this.setSize(new Dimension(500, 500));
         JLabel background=new JLabel(new ImageIcon("src/images/backgroundImage.png"));
         this.setLayout(new BorderLayout());

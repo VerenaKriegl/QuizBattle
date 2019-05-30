@@ -5,6 +5,7 @@
  */
 package gui;
 
+import start.GUIBuilder;
 import client.Client;
 import configFiles.Config;
 import dlg.LoginDlg;

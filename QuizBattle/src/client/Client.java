@@ -5,7 +5,7 @@ import beans.Category;
 import beans.Question;
 import configFiles.Config;
 import gui.ChooseCategory;
-import gui.GUIBuilder;
+import start.GUIBuilder;
 import gui.QuestionView;
 import java.io.IOException;
 import java.io.ObjectInputStream;

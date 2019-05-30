@@ -18,6 +18,7 @@ public class StartGame extends JFrame{
     private Client client;
     public StartGame(Client client)
     {
+        this.setLocationRelativeTo(null);
         this.client = client;
         this.setTitle("StartGame");
         this.setSize(new Dimension(500, 300));
