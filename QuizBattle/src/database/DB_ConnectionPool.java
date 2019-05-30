@@ -6,11 +6,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- *
- * @author Verena Kriegl
- */
-
 public class DB_ConnectionPool implements configFiles.Config {
 
     private static DB_ConnectionPool theInstace;
@@ -33,7 +28,7 @@ public class DB_ConnectionPool implements configFiles.Config {
     }
 
     private Queue<Connection> connPool = new LinkedList();
-    private final int MAX_CONN = 500; //Maximale Anzahl von Connections
+    private final int MAX_CONN = 100; //Maximale Anzahl von Connections
     private int numConn = 0; //Aktuelle Anzahl von Connections
 
     public Connection getConnection() throws SQLException {
