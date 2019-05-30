@@ -19,6 +19,8 @@ public class GUIBuilder {
     private PlayerWait playerWait;
     private Client client;
     private BattleView battleView;
+    private EqualView equalView;
+    private boolean battleViewOpen = false;
     
     public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
         ChooseCategory chooseCategory = new ChooseCategory("Category", categories, client);
@@ -32,6 +34,11 @@ public class GUIBuilder {
         openStartPage(false);
     }
     
+    public void openEqualView()
+    {
+        equalView = new EqualView();
+        equalView.setVisible(true);
+    }
     
     public void openStartPage(boolean loginFailed)
     {
@@ -100,11 +107,16 @@ public class GUIBuilder {
         }
     }
 
-    public void openBattleView(String username, String usernameFromOpponent, int scorePlayerOne, int scorePlayerTwo) {
-        battleView = new BattleView(username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
-        battleView.setVisible(true);
+    public boolean isBattleViewOpen()
+    {
+        return battleViewOpen;
     }
-
+    public void openBattleView(String username, String usernameFromOpponent, int scorePlayerOne, int scorePlayerTwo) {
+        battleView = new BattleView(client, username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
+        battleView.setVisible(true);
+        battleViewOpen=true;
+    }
+    
     public void closeBattleView() {
         if(battleView != null){
             battleView.setVisible(false);
@@ -119,5 +131,9 @@ public class GUIBuilder {
     public void openLoserView(){
         LoserView loserView = new LoserView();
         loserView.setVisible(true);
+    }
+
+    public void setButton() {
+        battleView.setPlayButton();
     }
 }

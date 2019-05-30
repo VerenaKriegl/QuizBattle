@@ -265,7 +265,7 @@ public class Server {
         private ObjectOutputStream currentRoundWaiter;
         private ObjectOutputStream currentRoundPlayer;
         private Question question;
-        private ArrayList<Category> listCategory = new ArrayList<Category>();
+        private ArrayList<Category> listCategory = new ArrayList<>();
 
         public PlayGame(ArrayList<ObjectOutputStream> players) {
             this.players = players;
@@ -350,8 +350,12 @@ public class Server {
                 } else {
                     playerWait(currentRoundWaiter);
                 }
-                sendCategory();
                 ObjectInputStream inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
+                currentRoundPlayer.writeObject("battleview");
+                currentRoundPlayer.flush();
+                String ready = (String) inputCurrentPlayer.readObject();
+                sendCategory();
+                
                 ArrayList<Category> listCategory = dba.getCategory();
                 String categoryName = (String) inputCurrentPlayer.readObject();
                 for (Category cat : listCategory) {
@@ -368,6 +372,9 @@ public class Server {
                 currentRoundWaiter = currentPlayer;
                 inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
                 playerWait(currentRoundWaiter);
+                currentRoundPlayer.writeObject("battleview");
+                currentRoundPlayer.flush();
+                ready = (String) inputCurrentPlayer.readObject();
                 sendQuestion(question);
                 checkUserAnswer(inputCurrentPlayer);
                 countPlayer++;

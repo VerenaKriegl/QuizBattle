@@ -21,36 +21,36 @@ import java.util.logging.Logger;
  * @author Tobias
  */
 public class Client {
-    
+
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private int highestUserID;
     private String errorType;
     private GUIBuilder gui;
     private ChooseCategory choosecategory;
-    
+
     public Client() {
         connect();
     }
-    
+
     public int getHighestId() {
         return highestUserID;
     }
-    
+
     public String getErrorType() {
         return errorType;
     }
-    
+
     private void log(String message) {
         System.out.println(message);
     }
-    
+
     public void setAnswer(String answer) throws IOException {
         gui.closeQuestionView();
         oos.writeObject(answer);
         oos.flush();
     }
-    
+
     public void logout() {
         try {
             oos.writeObject("logout");
@@ -58,9 +58,9 @@ public class Client {
         } catch (IOException ex) {
             log("Exception: unable to logout");
         }
-        
+
     }
-    
+
     public void startGame() {
         try {
             gui.openLoadingViewGUI();
@@ -72,7 +72,7 @@ public class Client {
             log("Exception: unable to start game");
         }
     }
-    
+
     public void signup(Account account) {
         try {
             oos.writeObject("signup");
@@ -83,11 +83,11 @@ public class Client {
             log("Exception: unable to sign up");
         }
     }
-    
+
     public void setGUIBuilder(GUIBuilder gui) {
         this.gui = gui;
     }
-    
+
     public void choosedCategoryName(String categoryName) {
         try {
             oos.writeObject(categoryName);
@@ -97,7 +97,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void login(Account account) {
         try {
             oos.writeObject("login");
@@ -109,7 +109,7 @@ public class Client {
         }
     }
     private Socket socket;
-    
+
     public void connect() {
         /* Verbindung zum Server herstellen */
         try {
@@ -118,14 +118,23 @@ public class Client {
             ois = new ObjectInputStream(socket.getInputStream());
             ServerMessages sm = new ServerMessages();
             sm.start();
-            
+
         } catch (IOException ex) {
             log("Exception: unable to connect to server");
         }
     }
-    
+
+    public void getQuestion() {
+        try {
+            oos.writeObject("ready");
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     class GameCommunication extends Thread {
-        
+
         @Override
         public void run() {
             try {
@@ -140,12 +149,12 @@ public class Client {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
     private QuestionView questionview;
     private int count = 0;
     private String username, usernameFromOpponent;
-    
+
     class ServerMessages extends Thread {
 
         /* Thread zur Kommunikation mit dem Server */
@@ -172,35 +181,41 @@ public class Client {
                         ArrayList<Category> categories = (ArrayList) ois.readObject();
                         gui.closeLoadingView();
                         choosecategory = gui.openChooseCategoryGUI(categories);
-                    } else if (message.equals("question")) {
+                    }else if(message.equals("battleview")){
+                        if(gui.isBattleViewOpen())
+                        {
+                            gui.closeBattleView();
+                        }
+                        gui.closeLoadingView();
+                        gui.openBattleView(username, usernameFromOpponent, highestUserID, highestUserID);
+                        gui.setButton();
+                    }
+                    else if (message.equals("question")) {
                         
                         Question question = (Question) ois.readObject();
                         if (count == 0) {
                             count++;
-                        } 
-                            gui.closeBattleView();
-                        
-                        
+                        }
+                        gui.closeBattleView();
+
                         gui.openQuestionView(question);
                         if (choosecategory == null) {
-                            
+
                         } else {
                             gui.closeCategoryView(choosecategory);
                         }
                     } else if (message.equals("usernameOpponent")) {
                         usernameFromOpponent = (String) ois.readObject();
-                    } else if(message.equals("winner")){
+                    } else if (message.equals("winner")) {
                         gui.closeBattleView();
                         gui.openWinnerView();
-                    }
-                    else if(message.equals("loser")){
+                    } else if (message.equals("loser")) {
                         gui.closeBattleView();
                         gui.openLoserView();
-                    } else if(message.equals("equal")){
+                    } else if (message.equals("equal")) {
                         gui.closeBattleView();
                         gui.openEqualView();
-                    }
-                    else {
+                    } else {
                         log(message);
                     }
                 }

@@ -1,5 +1,6 @@
 package gui;
 
+import client.Client;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -25,8 +26,11 @@ public class BattleView extends JFrame {
     private String player1;
     private String player2;
     private int scorePlayerOne, scorePlayerTwo;
-   
-    public BattleView(String username, String usernameFromOpponent, int scorePlayerOne,int scorePlayerTwo) {
+    private JButton btPlay;
+    private Client client;
+    
+    public BattleView(Client client, String username, String usernameFromOpponent, int scorePlayerOne,int scorePlayerTwo) {
+        this.client = client;
         setSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -76,12 +80,18 @@ public class BattleView extends JFrame {
    
 
     private JButton getPlayButton() {
-        JButton btPlay = new JButton("Play");
+        btPlay = new JButton("Play");
         btPlay.addActionListener(e -> onPlay());
+        btPlay.setVisible(false);
         return btPlay;
     }
 
     private void onPlay() {
-        System.out.println("Play clicked");
+        client.getQuestion();
+    }
+
+    void setPlayButton() 
+    {
+        btPlay.setVisible(true);
     }
 }
