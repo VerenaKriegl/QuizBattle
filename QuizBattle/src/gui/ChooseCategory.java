@@ -49,6 +49,7 @@ public class ChooseCategory extends JFrame {
         c.add(getCategories());
         c.add(getCategories());
         c.add(getCategories());
+        listCategory.clear();
     }
 
     public JButton getCategories()
@@ -73,7 +74,7 @@ public class ChooseCategory extends JFrame {
                 isAlreadyInUse = false;
             }
         }
-        listCategory.clear();
+        
         return button;
     }
     
