@@ -189,7 +189,15 @@ public class Client {
                         }
                     } else if (message.equals("usernameOpponent")) {
                         usernameFromOpponent = (String) ois.readObject();
-                    } else {
+                    } else if(message.equals("winner")){
+                        gui.closeBattleView();
+                        gui.openWinnerView();
+                    }
+                    else if(message.equals("loser")){
+                        gui.closeBattleView();
+                        gui.openLoserView();
+                    }
+                    else {
                         log(message);
                     }
                 }

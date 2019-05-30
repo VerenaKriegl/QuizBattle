@@ -287,7 +287,7 @@ public class Server {
         @Override
         public void run() {
 
-            try {             
+            try {
                 firstPlayer();
                 mapScore.put(currentPlayer, score);
                 mapScore.put(secondPlayer, score);
@@ -307,50 +307,83 @@ public class Server {
                 mapScore.replace(currentRoundPlayer, score);
             }
         }
-        private void play(int roundAmount) throws IOException, ClassNotFoundException
-        {
+
+        private void calculateWinner() {
+            int scoreFromFirstPlayer = mapScore.get(currentRoundPlayer);
+            int scoreFromSecondPlayer = mapScore.get(currentRoundWaiter);
+
+            if (scoreFromFirstPlayer > scoreFromSecondPlayer) {
+                try {
+                    currentRoundPlayer.writeObject("winner");
+                    currentRoundPlayer.flush();
+                    currentRoundWaiter.writeObject("loser");
+                    currentRoundWaiter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (scoreFromFirstPlayer < scoreFromSecondPlayer) {
+                try {
+                    currentRoundPlayer.writeObject("loser");
+                    currentRoundPlayer.flush();
+                    currentRoundWaiter.writeObject("winner");
+                    currentRoundWaiter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    currentRoundPlayer.writeObject("equal");
+                    currentRoundPlayer.flush();
+                    currentRoundWaiter.writeObject("equal");
+                    currentRoundWaiter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        private void play(int roundAmount) throws IOException, ClassNotFoundException {
             int countPlayer = 0;
             for (int i = 0; i < roundAmount; i++) {
-                    if (countPlayer > 0) {
-                        nextPlayer();
-                    }
-                    else
-                    {
-                        playerWait(currentRoundWaiter);
-                    }
-                    sendCategory();
-                    ObjectInputStream inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
-                    ArrayList<Category> listCategory = dba.getCategory();
-                    String categoryName = (String) inputCurrentPlayer.readObject();
-                    for (Category cat : listCategory) {
-                        if (cat.getCategoryname().equals(categoryName)) {
-                            question = getQuestionFromDB(categoryName, currentPlayer);
-                            sendQuestion(question);
-                            System.out.println("CategoryName: " + categoryName);
-                            break;
-                        }
-                    }
-
-                    checkUserAnswer(inputCurrentPlayer);
-
-                    currentRoundPlayer = secondPlayer;
-                    currentRoundWaiter = currentPlayer;
-                    inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
+                if (countPlayer > 0) {
+                    nextPlayer();
+                } else {
                     playerWait(currentRoundWaiter);
-                    sendQuestion(question);
-                    checkUserAnswer(inputCurrentPlayer);
-                    countPlayer++;
                 }
+                sendCategory();
+                ObjectInputStream inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
+                ArrayList<Category> listCategory = dba.getCategory();
+                String categoryName = (String) inputCurrentPlayer.readObject();
+                for (Category cat : listCategory) {
+                    if (cat.getCategoryname().equals(categoryName)) {
+                        question = getQuestionFromDB(categoryName, currentPlayer);
+                        sendQuestion(question);
+                        System.out.println("CategoryName: " + categoryName);
+                        break;
+                    }
+                }
+
+                checkUserAnswer(inputCurrentPlayer);
+
+                currentRoundPlayer = secondPlayer;
+                currentRoundWaiter = currentPlayer;
+                inputCurrentPlayer = mapInputClients.get(currentRoundPlayer);
+                playerWait(currentRoundWaiter);
+                sendQuestion(question);
+                checkUserAnswer(inputCurrentPlayer);
+                countPlayer++;
+            }
+            calculateWinner();
         }
-        
+
         private void sendQuestion(Question question) throws IOException {
             currentRoundPlayer.writeObject("question");
             currentRoundPlayer.flush();
             currentRoundPlayer.writeObject(question);
             currentRoundPlayer.flush();
         }
-        
-        private void sendUsernameFromOpponentFirst(){
+
+        private void sendUsernameFromOpponentFirst() {
             try {
                 currentPlayer.writeObject("usernameOpponent");
                 currentPlayer.flush();
@@ -361,8 +394,8 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        private void sendUsernameFromOpponentSecond(){
+
+        private void sendUsernameFromOpponentSecond() {
             try {
                 secondPlayer.writeObject("usernameOpponent");
                 secondPlayer.flush();
@@ -374,18 +407,17 @@ public class Server {
             }
         }
 
-
         private void firstPlayer() {
- 
-                currentPlayer = players.get(0);
-                secondPlayer = players.get(1);
-                
-                sendUsernameFromOpponentFirst();
-                sendUsernameFromOpponentSecond();
-                
-                currentRoundPlayer = currentPlayer;
-                currentRoundWaiter = secondPlayer;
-            
+
+            currentPlayer = players.get(0);
+            secondPlayer = players.get(1);
+
+            sendUsernameFromOpponentFirst();
+            sendUsernameFromOpponentSecond();
+
+            currentRoundPlayer = currentPlayer;
+            currentRoundWaiter = secondPlayer;
+
         }
 
         private void nextPlayer() {

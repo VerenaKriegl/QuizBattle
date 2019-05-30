@@ -110,4 +110,14 @@ public class GUIBuilder {
             battleView.setVisible(false);
         }
     }
+    
+    public void openWinnerView(){
+        WinnerView winnerView = new WinnerView();
+        winnerView.setVisible(true);
+    }
+    
+    public void openLoserView(){
+        LoserView loserView = new LoserView();
+        loserView.setVisible(true);
+    }
 }

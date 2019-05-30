@@ -16,7 +16,6 @@ public class LoadingView extends JFrame {
 
     public LoadingView(String title, Client client) {
         super(title);
-        this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(500, 500);
