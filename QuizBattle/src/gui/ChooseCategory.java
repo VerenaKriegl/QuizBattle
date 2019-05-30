@@ -25,6 +25,7 @@ public class ChooseCategory extends JFrame {
 
     private ArrayList<Category> categories;
     private String cat = null;
+    private ArrayList<Integer> listCategory = new ArrayList<>();
     private Client client;
 
     public ChooseCategory(String title, ArrayList categories, Client client) {
@@ -45,28 +46,36 @@ public class ChooseCategory extends JFrame {
         JLabel lbHeadline = new JLabel("Choose Category: ");
         c.add(lbHeadline);
 
-        Random rand = new Random();
-
-        int categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
-        String catName1 = categories.get(categoryID).getCategoryname();
-        JButton btCategoryOne = new JButton(categories.get(categoryID).getCategoryname());
-        btCategoryOne.addActionListener(e -> setCategoryName(catName1));
-
-        categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
-        String catName2 = categories.get(categoryID).getCategoryname();
-        JButton btCategoryTwo = new JButton(categories.get(categoryID).getCategoryname());
-        btCategoryTwo.addActionListener(e -> setCategoryName(catName2));
-
-        categoryID = rand.nextInt((6 - 1) + 1) + 1; //7 Kategorien
-        String catName3 = categories.get(categoryID).getCategoryname();
-        JButton btCategoryThree = new JButton(categories.get(categoryID).getCategoryname());
-        btCategoryThree.addActionListener(e -> setCategoryName(catName3));
-
-        c.add(btCategoryThree);
-        c.add(btCategoryOne);
-        c.add(btCategoryTwo);
+        c.add(getCategories());
+        c.add(getCategories());
+        c.add(getCategories());
     }
 
+    public JButton getCategories()
+    {
+        boolean isAlreadyInUse = true;
+        JButton button=null;
+        Random rand = new Random();
+        
+        while(isAlreadyInUse)
+        {
+            int categoryID = rand.nextInt((categories.size() - 1) + 1) + 1; 
+            if(listCategory.contains(categoryID))
+            {
+                System.out.println("already in use");
+            }
+            else
+            {
+                listCategory.add(categoryID);
+                String catName1 = categories.get(categoryID).getCategoryname();
+                button = new JButton(categories.get(categoryID).getCategoryname());
+                button.addActionListener(e -> setCategoryName(catName1));
+                isAlreadyInUse = false;
+            }
+        }
+        return button;
+    }
+    
     public void setCategoryName(String cat) {
         client.choosedCategoryName(cat);
     }
