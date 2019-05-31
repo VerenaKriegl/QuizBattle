@@ -3,17 +3,13 @@ package dlg;
 import beans.Account;
 import client.Client;
 import start.GUIBuilder;
-import gui.LoadingView;
 import gui.StartPage;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,8 +37,8 @@ public class LoginDlg extends JDialog {
         this.guiBuilder = gui;
         this.setTitle("Log-in Dialog");
         this.setLocationRelativeTo(null);
-        this.setPreferredSize(new Dimension(500, 500));
-
+        this.setPreferredSize(new Dimension(500, 200));
+        this.setResizable(false);
         initComponents();
 
         this.pack();

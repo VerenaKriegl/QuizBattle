@@ -15,6 +15,9 @@ import gui.StartGame;
 import gui.StartPage;
 import gui.WinnerView;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -54,8 +57,18 @@ public class GUIBuilder {
     {
       if(!loginFailed)
       {
-          startPage = new StartPage("StartPage", client, this);
-          startPage.setVisible(true);
+          try {
+              startPage = new StartPage("StartPage", client, this);
+              startPage.setVisible(true);
+          } catch (ClassNotFoundException ex) {
+              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (InstantiationException ex) {
+              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (IllegalAccessException ex) {
+              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
+          } catch (UnsupportedLookAndFeelException ex) {
+              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
+          }
       }
       else
       {
