@@ -16,6 +16,7 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -69,15 +70,22 @@ public class ScoreBoard extends JFrame {
             plScores.add(lbUsername);
             plScores.add(lbHighScore);
         }
+        
+        JButton btCancel = new JButton("Cancel");
+        btCancel.addActionListener(e -> onCancel());
 
         c.add(lbHeadline, BorderLayout.NORTH);
         c.add(plScores, BorderLayout.CENTER);
-
-        System.out.println(map.get("tt"));
+        c.add(btCancel, BorderLayout.SOUTH);
     }
 
     public static void main(String[] args) {
         ScoreBoard scoreBoard = new ScoreBoard("Scoreboard", null, null);
         scoreBoard.setVisible(true);
+    }
+
+    private void onCancel() {
+        this.setVisible(false);
+        startGameParent.setVisible(true);
     }
 }
