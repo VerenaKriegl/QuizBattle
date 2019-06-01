@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Tobias
+ * @author Tobias Wechtitsch
  */
 public class Server {
 
@@ -125,18 +125,6 @@ public class Server {
             this.socket = socket;
         }
 
-        //bei einem Exceptions an den Client
-        private void errorMessage(String errorType) {
-            try {
-                oos.writeObject("failed");
-                oos.flush();
-                oos.writeObject(errorType);
-                oos.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
         //überprüft, ob sich der Benutzer einloggen kann
         private boolean login(Account account) throws SQLException {
             System.out.println(account.getUsername());
@@ -148,10 +136,9 @@ public class Server {
             } else {
                 return false;
             }
-
         }
 
-        //übermittel generelle Nachrichten an den Client
+        //übermittelt generelle Nachrichten an den Client
         private void sendMessage(String message) {
             try {
                 oos.writeObject(message);
@@ -168,7 +155,6 @@ public class Server {
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -194,7 +180,6 @@ public class Server {
                         Account newAccount = (Account) ois.readObject();
                         registrated = registrate(newAccount);
                         newAccount.setUserid(highestID + 1);
-
                         if (registrated) {
                             username = newAccount.getUsername();
                             dba.addAccount(newAccount);
@@ -238,9 +223,9 @@ public class Server {
                         startGame();
                         isAvailable = false;
                     } else if (type.equals("highScoreList")) {
-                        oos.writeObject("highScores");
-                        oos.flush();
+                        //Liest alle derzeitigen HighScores aller Benutzer aus der Datenbank
                         mapHighScore = dba.getAllHighScoresFromDB();
+                        sendMessage("highScores");
                         oos.writeObject(mapHighScore);
                         oos.flush();
                     }
@@ -288,7 +273,6 @@ public class Server {
                 }
             }
         }
-
     }
 
     //Thread wartet darauf, bis ein Spiel gestartet werden kann
@@ -320,7 +304,7 @@ public class Server {
         }
     }
 
-    //Regelt ein Spiel
+    //Regelt den Spielablauf
     class PlayGame extends Thread {
 
         private int score = 0;
@@ -384,6 +368,7 @@ public class Server {
             }
         }
 
+        //Am Ende eines Battles werden die HighScores aktualisiert
         private void setHighScores(int points) {
             try {
                 mapHighScore = dba.getAllHighScoresFromDB();
@@ -430,8 +415,8 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //eigentlich Spiel
-
+        
+        //Regelt den Ablauf einer Runde
         private void playRound(int roundAmount) throws IOException, ClassNotFoundException {
             int countPlayer = 0;
             for (int i = 0; i < roundAmount; i++) {
@@ -503,7 +488,6 @@ public class Server {
 
         //definiert wer das Spiel beginnt
         private void firstPlayer() {
-
             currentPlayer = players.get(0);
             secondPlayer = players.get(1);
 
@@ -512,7 +496,6 @@ public class Server {
 
             currentRoundPlayer = currentPlayer;
             currentRoundWaiter = secondPlayer;
-
         }
 
         //wechseln des Spielers der die Runde beginnt
@@ -536,7 +519,6 @@ public class Server {
 
         //Categorien werden an den Client versendet
         private void sendCategory() throws IOException {
-
             currentRoundPlayer.writeObject("choose category");
             currentRoundPlayer.flush();
             listCategory = dba.getCategory();
