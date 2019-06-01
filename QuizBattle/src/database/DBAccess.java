@@ -59,11 +59,13 @@ public class DBAccess {
         statement.close();
     }
 
+    /* Wird vom Server aufgerufen, wenn eine Kategorie vom Client gewählt wurde und dazu eine zufälle Question benötigt */
     public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORYNAME_AND_QUESTIONID);
         Question questionObject = null;
+        /*Werte für Fragezeichen einsetzen */
         pStat.setString(1, categoryname);
-        pStat.setInt(2, questionid);//Werte für Fragezeichen einsetzen
+        pStat.setInt(2, questionid);
         ResultSet rs = pStat.executeQuery();
         while (rs.next()) {
             String question = rs.getString("question");
@@ -77,12 +79,12 @@ public class DBAccess {
             falseAnswers.add(thirdFalseAnswer);
             String rightAnswer = rs.getString("rightanswer");
             questionObject = new Question(question, rightAnswer, falseAnswers, questionID);
-
         }
         DBStatementPool.releaseStatement(pStat);
         return questionObject;
     }
 
+    /* Wird vom Server aufgerufen, da in es in der Datenbank zu jeder Kategorie eine unterschiedliche Anzahl an Fragen gibt */
     public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_COUNT_BY_CATEGORY);
         pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
@@ -94,6 +96,7 @@ public class DBAccess {
         return questionCount;
     }
 
+    /* Wird vom Server aufgerufen, damit dem Client alle möglichen Kategorien angezeigt werden können */
     public ArrayList getCategory() {
         ArrayList<Category> listCategory = new ArrayList<>();
         try {
@@ -106,14 +109,9 @@ public class DBAccess {
             Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
         }
         return listCategory;
-    }
-    
-    public static void main(String[] args) throws SQLException {
-        DBAccess db = new DBAccess();
-        db.createTableAccount();
-    }
-    
+    }  
 
+    /* Wird vom Server aufgerufen, wenn sich ein Client registrieren möchte */
     public void addAccount(Account account) throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         Date sqlDate = Date.valueOf(account.getDateOfBirth());
@@ -157,6 +155,7 @@ public class DBAccess {
         statement.close();
     }
 
+    /* Wird vom Server aufgerufen, um das Passwort beim Login zu überprüfen */
     public Account getAccountByUsername(String username) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_ACCOUNT_BY_USERNAME);
         Account account = null;
@@ -175,6 +174,7 @@ public class DBAccess {
         return account;
     }
 
+    /* Wird vom Server aufegrufen, um die höchste ID festzustellen, wenn sich ein neuer Client registrieren möchte */
     public int getHighestUserId() throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_HIGHEST_USERID);
         ResultSet rs = pStat.executeQuery();
@@ -185,6 +185,7 @@ public class DBAccess {
         return highestUserId;
     }
 
+    /* Wird vom Server aufgerufen, um alle derzeitig existierenten Accounts zu bekommen */
     public ArrayList getAllAccounts() throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         ArrayList<Account> accountList = new ArrayList<>();
@@ -201,6 +202,7 @@ public class DBAccess {
         return accountList;
     }
 
+    /* Wird vom Server aufgerufen, um alle HighScores von jedem Client zu erhalten und somit die HighScoreListe anzufertigen */
     public Map<String, Integer> getAllHighScoresFromDB() throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         Map<String, Integer> mapHighScores = new HashMap<>();
@@ -213,6 +215,7 @@ public class DBAccess {
         return mapHighScores;
     }
 
+    /* Wird vom Server aufgerufen, wenn ein Battle beendet wurde und der HighScore aktualisiert wird */
     public void setNewHighScoreFromUser(int highScore, String username) throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         String sqlString = "UPDATE account SET highScore = " +highScore+ " WHERE username = '"+username+ "';";
