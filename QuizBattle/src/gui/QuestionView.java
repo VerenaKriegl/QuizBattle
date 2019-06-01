@@ -119,24 +119,17 @@ public class QuestionView extends JFrame {
 
         try {
             buttonClicked = true;
-            button.setOpaque(true);
-            button.setBackground(Color.green);
-            System.out.println("Rigth Answer clicked");
+            JOptionPane.showMessageDialog(this, "Right Answer clicked!", "Right Answer!", JOptionPane.INFORMATION_MESSAGE);
             client.setAnswer(rightAnswer);
         } catch (IOException ex) {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
             buttonClicked = true;
-            button.setBackground(Color.BLACK);
-            for(int i = 0; i<50; i++){
-                
-            }
-            System.out.println("false answer clicked");
+            JOptionPane.showMessageDialog(this, "False Answer clicked!", "False Answer!", JOptionPane.INFORMATION_MESSAGE);
             client.setAnswer(wrongAnswer);
             this.setVisible(false);
         } catch (IOException ex) {
