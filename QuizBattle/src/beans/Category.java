@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Verena
+ * @author Verena Kriegl
  */
 public class Category implements Serializable{
     /* Datenhaltungsklasse für die verschiedenen Kategorien */

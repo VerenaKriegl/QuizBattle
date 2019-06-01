@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 /**
  *
- * @author Tobias
+ * @author Tobias Wechtitsch
  */ 
 public class Account implements Serializable{
     /* Datenhaltungsklasse für die Accounts */

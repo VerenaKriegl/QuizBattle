@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Verena
+ * @author Verena Kriegl
  */
 public class Question implements Serializable{
     /* Datenhaltungsklasse für alle Fragen mit den jeweiligen Antwortmöglichkeiten */
