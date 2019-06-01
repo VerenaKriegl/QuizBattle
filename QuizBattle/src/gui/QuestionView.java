@@ -131,6 +131,7 @@ public class QuestionView extends JFrame {
 
     private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
+            buttonClicked = true;
             button.setBackground(Color.BLACK);
             for(int i = 0; i<50; i++){
                 
