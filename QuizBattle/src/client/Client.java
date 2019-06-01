@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Tobias
+ * @author Tobias Wechtisch
  */
 public class Client {
 
@@ -32,6 +32,7 @@ public class Client {
     private int scorePlayerOne = 0;
     private int scorePlayerTwo = 0;
     private Socket socket;
+    /* Beinhaltet zu jedem Usernamen, den aktuellen HighScoreStand */
     private Map<String, Integer> mapHighScores = new HashMap<>();
 
     public Client() {
@@ -101,6 +102,7 @@ public class Client {
     }
     
     public void highScoreMap(){
+        //Schickt dem Server eine Nachricht, dass der Client die HighScoreListe sehen möchte
         try {
             oos.writeObject("highScoreList");
             oos.flush();
@@ -110,6 +112,7 @@ public class Client {
     }
 
     public void choosedCategoryName(String categoryName) {
+        //Schickt dem Server eine Nachricht, für welche Kategorie der Client sich entschieden hat
         try {
             oos.writeObject(categoryName);
             System.out.println("Client: " + categoryName);
@@ -153,7 +156,6 @@ public class Client {
     }
 
     class ServerMessages extends Thread {
-
         // Thread zur Kommunikation mit dem Server
         @Override
         public void run() {
@@ -212,7 +214,8 @@ public class Client {
                         //Unentschieden
                         gui.closeBattleView();
                         gui.openEqualView();
-                    } else if(message.equals("highScores")){    
+                    } else if(message.equals("highScores")){
+                        //Erhält von allen Usern die HighScores
                         mapHighScores = (Map<String, Integer>) ois.readObject();
                     }else {
                         log(message);
