@@ -6,7 +6,12 @@
 package gui;
 
 import client.Client;
+import com.sun.java.swing.plaf.windows.WindowsInternalFrameTitlePane;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -22,14 +27,30 @@ public class StartGame extends JFrame{
         this.client = client;
         this.setTitle("StartGame");
         this.setSize(new Dimension(500, 300));
-        JButton startButton = new JButton("Spiel starten");
-        startButton.addActionListener(e -> onStartGame());
-        this.add(startButton);
+        this.setLayout(new GridLayout(1,2));
+        JButton btHighScore = new JButton("Rangliste");
+        btHighScore.addActionListener(e -> onShowHighScoreList());
+        JButton btStart = new JButton("Spiel starten");
+        btStart.addActionListener(e -> onStartGame());
+        this.add(btHighScore);
+        this.add(btStart);
     }
 
     private void onStartGame() {
         client.startGame();
         this.setVisible(false);
+    }
+
+    private void onShowHighScoreList() {
+        this.setVisible(false);
+        client.highScoreMap();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(StartGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ScoreBoard scoreBoard = new ScoreBoard("ScoreBoard", client, this);
+        scoreBoard.setVisible(true);
     }
     
 }

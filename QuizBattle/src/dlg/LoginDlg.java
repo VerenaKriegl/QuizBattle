@@ -78,7 +78,7 @@ public class LoginDlg extends JDialog {
 
     public Account getLoginAccount() {
         loginAccount = new Account(tfUsername.getText(), pfPassword.getText(),
-                "", 0, null);
+                "", 0, null, 0);
         return loginAccount;
     }
 

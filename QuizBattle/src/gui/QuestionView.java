@@ -106,6 +106,7 @@ public class QuestionView extends JFrame {
         sw = new StopWatch(this);
     }
     private StopWatch sw;
+
     public static void main(String[] args) {
         QuestionView questionView = new QuestionView("Question", null, null);
         questionView.setVisible(true);
@@ -130,9 +131,10 @@ public class QuestionView extends JFrame {
 
     private void onWrongAnswer(String wrongAnswer, JButton button) {
         try {
-            buttonClicked = true;
-            button.setOpaque(true);
-            button.setBackground(Color.red);
+            button.setBackground(Color.BLACK);
+            for(int i = 0; i<50; i++){
+                
+            }
             System.out.println("false answer clicked");
             client.setAnswer(wrongAnswer);
             this.setVisible(false);
@@ -140,16 +142,17 @@ public class QuestionView extends JFrame {
             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public boolean isButtonClicked()
-    {
+
+    public boolean isButtonClicked() {
         return buttonClicked;
     }
-    private boolean buttonClicked=false;
+    private boolean buttonClicked = false;
     private int count = 16;
 
     class StopWatch {
+
         private QuestionView questionView;
-        
+
         public StopWatch(QuestionView questionView) {
             this.questionView = questionView;
             Timer timer = new Timer();
@@ -160,17 +163,16 @@ public class QuestionView extends JFrame {
                     if (count > 0) {
                         count--;
                     }
-                    if(buttonClicked)
-                    {
+                    if (buttonClicked) {
                         this.cancel();
                     }
-                    
+
                     if (count == 0) {
                         try {
                             JOptionPane.showMessageDialog(questionView, "time is up", "Error", JOptionPane.INFORMATION_MESSAGE);
                             client.setAnswer("wrong");
                             this.cancel();
-                           
+
                         } catch (IOException ex) {
                             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
                         }

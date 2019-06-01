@@ -12,20 +12,29 @@ public class Account implements Serializable{
     private String username, password, mailAddress;
     private int userid;
     private LocalDate dateOfBirth;
+    private int highScore;
 
-    public Account(String username, String password, String mailAddress, int userid, LocalDate dateOfBirth) {
+    public Account(String username, String password, String mailAddress, int userid, LocalDate dateOfBirth, int highScore) {
         this.username = username;
         this.password = password;
         this.mailAddress = mailAddress;
         this.userid = userid;
         this.dateOfBirth = dateOfBirth;
+        this.highScore = highScore;
     } 
 
     public void setUserid(int userid) {
         this.userid = userid;
     }
 
-    
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
+
     public String getUsername() {
         return username;
     }

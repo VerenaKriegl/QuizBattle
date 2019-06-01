@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,8 +27,8 @@ public class DBAccess {
                 + "username VARCHAR(40),"
                 + "password VARCHAR(10),"
                 + "dateOfBirth Date,"
-                + "mailAddress VARCHAR(30)"
-                + "category VARCHAR(40))";
+                + "mailAddress VARCHAR(30),"
+                + "highscore INT)";
         statement.execute(sqlString);
         statement.close();
     }
@@ -56,8 +58,8 @@ public class DBAccess {
         statement.execute(sqlString);
         statement.close();
     }
-    
-    public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException{
+
+    public Question getQuestionByCategory(String categoryname, int questionid) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_BY_CATEGORYNAME_AND_QUESTIONID);
         Question questionObject = null;
         pStat.setString(1, categoryname);
@@ -75,13 +77,13 @@ public class DBAccess {
             falseAnswers.add(thirdFalseAnswer);
             String rightAnswer = rs.getString("rightanswer");
             questionObject = new Question(question, rightAnswer, falseAnswers, questionID);
-            
+
         }
         DBStatementPool.releaseStatement(pStat);
         return questionObject;
     }
-    
-    public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException{
+
+    public int getMaxCountFromQuestionsPerCategory(String categoryname) throws SQLException {
         PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.GET_QUESTION_COUNT_BY_CATEGORY);
         pStat.setString(1, categoryname); //Werte für Fragezeichen einsetzen
         ResultSet rs = pStat.executeQuery();
@@ -105,18 +107,25 @@ public class DBAccess {
         }
         return listCategory;
     }
+    
+    public static void main(String[] args) throws SQLException {
+        DBAccess db = new DBAccess();
+        db.createTableAccount();
+    }
+    
 
     public void addAccount(Account account) throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         Date sqlDate = Date.valueOf(account.getDateOfBirth());
         String sqlString = "INSERT INTO account"
-                + "(userid, username, password, dateofbirth, mailaddress) "
+                + "(userid, username, password, dateofbirth, mailaddress, highScore) "
                 + "VALUES (" + account.getUserid()
                 + ",'" + account.getUsername()
                 + "', '" + account.getPassword()
                 + "', '" + sqlDate
                 + "', '" + account.getMailAddress()
-                + "');";
+                + "', " + account.getHighScore()
+                + ");";
         statement.execute(sqlString);
         statement.close();
     }
@@ -159,7 +168,8 @@ public class DBAccess {
             LocalDate date = sqlDate.toLocalDate();
             int userid = rs.getInt("userid");
             String email = rs.getString("mailAddress");
-            account = new Account(username, password, email, userid, date);
+            int highScore = rs.getInt("highScore");
+            account = new Account(username, password, email, userid, date, highScore);
         }
         DBStatementPool.releaseStatement(pStat);
         return account;
@@ -180,8 +190,33 @@ public class DBAccess {
         ArrayList<Account> accountList = new ArrayList<>();
         ResultSet rs = statement.executeQuery("SELECT * FROM account");
         while (rs.next()) {
-            accountList.add(new Account(rs.getString("username"), rs.getString("password"), rs.getString("mailAddress"), Integer.parseInt(rs.getString("userid")), LocalDate.now()));
+            accountList.add(new Account(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("mailAddress"),
+                    rs.getInt("userid"),
+                    LocalDate.now(),
+                    rs.getInt("highScore")));
         }
         return accountList;
+    }
+
+    public Map<String, Integer> getAllHighScoresFromDB() throws SQLException {
+        Statement statement = DBStatementPool.getStatement();
+        Map<String, Integer> mapHighScores = new HashMap<>();
+        ResultSet rs = statement.executeQuery("SELECT * FROM account");
+        while (rs.next()) {
+            String username = rs.getString("username");
+            int highScoreFromUser = rs.getInt("highScore");
+            mapHighScores.put(username, highScoreFromUser);
+        }
+        return mapHighScores;
+    }
+
+    public void setNewHighScoreFromUser(int highScore, String username) throws SQLException {
+        Statement statement = DBStatementPool.getStatement();
+        String sqlString = "UPDATE account SET highScore = " +highScore+ " WHERE username = '"+username+ "';";
+        statement.execute(sqlString);
+        statement.close();
     }
 }

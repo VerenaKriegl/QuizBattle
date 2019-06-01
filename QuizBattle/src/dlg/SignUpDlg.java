@@ -132,7 +132,7 @@ public class SignUpDlg extends JDialog {
                 .atZone(ZoneId.systemDefault()).toLocalDate();
 
         newAccount = new Account(tfUsername.getText(), pfPass.getText(),
-                tfMail.getText(), 1, localDate);
+                tfMail.getText(), 1, localDate, 0);
         return newAccount;
     }
 

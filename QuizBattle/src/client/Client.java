@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ public class Client {
     private int scorePlayerOne = 0;
     private int scorePlayerTwo = 0;
     private Socket socket;
+    private Map<String, Integer> mapHighScores = new HashMap<>();
 
     public Client() {
         connect();
@@ -45,6 +48,10 @@ public class Client {
 
     public int getHighestId() {
         return highestUserID;
+    }
+    
+    public Map<String, Integer> getAllHighScores(){
+        return mapHighScores;
     }
 
     private void log(String message) {
@@ -90,6 +97,15 @@ public class Client {
             oos.flush();
         } catch (IOException ex) {
             log("Exception: unable to sign up");
+        }
+    }
+    
+    public void highScoreMap(){
+        try {
+            oos.writeObject("highScoreList");
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -196,7 +212,9 @@ public class Client {
                         //Unentschieden
                         gui.closeBattleView();
                         gui.openEqualView();
-                    } else {
+                    } else if(message.equals("highScores")){    
+                        mapHighScores = (Map<String, Integer>) ois.readObject();
+                    }else {
                         log(message);
                     } 
                 }
