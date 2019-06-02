@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -46,7 +47,7 @@ public class SignUpDlg extends JDialog {
         this.client = client;
         this.pack();
         this.setTitle("Sign Up");
-        this.setSize(new Dimension(300, 350));
+        this.setSize(new Dimension(500, 600));
         this.setLocationRelativeTo(null);
 
         initComponents();
@@ -55,12 +56,14 @@ public class SignUpDlg extends JDialog {
     }
 
     private void initComponents() {
-        Container container = new Container();
+        Container container = this.getContentPane();
         container.setLayout(new BorderLayout());
+        
+        ImageIcon icon = new ImageIcon("src/images/signup.png");
+        JLabel lbRegistrationLogo = new JLabel(icon);
 
-        container.add(getSignUpMenu());
-
-        this.add(container);
+        container.add(lbRegistrationLogo, BorderLayout.NORTH);
+        container.add(getSignUpMenu(), BorderLayout.CENTER); 
     }
 
     private JPanel getSignUpMenu() {

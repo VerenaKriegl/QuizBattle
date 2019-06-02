@@ -5,9 +5,11 @@ import client.Client;
 import start.GUIBuilder;
 import gui.StartPage;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -18,7 +20,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author Alex Mauko2
+ * @author Alex Mauko
  */
 public class LoginDlg extends JDialog {
 
@@ -37,7 +39,7 @@ public class LoginDlg extends JDialog {
         this.guiBuilder = gui;
         this.setTitle("Log-in Dialog");
         this.setLocationRelativeTo(null);
-        this.setPreferredSize(new Dimension(500, 200));
+        this.setPreferredSize(new Dimension(500, 600));
         this.setResizable(false);
         initComponents();
 
@@ -47,11 +49,14 @@ public class LoginDlg extends JDialog {
     }
 
     private void initComponents() {
-        Container container = new Container();
+        Container container = this.getContentPane();
         container.setLayout(new BorderLayout());
-
+        
         JPanel plLogin = new JPanel();
         plLogin.setLayout(new GridLayout(3, 2));
+        
+        ImageIcon icon = new ImageIcon("src/images/login.jpg");
+        JLabel lbLoginLogo = new JLabel(icon);
 
         JLabel lbUsername = new JLabel("Username:");
         tfUsername = new JTextField();
@@ -71,9 +76,8 @@ public class LoginDlg extends JDialog {
         plLogin.add(btOk);
         plLogin.add(btCancel);
 
+        container.add(lbLoginLogo, BorderLayout.NORTH);
         container.add(plLogin, BorderLayout.CENTER);
-
-        this.add(container);
     }
 
     public Account getLoginAccount() {
