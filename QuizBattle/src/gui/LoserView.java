@@ -1,22 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 
 /**
  *
- * @author kriegl
+ * @author Verena Kriegl
  */
 public class LoserView extends JFrame {
 
@@ -36,10 +30,5 @@ public class LoserView extends JFrame {
         ImageIcon logo = new ImageIcon("src/images/loser.gif");
         JLabel lbImage = new JLabel(logo);
         c.add(lbImage, BorderLayout.CENTER);
-    }
-
-    public static void main(String[] args) {
-        LoserView loserView = new LoserView();
-        loserView.setVisible(true);
     }
 }

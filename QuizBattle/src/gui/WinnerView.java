@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author kriegl
+ * @author Verena Kriegl
  */
 public class WinnerView extends JFrame {
     public WinnerView(){
@@ -28,10 +28,5 @@ public class WinnerView extends JFrame {
         ImageIcon logo = new ImageIcon("src/images/winner.gif");
         JLabel lbImage = new JLabel(logo);
         c.add(lbImage);
-    }
-    
-    public static void main(String[] args) {
-        WinnerView winnerview = new WinnerView();
-        winnerview.setVisible(true);
     }
 }
