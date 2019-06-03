@@ -8,6 +8,7 @@ package gui;
 import client.Client;
 import com.sun.java.swing.plaf.windows.WindowsInternalFrameTitlePane;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.logging.Level;

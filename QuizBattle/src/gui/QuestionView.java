@@ -1,6 +1,5 @@
 package gui;
 
-import beans.Category;
 import beans.Question;
 import client.Client;
 import java.awt.BorderLayout;
@@ -9,8 +8,6 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

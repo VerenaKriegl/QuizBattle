@@ -206,7 +206,7 @@ public class DBAccess {
     public Map<String, Integer> getAllHighScoresFromDB() throws SQLException {
         Statement statement = DBStatementPool.getStatement();
         Map<String, Integer> mapHighScores = new HashMap<>();
-        ResultSet rs = statement.executeQuery("SELECT * FROM account");
+        ResultSet rs = statement.executeQuery("SELECT * FROM account ORDER BY highscore DESC"); //DESC = absteigend
         while (rs.next()) {
             String username = rs.getString("username");
             int highScoreFromUser = rs.getInt("highScore");
@@ -217,9 +217,19 @@ public class DBAccess {
 
     /* Wird vom Server aufgerufen, wenn ein Battle beendet wurde und der HighScore aktualisiert wird */
     public void setNewHighScoreFromUser(int highScore, String username) throws SQLException {
-        Statement statement = DBStatementPool.getStatement();
-        String sqlString = "UPDATE account SET highScore = " +highScore+ " WHERE username = '"+username+ "';";
-        statement.execute(sqlString);
-        statement.close();
+        PreparedStatement pStat = DBStatementPool.getPreparedStatement(DB_StatementType.UPDATE_HIGHSCORE_FROM_USER);
+        pStat.setInt(1, highScore); //Werte für Fragezeichen einsetzen
+        pStat.setString(2, username);
+        pStat.executeUpdate();
+        DBStatementPool.releaseStatement(pStat);
+    }
+    
+    public static void main(String[] args) {
+        try {
+            DBAccess db = new DBAccess();
+            db.setNewHighScoreFromUser(0, "rr");
+        } catch (SQLException ex) {
+            Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -40,7 +40,7 @@ public class DB_StatementPool {
         }
         return pStat;
     }
-    
+
     public Statement getStatement() throws SQLException {
         Connection connection = connPool.getConnection();
         Queue<Statement> stmtList = stmtMap.get(connection);
@@ -50,13 +50,13 @@ public class DB_StatementPool {
         }
         if (stmtList.isEmpty()) {
             return connection.createStatement();
-        } else { 
+        } else {
             return stmtList.poll();
         }
     }
 
     public void releaseStatement(Statement statement) throws SQLException {
-       Connection connection = statement.getConnection();
+        Connection connection = statement.getConnection();
         if (!(statement instanceof PreparedStatement)) {
             stmtMap.get(connection).offer(statement);
         }

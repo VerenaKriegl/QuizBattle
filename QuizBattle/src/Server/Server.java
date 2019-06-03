@@ -369,15 +369,19 @@ public class Server {
         }
 
         //Am Ende eines Battles werden die HighScores aktualisiert
-        private void setHighScores(int points) {
+        private void setHighScores(int points, ObjectOutputStream oosLoser, ObjectOutputStream oosWinner) {
             try {
                 mapHighScore = dba.getAllHighScoresFromDB();
-                String usernameFromWinner = mapClients.get(currentPlayer);
+                String usernameFromWinner = mapClients.get(oosWinner);
+                System.out.println("Username from Winner: "+usernameFromWinner);
                 int newHighScoreFromWinner = mapHighScore.get(usernameFromWinner);
                 newHighScoreFromWinner += points;
-                String usernameFromLoser = mapClients.get(currentRoundWaiter);
+                System.out.println("New HighScore from Winner: "+newHighScoreFromWinner);
+                String usernameFromLoser = mapClients.get(oosLoser);
+                System.out.println("Username from Loser: "+usernameFromLoser);
                 int newHighScoreFromLoser = mapHighScore.get(usernameFromLoser);
                 newHighScoreFromLoser -= points;
+                System.out.println("new Highscore from loser: "+newHighScoreFromLoser);
                 dba.setNewHighScoreFromUser(newHighScoreFromWinner, usernameFromWinner);
                 dba.setNewHighScoreFromUser(newHighScoreFromLoser, usernameFromLoser);
                 System.out.println("highscores aktuelisiert");
@@ -397,19 +401,20 @@ public class Server {
                     currentRoundPlayer.flush();
                     currentRoundWaiter.writeObject("loser");
                     currentRoundWaiter.flush();
-                    setHighScores(10);
+                    setHighScores(10, currentRoundWaiter, currentRoundPlayer);
 
                 } else if (scoreFromFirstPlayer < scoreFromSecondPlayer) {
                     currentRoundPlayer.writeObject("loser");
                     currentRoundPlayer.flush();
                     currentRoundWaiter.writeObject("winner");
                     currentRoundWaiter.flush();
+                    setHighScores(10, currentRoundPlayer, currentRoundWaiter);
                 } else {
                     currentRoundPlayer.writeObject("equal");
                     currentRoundPlayer.flush();
                     currentRoundWaiter.writeObject("equal");
                     currentRoundWaiter.flush();
-                    setHighScores(5);
+                  //  setHighScores(5, currentPlayer, currentRoundWaiter);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -474,13 +479,13 @@ public class Server {
         }
 
         //Usernamen werden an die Clients versendet
-        private void sendUsername(ObjectOutputStream outputStream) {
+        private void sendUsername(ObjectOutputStream myOutputStream, ObjectOutputStream opponentOutputStream) {
             try {
-                currentPlayer.writeObject("usernameOpponent");
-                currentPlayer.flush();
-                String usernameOpponent = mapClients.get(outputStream);
-                currentPlayer.writeObject(usernameOpponent);
-                currentPlayer.flush();
+                myOutputStream.writeObject("usernameOpponent");
+                myOutputStream.flush();
+                String usernameOpponent = mapClients.get(opponentOutputStream);
+                myOutputStream.writeObject(usernameOpponent);
+                myOutputStream.flush();
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -491,8 +496,8 @@ public class Server {
             currentPlayer = players.get(0);
             secondPlayer = players.get(1);
 
-            sendUsername(currentPlayer);
-            sendUsername(secondPlayer);
+            sendUsername(currentPlayer, secondPlayer);
+            sendUsername(secondPlayer, currentPlayer);
 
             currentRoundPlayer = currentPlayer;
             currentRoundWaiter = secondPlayer;

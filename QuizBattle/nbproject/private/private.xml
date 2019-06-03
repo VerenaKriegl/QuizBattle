@@ -3,12 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/beans/Category.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/start/GUIBuilder.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/client/Client.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/beans/Account.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/dlg/SignUpDlg.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/images/timePanel.gif</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/dlg/LoginDlg.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/database/DBAccess.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/images/login.jpg</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/beans/Question.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/LoadingView.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/LoserView.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/BattleView.java</file>
@@ -27,6 +31,7 @@
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/ChooseCategory.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/QuestionView.java</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/gui/PlayerWait.java</file>
+            <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/images/signup.png</file>
             <file>file:/C:/Users/krieg/OneDrive/Desktop/QuizBattle/QuizBattle/src/configFiles/Config.java</file>
         </group>
     </open-files>

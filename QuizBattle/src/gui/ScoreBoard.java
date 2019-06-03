@@ -32,6 +32,7 @@ public class ScoreBoard extends JFrame {
     private Client client;
     private StartGame startGameParent;
     private Map<String, Integer> map = new HashMap<>();
+    private int counterForPlace = 0;
 
     public ScoreBoard(String title, Client client, StartGame startGameParent) {
         super(title);
@@ -52,21 +53,25 @@ public class ScoreBoard extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
 
         map = client.getAllHighScores();
-        System.out.println(map.size());
-        JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 2)); //Anzahl der User
+        JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 3)); //Anzahl der User
 
         ImageIcon logo = new ImageIcon("src/images/highScore.png");
         JLabel lbHeadline = new JLabel(logo);
 
+        JLabel lbHeadlinePlace = new JLabel("Places");
+        plScores.add(lbHeadlinePlace);
         JLabel lbHeadlinePlayer = new JLabel("Player");
         plScores.add(lbHeadlinePlayer);
         JLabel lbHeadlineCoins = new JLabel("Coins");
         plScores.add(lbHeadlineCoins);
 
         for (String username : map.keySet()) {
+            counterForPlace++;
+            JLabel lbPlace = new JLabel(""+counterForPlace);
             JLabel lbUsername = new JLabel(username);
             JLabel lbHighScore = new JLabel("" + map.get(username));
 
+            plScores.add(lbPlace);
             plScores.add(lbUsername);
             plScores.add(lbHighScore);
         }
