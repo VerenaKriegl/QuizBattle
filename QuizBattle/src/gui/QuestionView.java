@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -26,27 +25,36 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author kriegl
+ * @author Alex Mauko
  */
 public class QuestionView extends JFrame {
 
     private Question question;
     private Client client;
+    private StopWatch stopWatch;
+    private boolean buttonClicked = false;
+    private int count = 16;
 
-    public QuestionView(String title, Question question, Client client) {
-        super(title);
+    public QuestionView(Question question, Client client) {
+        super("Choose an answer");
         this.question = question;
         this.client = client;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(800, 600);
+
         initComponents();
+    }
+
+    public boolean isButtonClicked() {
+        return buttonClicked;
     }
 
     private void initComponents() {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
         c.setBackground(Color.white);
+
         String question = this.question.getQuestion();
         String rightAnswer = this.question.getRightAnswer();
         ArrayList<String> wrongAnswers = this.question.getWrongAnwers();
@@ -56,21 +64,55 @@ public class QuestionView extends JFrame {
 
         JLabel lbQuestion = new JLabel(question);
         lbQuestion.setFont(new Font("Serif", Font.BOLD, 28));
+
         c.add(lbQuestion, BorderLayout.NORTH);
 
         Random rand = new Random();
         int randomNumber = rand.nextInt((4 - 1) + 1) + 1;
 
         JButton btRightAnswer = new JButton(rightAnswer);
-        btRightAnswer.addActionListener(e -> onRightAnswerClicked(rightAnswer, btRightAnswer));
+        btRightAnswer.addActionListener(e -> onRightAnswerClicked(rightAnswer));
         JButton btFirstFalseAnswer = new JButton(firstFalseAnswer);
-        btFirstFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(0), btFirstFalseAnswer));
+        btFirstFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(0)));
         JButton btSecondFalseAnswer = new JButton(secondFalseAnswer);
-        btSecondFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(1), btSecondFalseAnswer));
+        btSecondFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(1)));
         JButton btThirdFalseAnswer = new JButton(thirdFalseAnswer);
-        btThirdFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(2), btThirdFalseAnswer));
+        btThirdFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(2)));
 
         JPanel plAnswers = new JPanel(new GridLayout(2, 2));
+        randomOrder(plAnswers, randomNumber, btRightAnswer, btFirstFalseAnswer, btSecondFalseAnswer, btThirdFalseAnswer);
+        c.add(plAnswers, BorderLayout.CENTER);
+
+        ImageIcon imageIcon = new ImageIcon("src/images/timePanel.gif");
+        imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
+        JLabel lbImageHolder = new JLabel(imageIcon);
+        c.add(lbImageHolder, BorderLayout.SOUTH);
+
+        stopWatch = new StopWatch(this);
+    }
+
+    private void onRightAnswerClicked(String rightAnswer) {
+        try {
+            buttonClicked = true;
+            JOptionPane.showMessageDialog(this, "Right Answer clicked!", "Right Answer!", JOptionPane.INFORMATION_MESSAGE);
+            client.setAnswer(rightAnswer);
+        } catch (IOException ex) {
+            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void onWrongAnswer(String wrongAnswer) {
+        try {
+            buttonClicked = true;
+            JOptionPane.showMessageDialog(this, "False Answer clicked!", "False Answer!", JOptionPane.INFORMATION_MESSAGE);
+            client.setAnswer(wrongAnswer);
+            this.setVisible(false);
+        } catch (IOException ex) {
+            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void randomOrder(JPanel plAnswers, int randomNumber, JButton btRightAnswer, JButton btFirstFalseAnswer, JButton btSecondFalseAnswer, JButton btThirdFalseAnswer) {
         if (randomNumber == 4) {
             plAnswers.add(btThirdFalseAnswer);
             plAnswers.add(btFirstFalseAnswer);
@@ -92,53 +134,7 @@ public class QuestionView extends JFrame {
             plAnswers.add(btFirstFalseAnswer);
             plAnswers.add(btSecondFalseAnswer);
         }
-
-        c.add(plAnswers, BorderLayout.CENTER);
-
-        URL url = LoadingView.class.getResource("/images/timePanel.gif");
-        ImageIcon imageIcon = new ImageIcon(url);
-        imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
-        JLabel lbImageHolder = new JLabel(imageIcon);
-        c.add(lbImageHolder, BorderLayout.SOUTH);
-        sw = new StopWatch(this);
     }
-    private StopWatch sw;
-
-    public static void main(String[] args) {
-        QuestionView questionView = new QuestionView("Question", null, null);
-        questionView.setVisible(true);
-        questionView.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        questionView.setLocationRelativeTo(null);
-        questionView.setSize(800, 600);
-    }
-
-    private void onRightAnswerClicked(String rightAnswer, JButton button) {
-
-        try {
-            buttonClicked = true;
-            JOptionPane.showMessageDialog(this, "Right Answer clicked!", "Right Answer!", JOptionPane.INFORMATION_MESSAGE);
-            client.setAnswer(rightAnswer);
-        } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void onWrongAnswer(String wrongAnswer, JButton button) {
-        try {
-            buttonClicked = true;
-            JOptionPane.showMessageDialog(this, "False Answer clicked!", "False Answer!", JOptionPane.INFORMATION_MESSAGE);
-            client.setAnswer(wrongAnswer);
-            this.setVisible(false);
-        } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public boolean isButtonClicked() {
-        return buttonClicked;
-    }
-    private boolean buttonClicked = false;
-    private int count = 16;
 
     class StopWatch {
 
@@ -146,6 +142,7 @@ public class QuestionView extends JFrame {
 
         public StopWatch(QuestionView questionView) {
             this.questionView = questionView;
+            
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
@@ -155,15 +152,13 @@ public class QuestionView extends JFrame {
                         count--;
                     }
                     if (buttonClicked) {
-                        this.cancel();
+                        this.cancel(); //Stopt den Timer
                     }
-
                     if (count == 0) {
                         try {
                             JOptionPane.showMessageDialog(questionView, "time is up", "Error", JOptionPane.INFORMATION_MESSAGE);
                             client.setAnswer("wrong");
                             this.cancel();
-
                         } catch (IOException ex) {
                             Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
                         }

@@ -1,15 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import beans.Category;
 import client.Client;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JButton;
@@ -19,7 +13,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author krieg
+ * @author Alex Mauko
  */
 public class ChooseCategory extends JFrame {
 
@@ -28,14 +22,15 @@ public class ChooseCategory extends JFrame {
     private ArrayList<Integer> listCategory = new ArrayList<>();
     private Client client;
 
-    public ChooseCategory(String title, ArrayList categories, Client client) {
-        super(title);
+    public ChooseCategory(ArrayList categories, Client client) {
+        super("Choose Category");
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(500, 500);
         this.categories = categories;
         this.client = client;
+
         initComponents();
     }
 
@@ -52,21 +47,16 @@ public class ChooseCategory extends JFrame {
         listCategory.clear();
     }
 
-    public JButton getCategories()
-    {
+    public JButton getCategories() {
         boolean isAlreadyInUse = true;
-        JButton button=null;
+        JButton button = null;
         Random rand = new Random();
-        
-        while(isAlreadyInUse)
-        {
-            int categoryID = rand.nextInt((categories.size()-1 - 0) + 0) + 0; 
-            if(listCategory.contains(categoryID))
-            {
+
+        while (isAlreadyInUse) {
+            int categoryID = rand.nextInt((categories.size() - 1 - 0) + 0) + 0;
+            if (listCategory.contains(categoryID)) {
                 System.out.println("already in use");
-            }
-            else
-            {
+            } else {
                 listCategory.add(categoryID);
                 String catName1 = categories.get(categoryID).getCategoryname();
                 button = new JButton(categories.get(categoryID).getCategoryname());
@@ -74,15 +64,10 @@ public class ChooseCategory extends JFrame {
                 isAlreadyInUse = false;
             }
         }
-        
         return button;
     }
-    
+
     public void setCategoryName(String cat) {
         client.choosedCategoryName(cat);
-    }
-
-    public static void main(String[] args) {
-        ChooseCategory cat = new ChooseCategory("cat", null, null);
     }
 }

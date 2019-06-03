@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import client.Client;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -25,7 +16,7 @@ import javax.swing.UIManager;
 
 /**
  *
- * @author kriegl
+ * @author Verena Kriegl
  */
 public class ScoreBoard extends JFrame {
 
@@ -82,11 +73,6 @@ public class ScoreBoard extends JFrame {
         c.add(lbHeadline, BorderLayout.NORTH);
         c.add(plScores, BorderLayout.CENTER);
         c.add(btCancel, BorderLayout.SOUTH);
-    }
-
-    public static void main(String[] args) {
-        ScoreBoard scoreBoard = new ScoreBoard("Scoreboard", null, null);
-        scoreBoard.setVisible(true);
     }
 
     private void onCancel() {

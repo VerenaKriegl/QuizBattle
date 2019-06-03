@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import client.Client;
-import com.sun.java.swing.plaf.windows.WindowsInternalFrameTitlePane;
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.logging.Level;
@@ -18,21 +10,24 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author tobia
+ * @author Tobias Wechtitsch
  */
-public class StartGame extends JFrame{
+public class StartGame extends JFrame {
+
     private Client client;
-    public StartGame(Client client)
-    {
+
+    public StartGame(Client client) {
         this.setLocationRelativeTo(null);
-        this.client = client;
         this.setTitle("StartGame");
         this.setSize(new Dimension(500, 300));
-        this.setLayout(new GridLayout(1,2));
+        this.setLayout(new GridLayout(1, 2));
+        this.client = client;
+
         JButton btHighScore = new JButton("Rangliste");
         btHighScore.addActionListener(e -> onShowHighScoreList());
         JButton btStart = new JButton("Spiel starten");
         btStart.addActionListener(e -> onStartGame());
+
         this.add(btHighScore);
         this.add(btStart);
     }
@@ -53,5 +48,4 @@ public class StartGame extends JFrame{
         ScoreBoard scoreBoard = new ScoreBoard("ScoreBoard", client, this);
         scoreBoard.setVisible(true);
     }
-    
 }

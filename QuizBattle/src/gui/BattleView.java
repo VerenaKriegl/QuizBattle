@@ -1,17 +1,10 @@
 package gui;
 
 import client.Client;
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.PopupMenu;
-import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Map;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,8 +21,9 @@ public class BattleView extends JFrame {
     private int scorePlayerOne, scorePlayerTwo;
     private JButton btPlay;
     private Client client;
-    
-    public BattleView(Client client, String username, String usernameFromOpponent, int scorePlayerOne,int scorePlayerTwo) {
+
+    public BattleView(Client client, String username, String usernameFromOpponent, int scorePlayerOne, int scorePlayerTwo) {
+        super("BattleView");
         this.client = client;
         setSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
@@ -54,12 +48,12 @@ public class BattleView extends JFrame {
     private JPanel getPlayers() {
         JPanel plScore = new JPanel();
         plScore.setLayout(new GridLayout(1, 5));
-        
+
         JLabel lbPlayerOne = new JLabel(player1);
         JLabel lbPlayerTwo = new JLabel(player2);
 
-        JLabel lbScorePlayerOne = new JLabel(""+client.getScorePlayerOne());
-        JLabel lbScorePlayerTwo = new JLabel(""+client.getScorePlayerTwo());
+        JLabel lbScorePlayerOne = new JLabel("" + client.getScorePlayerOne());
+        JLabel lbScorePlayerTwo = new JLabel("" + client.getScorePlayerTwo());
 
         JLabel lbTextHolder = new JLabel("-");
 
@@ -68,6 +62,7 @@ public class BattleView extends JFrame {
         plScore.add(lbTextHolder);
         plScore.add(lbPlayerTwo);
         plScore.add(lbScorePlayerTwo);
+
         return plScore;
     }
 
@@ -76,8 +71,6 @@ public class BattleView extends JFrame {
         lbHeadline.setFont(new Font("Serif", Font.BOLD, 28));
         return lbHeadline;
     }
-
-   
 
     private JButton getPlayButton() {
         btPlay = new JButton("Play");
@@ -90,8 +83,7 @@ public class BattleView extends JFrame {
         client.getQuestion();
     }
 
-    public void setPlayButton() 
-    {
+    public void setPlayButton() {
         btPlay.setVisible(true);
     }
 }

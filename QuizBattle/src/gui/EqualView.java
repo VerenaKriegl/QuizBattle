@@ -10,11 +10,12 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author Verena Kriegl
+ * @author Alex Mauko
  */
 public class EqualView extends JFrame {
 
     public EqualView() {
+        super("Unentschieden!");
         setSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -28,10 +29,5 @@ public class EqualView extends JFrame {
         ImageIcon image = new ImageIcon("src/images/twoWinners.jpg");        
         JLabel lbEqual = new JLabel(image);
         c.add(lbEqual);
-    }
-    
-    public static void main(String[] args) {
-        EqualView q = new EqualView();
-        q.setVisible(true);
     }
 }
