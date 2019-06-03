@@ -127,7 +127,6 @@ public class Server {
 
         //überprüft, ob sich der Benutzer einloggen kann
         private boolean login(Account account) throws SQLException {
-            System.out.println(account.getUsername());
             Account loginAccount = dba.getAccountByUsername(account.getUsername());
             if (loginAccount == null) {
                 return false;
@@ -144,7 +143,7 @@ public class Server {
                 oos.writeObject(message);
                 oos.flush();
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("Excpetion: unable to communicate with client");
             }
         }
 
@@ -175,7 +174,6 @@ public class Server {
                 //login und registrieren
                 do {
                     type = (String) ois.readObject();
-                    System.out.println(type.toString());
                     if (type.equals("signup")) {
                         Account newAccount = (Account) ois.readObject();
                         registrated = registrate(newAccount);
@@ -193,7 +191,6 @@ public class Server {
                         }
                     } else if (type.equals("login")) {
                         Account recievedAccount = (Account) ois.readObject();
-                        System.out.println(recievedAccount.getUsername());
                         loggedIn = login(recievedAccount);
                         if (loggedIn) {
                             username = recievedAccount.getUsername();
@@ -231,7 +228,7 @@ public class Server {
                     }
                 }
                 log("after while()");
-            } catch (IOException | ClassNotFoundException | SQLException ex) {
+            } catch (Exception ex) {
                 log("Exception: unable to communicate with client: " + ex);
             }
         }
@@ -243,18 +240,17 @@ public class Server {
             mapGames.put(mapGames.size() + 1, players);
             WaitForPlayer waitForPlayer = new WaitForPlayer(mapGames.size());
             waitForPlayer.start();
-            System.out.println("Spiel erzeugt!");
+            log("Spiel erzeugt!");
         }
 
         //User tritt einem Spiel bei
         private boolean joinGame() {
-            System.out.println("hier");
             for (ArrayList gamePlayer : mapGames.values()) {
                 if (gamePlayer.size() == 1) {
                     for (int gameNumber : mapGames.keySet()) {
                         gamePlayer.add(oos);
                         mapGames.replace(gameNumber, gamePlayer);
-                        System.out.println("Spiel gefunden!");
+                        log("Spiel gefunden!");
                         return true;
                     }
                 }
@@ -336,9 +332,8 @@ public class Server {
                 Random rand = new Random();
                 int randomQuestionNumber = rand.nextInt((count - 0) + 0) + 0;
                 return dba.getQuestionByCategory(catname, randomQuestionNumber);
-
             } catch (SQLException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("Exception: Unable to read Questions from DB");
             }
             return null;
         }
@@ -351,10 +346,8 @@ public class Server {
                 mapRoundScore.put(currentPlayer, score);
                 mapRoundScore.put(secondPlayer, score);
                 playRound(5);
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                log("Exception: unable to start the battle");
             }
         }
 
@@ -386,7 +379,7 @@ public class Server {
                 dba.setNewHighScoreFromUser(newHighScoreFromWinner, usernameFromWinner);
                 dba.setNewHighScoreFromUser(newHighScoreFromLoser, usernameFromLoser);
             } catch (SQLException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("Exception: unable to set new highscore in DB");
             }
         }
 
@@ -417,7 +410,7 @@ public class Server {
                     setHighScores(5, currentRoundPlayer, currentRoundWaiter);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("Exception: unable to calculate winner and loser");
             }
         }
 
@@ -441,7 +434,7 @@ public class Server {
                     if (cat.getCategoryname().equals(categoryName)) {
                         question = getQuestionFromDB(categoryName, currentPlayer);
                         sendQuestion(question);
-                        System.out.println("CategoryName: " + categoryName);
+                        log("CategoryName: " + categoryName);
                         break;
                     }
                 }
@@ -487,7 +480,7 @@ public class Server {
                 myOutputStream.writeObject(usernameOpponent);
                 myOutputStream.flush();
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                log("Exception: unable to get the username of the opponent");
             }
         }
 
