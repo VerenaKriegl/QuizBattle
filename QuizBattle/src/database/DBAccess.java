@@ -223,13 +223,4 @@ public class DBAccess {
         pStat.executeUpdate();
         DBStatementPool.releaseStatement(pStat);
     }
-    
-    public static void main(String[] args) {
-        try {
-            DBAccess db = new DBAccess();
-            db.setNewHighScoreFromUser(0, "rr");
-        } catch (SQLException ex) {
-            Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }
