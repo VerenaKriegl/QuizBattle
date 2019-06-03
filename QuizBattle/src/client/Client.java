@@ -13,8 +13,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -107,7 +105,7 @@ public class Client {
             oos.writeObject("highScoreList");
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to get highscore");
         }
     }
 
@@ -115,10 +113,9 @@ public class Client {
         //Schickt dem Server eine Nachricht, für welche Kategorie der Client sich entschieden hat
         try {
             oos.writeObject(categoryName);
-            System.out.println("Client: " + categoryName);
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to get all catgories");
         }
     }
 
@@ -151,7 +148,7 @@ public class Client {
             oos.writeObject("ready");
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            log("Exception: unable to show question");
         }
     }
 
