@@ -5,7 +5,6 @@ import client.Client;
 import start.GUIBuilder;
 import gui.StartPage;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -41,9 +40,8 @@ public class LoginDlg extends JDialog {
         this.setLocationRelativeTo(null);
         this.setPreferredSize(new Dimension(500, 600));
         this.setResizable(false);
-        initComponents();
-
         this.pack();
+        initComponents();
 
         ok = false;
     }

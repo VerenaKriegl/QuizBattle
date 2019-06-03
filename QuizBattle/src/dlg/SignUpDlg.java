@@ -2,7 +2,6 @@ package dlg;
 
 import beans.Account;
 import client.Client;
-import gui.LoadingView;
 import gui.StartPage;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -26,7 +25,7 @@ import javax.swing.SpinnerDateModel;
 
 /**
  *
- * @author Alex Mauko2
+ * @author Alex Mauko
  */
 public class SignUpDlg extends JDialog {
 
@@ -42,7 +41,6 @@ public class SignUpDlg extends JDialog {
 
     public SignUpDlg(StartPage startPage, boolean modal, Client client) {
         super(startPage, modal);
-
         this.startPage = startPage;
         this.client = client;
         this.pack();
@@ -58,12 +56,12 @@ public class SignUpDlg extends JDialog {
     private void initComponents() {
         Container container = this.getContentPane();
         container.setLayout(new BorderLayout());
-        
+
         ImageIcon icon = new ImageIcon("src/images/signup.png");
         JLabel lbRegistrationLogo = new JLabel(icon);
 
         container.add(lbRegistrationLogo, BorderLayout.NORTH);
-        container.add(getSignUpMenu(), BorderLayout.CENTER); 
+        container.add(getSignUpMenu(), BorderLayout.CENTER);
     }
 
     private JPanel getSignUpMenu() {
@@ -118,8 +116,7 @@ public class SignUpDlg extends JDialog {
                 Logger.getLogger(SignUpDlg.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Password doesn't match!",
-                    "Failed", 1);
+            JOptionPane.showMessageDialog(this, "Password doesn't match!", "Failed", 1);
         }
     }
 
@@ -134,8 +131,13 @@ public class SignUpDlg extends JDialog {
         LocalDate localDate = date.toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDate();
 
-        newAccount = new Account(tfUsername.getText(), pfPass.getText(),
-                tfMail.getText(), 1, localDate, 0);
+        newAccount = new Account(
+                tfUsername.getText(), 
+                pfPass.getText(),
+                tfMail.getText(), 
+                1, 
+                localDate, 
+                0);
         return newAccount;
     }
 
