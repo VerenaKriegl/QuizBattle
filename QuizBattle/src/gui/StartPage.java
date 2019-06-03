@@ -6,10 +6,7 @@ import dlg.SignUpDlg;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Font;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,14 +70,9 @@ public class StartPage extends JFrame {
     }
 
     private void signUp() {
-        System.out.println("signup");
-        //Open Signup
         this.setVisible(false);
-        System.out.println(client);
         SignUpDlg dlg = new SignUpDlg(this, true, client);
         dlg.setVisible(true);
-        if (dlg.isOK()) {
-        }
     }
 
     public void setJOptionPane() {
