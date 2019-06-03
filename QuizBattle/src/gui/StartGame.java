@@ -3,8 +3,6 @@ package gui;
 import client.Client;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -43,7 +41,7 @@ public class StartGame extends JFrame {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(StartGame.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in StartGame: Thread.sleep does not work");
         }
         ScoreBoard scoreBoard = new ScoreBoard("ScoreBoard", client, this);
         scoreBoard.setVisible(true);
