@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -97,7 +95,7 @@ public class QuestionView extends JFrame {
             JOptionPane.showMessageDialog(this, "Right Answer clicked!", "Right Answer!", JOptionPane.INFORMATION_MESSAGE);
             client.setAnswer(rightAnswer);
         } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in QuestionView: unable to send answer");
         }
     }
 
@@ -108,7 +106,7 @@ public class QuestionView extends JFrame {
             client.setAnswer(wrongAnswer);
             this.setVisible(false);
         } catch (IOException ex) {
-            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in QuestionView: unable to send answer");
         }
     }
 
@@ -142,7 +140,7 @@ public class QuestionView extends JFrame {
 
         public StopWatch(QuestionView questionView) {
             this.questionView = questionView;
-            
+
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
@@ -160,7 +158,7 @@ public class QuestionView extends JFrame {
                             client.setAnswer("wrong");
                             this.cancel();
                         } catch (IOException ex) {
-                            Logger.getLogger(QuestionView.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("Exception in QuestionView: unable to send answer");
                         }
                     }
                 }
