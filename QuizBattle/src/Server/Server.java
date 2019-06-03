@@ -371,20 +371,20 @@ public class Server {
         //Am Ende eines Battles werden die HighScores aktualisiert
         private void setHighScores(int points, ObjectOutputStream oosLoser, ObjectOutputStream oosWinner) {
             try {
+
                 mapHighScore = dba.getAllHighScoresFromDB();
                 String usernameFromWinner = mapClients.get(oosWinner);
-                System.out.println("Username from Winner: "+usernameFromWinner);
                 int newHighScoreFromWinner = mapHighScore.get(usernameFromWinner);
                 newHighScoreFromWinner += points;
-                System.out.println("New HighScore from Winner: "+newHighScoreFromWinner);
                 String usernameFromLoser = mapClients.get(oosLoser);
-                System.out.println("Username from Loser: "+usernameFromLoser);
                 int newHighScoreFromLoser = mapHighScore.get(usernameFromLoser);
-                newHighScoreFromLoser -= points;
-                System.out.println("new Highscore from loser: "+newHighScoreFromLoser);
+                if (points == 5) {
+                    newHighScoreFromLoser += points;
+                } else {
+                    newHighScoreFromLoser -= points;
+                }
                 dba.setNewHighScoreFromUser(newHighScoreFromWinner, usernameFromWinner);
                 dba.setNewHighScoreFromUser(newHighScoreFromLoser, usernameFromLoser);
-                System.out.println("highscores aktuelisiert");
             } catch (SQLException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -414,13 +414,13 @@ public class Server {
                     currentRoundPlayer.flush();
                     currentRoundWaiter.writeObject("equal");
                     currentRoundWaiter.flush();
-                  //  setHighScores(5, currentPlayer, currentRoundWaiter);
+                    setHighScores(5, currentRoundPlayer, currentRoundWaiter);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         //Regelt den Ablauf einer Runde
         private void playRound(int roundAmount) throws IOException, ClassNotFoundException {
             int countPlayer = 0;
