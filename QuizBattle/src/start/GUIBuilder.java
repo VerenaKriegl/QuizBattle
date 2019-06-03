@@ -9,7 +9,6 @@ import gui.ChooseCategory;
 import gui.EqualView;
 import gui.LoadingView;
 import gui.LoserView;
-import gui.PlayerWait;
 import gui.QuestionView;
 import gui.StartGame;
 import gui.StartPage;
@@ -17,146 +16,119 @@ import gui.WinnerView;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
- * @author kriegl
+ * @author Tobias Wechtitsch
  */
 public class GUIBuilder {
+
     private LoadingView loadingView = null;
     private StartGame startGame;
     private StartPage startPage;
     private LoginDlg loginDlg;
     private QuestionView questionView;
-    private PlayerWait playerWait;
     private Client client;
     private BattleView battleView;
     private EqualView equalView;
     private boolean battleViewOpen = false;
-    
-    public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories){
-        ChooseCategory chooseCategory = new ChooseCategory("Category", categories, client);
-        chooseCategory.setVisible(true);
-        return chooseCategory;
-    }
-    public GUIBuilder()
-    {
+
+    public GUIBuilder() {
         client = new Client();
         client.setGUIBuilder(this);
         openStartPage(false);
     }
-    
-    public void openEqualView()
-    {
+
+    public ChooseCategory openChooseCategoryGUI(ArrayList<Category> categories) {
+        ChooseCategory chooseCategory = new ChooseCategory(categories, client);
+        chooseCategory.setVisible(true);
+        return chooseCategory;
+    }
+
+    public void openEqualView() {
         equalView = new EqualView();
         equalView.setVisible(true);
     }
-    
-    public void openStartPage(boolean loginFailed)
-    {
-      if(!loginFailed)
-      {
-          try {
-              startPage = new StartPage("StartPage", client, this);
-              startPage.setVisible(true);
-          } catch (ClassNotFoundException ex) {
-              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
-          } catch (InstantiationException ex) {
-              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
-          } catch (IllegalAccessException ex) {
-              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
-          } catch (UnsupportedLookAndFeelException ex) {
-              Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
-          }
-      }
-      else
-      {
-          startPage.setVisible(true);
-          startPage.setJOptionPane();
-      }
+
+    public void openStartPage(boolean loginFailed) {
+        try {
+            if (!loginFailed) {
+                startPage = new StartPage("StartPage", client, this);
+                startPage.setVisible(true);
+            } else {
+                startPage.setVisible(true);
+                startPage.setJOptionPane();
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIBuilder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-    public void openLoginDlg()
-    {
+
+    public void openLoginDlg() {
         loginDlg = new LoginDlg(startPage, true, client, this);
         loginDlg.setVisible(true);
     }
-    
-    public void openPlayerWait(int scorePlayerOne, int scorePlayerTwo)
-    {
-        playerWait = new PlayerWait(scorePlayerOne, scorePlayerTwo);
-        playerWait.setVisible(true);
-    }
-    
-    public void openLoadingViewGUI(){
-        loadingView = new LoadingView("Loading", client);
+
+    public void openLoadingViewGUI() {
+        loadingView = new LoadingView(client);
         loadingView.setVisible(true);
     }
-    public void openStartGame()
-    {
+
+    public void openStartGame() {
         startGame = new StartGame(client);
         startGame.setVisible(true);
     }
-    public void closeLoadingView(){
-        if(loadingView.isVisible()){
+
+    public void closeLoadingView() {
+        if (loadingView.isVisible()) {
             loadingView.setVisible(false);
         }
     }
-    
-    public void closeCategoryView(ChooseCategory chooseCategory){
+
+    public void closeCategoryView(ChooseCategory chooseCategory) {
         chooseCategory.setVisible(false);
     }
-    
-    public void closeQuestionView()
-    {
+
+    public void closeQuestionView() {
         questionView.setVisible(false);
     }
-    
-    public void openQuestionView(Question question){
-        questionView = new QuestionView("Question", question, client);
+
+    public void openQuestionView(Question question) {
+        questionView = new QuestionView(question, client);
         questionView.setVisible(true);
     }
-    
-    public static void main(String[] args) {
-        new GUIBuilder();
-    }
 
-    public void closePlayerWait() 
-    {
-        if(playerWait != null)
-        {
-            playerWait.setVisible(false);
-        }
-    }
-
-    public boolean isBattleViewOpen()
-    {
+    public boolean isBattleViewOpen() {
         return battleViewOpen;
     }
+
     public void openBattleView(String username, String usernameFromOpponent, int scorePlayerOne, int scorePlayerTwo) {
         battleView = new BattleView(client, username, usernameFromOpponent, scorePlayerOne, scorePlayerTwo);
         battleView.setVisible(true);
-        battleViewOpen=true;
+        battleViewOpen = true;
     }
-    
+
     public void closeBattleView() {
-        if(battleView != null){
+        if (battleView != null) {
             battleView.setVisible(false);
         }
     }
-    
-    public void openWinnerView(){
+
+    public void openWinnerView() {
         WinnerView winnerView = new WinnerView();
         winnerView.setVisible(true);
     }
-    
-    public void openLoserView(){
+
+    public void openLoserView() {
         LoserView loserView = new LoserView();
         loserView.setVisible(true);
     }
 
     public void setButton() {
         battleView.setPlayButton();
+    }
+
+    public static void main(String[] args) {
+        new GUIBuilder();
     }
 }
