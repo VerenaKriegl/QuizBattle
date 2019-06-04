@@ -1,6 +1,7 @@
 package gui;
 
 import client.Client;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -65,6 +66,8 @@ public class BattleView extends JFrame {
 
         return plScore;
     }
+    
+   
 
     private JLabel getHeadline() {
         JLabel lbHeadline = new JLabel("BattleOverview");

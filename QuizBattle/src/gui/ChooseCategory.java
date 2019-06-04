@@ -2,6 +2,7 @@ package gui;
 
 import beans.Category;
 import client.Client;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -39,6 +41,8 @@ public class ChooseCategory extends JFrame {
         c.setLayout(new GridLayout(4, 1));
 
         JLabel lbHeadline = new JLabel("Choose Category: ");
+        lbHeadline.setOpaque(true);
+        lbHeadline.setBackground(new Color(255, 174, 2));
         c.add(lbHeadline);
 
         c.add(getCategories());
@@ -61,6 +65,8 @@ public class ChooseCategory extends JFrame {
                 String catName1 = categories.get(categoryID).getCategoryname();
                 button = new JButton(categories.get(categoryID).getCategoryname());
                 button.addActionListener(e -> setCategoryName(catName1));
+                modifyButton(button);
+
                 isAlreadyInUse = false;
             }
         }
@@ -69,5 +75,19 @@ public class ChooseCategory extends JFrame {
 
     public void setCategoryName(String cat) {
         client.choosedCategoryName(cat);
+    }
+
+    private void modifyButton(JButton button) {
+        button.setBackground(new Color(2, 189, 252));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(255, 174, 2));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(2, 189, 252));
+            }
+        });
+        button.setBorder(new LineBorder(Color.BLACK));
     }
 }

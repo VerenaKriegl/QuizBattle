@@ -62,6 +62,8 @@ public class QuestionView extends JFrame {
 
         JLabel lbQuestion = new JLabel(question);
         lbQuestion.setFont(new Font("Serif", Font.BOLD, 28));
+        lbQuestion.setOpaque(true);
+        lbQuestion.setBackground(new Color(255, 174, 2));
 
         c.add(lbQuestion, BorderLayout.NORTH);
 
@@ -70,12 +72,19 @@ public class QuestionView extends JFrame {
 
         JButton btRightAnswer = new JButton(rightAnswer);
         btRightAnswer.addActionListener(e -> onRightAnswerClicked(rightAnswer));
+        modifyButton(btRightAnswer);
+        
         JButton btFirstFalseAnswer = new JButton(firstFalseAnswer);
         btFirstFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(0)));
+        modifyButton(btFirstFalseAnswer);
+        
         JButton btSecondFalseAnswer = new JButton(secondFalseAnswer);
         btSecondFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(1)));
+        modifyButton(btSecondFalseAnswer);
+        
         JButton btThirdFalseAnswer = new JButton(thirdFalseAnswer);
         btThirdFalseAnswer.addActionListener(e -> onWrongAnswer(wrongAnswers.get(2)));
+        modifyButton(btThirdFalseAnswer);
 
         JPanel plAnswers = new JPanel(new GridLayout(2, 2));
         randomOrder(plAnswers, randomNumber, btRightAnswer, btFirstFalseAnswer, btSecondFalseAnswer, btThirdFalseAnswer);
@@ -84,9 +93,23 @@ public class QuestionView extends JFrame {
         ImageIcon imageIcon = new ImageIcon("src/images/timePanel.gif");
         imageIcon.setImage(imageIcon.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT));
         JLabel lbImageHolder = new JLabel(imageIcon);
+        lbImageHolder.setBackground(new Color(255, 212, 86));
         c.add(lbImageHolder, BorderLayout.SOUTH);
 
         stopWatch = new StopWatch(this);
+    }
+
+    private void modifyButton(JButton button) {
+        button.setBackground(new Color(2, 189, 252));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(255, 174, 2));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(2, 189, 252));
+            }
+        });
     }
 
     private void onRightAnswerClicked(String rightAnswer) {

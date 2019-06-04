@@ -37,6 +37,7 @@ public class LoginDlg extends JDialog {
     public LoginDlg(StartPage startPage, Client client, GUIBuilder gui) {
         super(startPage);
         this.startPage = startPage;
+        this.setLocationRelativeTo(null);
         this.client = client;
         this.guiBuilder = gui;
         this.setTitle("Log-in Dialog");
@@ -58,6 +59,7 @@ public class LoginDlg extends JDialog {
         
         JLabel lbLogin = new JLabel("LogIn", JLabel.CENTER);
         lbLogin.setOpaque(true);
+        lbLogin.setBorder(new LineBorder(Color.black));
         lbLogin.setFont(new Font("Arial", Font.ROMAN_BASELINE, 120));
         lbLogin.setForeground(Color.BLACK);
         lbLogin.setBackground(new Color(255, 174, 2));
