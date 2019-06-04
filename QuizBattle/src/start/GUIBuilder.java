@@ -4,6 +4,7 @@ import beans.Category;
 import beans.Question;
 import client.Client;
 import dlg.LoginDlg;
+import dlg.SignUpDlg;
 import gui.BattleView;
 import gui.ChooseCategory;
 import gui.EqualView;
@@ -14,6 +15,7 @@ import gui.StartGame;
 import gui.StartPage;
 import gui.WinnerView;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ public class GUIBuilder {
     private QuestionView questionView;
     private Client client;
     private BattleView battleView;
+    private SignUpDlg signUp;
     private EqualView equalView;
     private boolean battleViewOpen = false;
 
@@ -65,7 +68,7 @@ public class GUIBuilder {
     }
 
     public void openLoginDlg() {
-        loginDlg = new LoginDlg(startPage, true, client, this);
+        loginDlg = new LoginDlg(startPage, client, this);
         loginDlg.setVisible(true);
     }
 
@@ -74,8 +77,8 @@ public class GUIBuilder {
         loadingView.setVisible(true);
     }
 
-    public void openStartGame() {
-        startGame = new StartGame(client);
+    public void openStartGame(Map<String, Integer> map) {
+        startGame = new StartGame(client, map);
         startGame.setVisible(true);
     }
 
@@ -130,5 +133,11 @@ public class GUIBuilder {
 
     public static void main(String[] args) {
         new GUIBuilder();
+    }
+
+    public void openSignUpDlg() 
+    {
+        signUp = new SignUpDlg(startPage, client);
+        signUp.setVisible(true);
     }
 }

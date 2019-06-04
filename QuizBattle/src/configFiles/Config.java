@@ -8,5 +8,5 @@ public interface Config {
     String DB_PASSWD = "postgres";
     String DB_DRIVER = "org.postgresql.Driver";
     //Server-Client
-    String IP_ADDRESS = "172.20.10.10";
+    String IP_ADDRESS = "172.20.10.2";
 } 

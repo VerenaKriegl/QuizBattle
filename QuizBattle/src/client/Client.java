@@ -164,7 +164,8 @@ public class Client {
                         log("Login or registration failed!");
                     } else if (message.equals("loggedin")) {
                         myUsername = (String) ois.readObject();
-                        gui.openStartGame();
+                        mapHighScores = (Map<String, Integer>) ois.readObject();
+                        gui.openStartGame(mapHighScores);
                         log("You are logged in!");
                     } else if (message.equals("wait")) {
                         //Setzte den Player in den Wartezustand
@@ -213,7 +214,7 @@ public class Client {
                         gui.openEqualView();
                     } else if(message.equals("highScores")){
                         //Erhält von allen Usern die HighScores
-                        mapHighScores = (Map<String, Integer>) ois.readObject();
+                        
                     }else {
                         log(message);
                     } 

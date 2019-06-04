@@ -1,10 +1,17 @@
 package gui;
 
 import client.Client;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -13,22 +20,64 @@ import javax.swing.JFrame;
 public class StartGame extends JFrame {
 
     private Client client;
+    private int counterForPlace = 0;
+    private Map<String, Integer> mapHighScore;
 
-    public StartGame(Client client) {
+    public StartGame(Client client, Map<String, Integer> map) {
         this.setLocationRelativeTo(null);
         this.setTitle("StartGame");
-        this.setSize(new Dimension(500, 300));
+        this.mapHighScore = map;
+        
+        this.setSize(new Dimension(700, 520));
+        this.setResizable(false);
         this.setLayout(new GridLayout(1, 2));
         this.client = client;
+        
+        this.setLayout(new BorderLayout());
+        
+        JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 3));
+        plScores.setBackground(new Color(255, 174, 2));
+        JLabel lbHeadlinePlace = new JLabel("Places");
+        lbHeadlinePlace.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
+        plScores.add(lbHeadlinePlace);
+        
+        JLabel lbHeadlinePlayer = new JLabel("Player");
+        lbHeadlinePlayer.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
+        plScores.add(lbHeadlinePlayer);
+        
+        JLabel lbHeadlineCoins = new JLabel("Coins");
+        lbHeadlineCoins.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
+        plScores.add(lbHeadlineCoins);
 
-        JButton btHighScore = new JButton("Rangliste");
-        btHighScore.addActionListener(e -> onShowHighScoreList());
-        JButton btStart = new JButton("Spiel starten");
+        for (String username : map.keySet()) {
+            counterForPlace++;
+            JLabel lbPlace = new JLabel(""+counterForPlace);
+            JLabel lbUsername = new JLabel(username);
+            JLabel lbHighScore = new JLabel("" + map.get(username));
+
+            plScores.add(lbPlace);
+            plScores.add(lbUsername);
+            plScores.add(lbHighScore);
+        }
+        plScores.setBorder(new LineBorder(Color.black));
+       
+        JButton btStart = new JButton("Neues Spiel starten");
         btStart.addActionListener(e -> onStartGame());
+        btStart.setBackground(new Color(2, 189, 252));
+        btStart.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btStart.setBackground(new Color(255, 174, 2));
+            }
 
-        this.add(btHighScore);
-        this.add(btStart);
-    }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btStart.setBackground(new Color(2, 189, 252));
+            }
+        });
+        btStart.setBorder(new LineBorder(Color.BLACK));
+        
+        this.add(plScores, BorderLayout.NORTH);
+        this.add(btStart, BorderLayout.CENTER);
+    }  
 
     private void onStartGame() {
         client.startGame();
@@ -46,4 +95,5 @@ public class StartGame extends JFrame {
         ScoreBoard scoreBoard = new ScoreBoard("ScoreBoard", client, this);
         scoreBoard.setVisible(true);
     }
+    
 }

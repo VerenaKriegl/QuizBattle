@@ -6,6 +6,7 @@ import dlg.SignUpDlg;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,13 +30,12 @@ public class StartPage extends JFrame {
 
     public StartPage(String title, Client client, GUIBuilder gui) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         super(title);
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         this.client = client;
         this.gui = gui;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(500, 500);
-        
+
         initComponents();
     }
 
@@ -48,20 +48,56 @@ public class StartPage extends JFrame {
         plImage = new JPanel();
         plImage.setLayout(new BorderLayout());
         plImage.add(lbImage);
-        plImage.setBackground(Color.white);
+        plImage.setBackground(new Color(255, 174, 2));
         plImage.setBorder(new LineBorder(Color.BLACK));
-        c.add(plImage);
 
+        c.add(plImage);
+        c.add(createLoginButton());
+        c.add(createRegistrateButton());
+    }
+
+    private JButton createLoginButton() {
         JButton btLogin = new JButton("Login");
         btLogin.addActionListener(e -> login());
         btLogin.setBorder(new LineBorder(Color.BLACK));
-        c.add(btLogin);
 
+        btLogin.setBackground(new Color(2, 189, 252));
+        btLogin.setBorder(new LineBorder(new Color(36, 37, 38)));
+        btLogin.setForeground(new Color(0, 0, 0));
+        btLogin.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
+        btLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btLogin.setBackground(new Color(255, 174, 2));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btLogin.setBackground(new Color(2, 189, 252));
+            }
+        });
+        return btLogin;
+    }
+
+    private JButton createRegistrateButton() {
         JButton btSignUp = new JButton("Registrieren");
-        btSignUp.addActionListener(e -> signUp());
         btSignUp.setBorder(null);
         btSignUp.setBorder(new LineBorder(Color.BLACK));
-        c.add(btSignUp);
+
+        btSignUp.setBorder(null);
+        btSignUp.setForeground(new Color(0, 0, 0));
+        btSignUp.setBackground(new Color(2, 189, 252));
+        btSignUp.addActionListener(e -> signUp());
+        btSignUp.setBorder(new LineBorder(new Color(36, 37, 38)));
+        btSignUp.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
+        btSignUp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btSignUp.setBackground(new Color(255, 174, 2));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btSignUp.setBackground(new Color(2, 189, 252));
+            }
+        });
+        return btSignUp;
     }
 
     private void login() {
@@ -71,8 +107,7 @@ public class StartPage extends JFrame {
 
     private void signUp() {
         this.setVisible(false);
-        SignUpDlg dlg = new SignUpDlg(this, true, client);
-        dlg.setVisible(true);
+        gui.openSignUpDlg();
     }
 
     public void setJOptionPane() {

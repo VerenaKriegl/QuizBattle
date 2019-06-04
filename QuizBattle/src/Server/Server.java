@@ -180,11 +180,13 @@ public class Server {
                         newAccount.setUserid(highestID + 1);
                         if (registrated) {
                             username = newAccount.getUsername();
+                            sendMessage("loggedin");
+                            sendMessage(username);
+                            
                             dba.addAccount(newAccount);
                             mapClients.put(oos, username);
                             mapInputClients.put(oos, ois);
-                            sendMessage("loggedin");
-                            sendMessage(username);
+                            
                             log(username + " signed up");
                         } else {
                             sendMessage("Registrierung fehlgeschlagen!");
@@ -199,6 +201,10 @@ public class Server {
                             mapInputClients.put(oos, ois);
                             sendMessage("loggedin");
                             sendMessage(username);
+                            
+                            mapHighScore = dba.getAllHighScoresFromDB();                           
+                            oos.writeObject(mapHighScore);
+                            oos.flush();
                             log(username + " logged in");
                         } else {
                             sendMessage("failed");
@@ -219,13 +225,8 @@ public class Server {
                     } else if (type.equals("startgame")) {
                         startGame();
                         isAvailable = false;
-                    } else if (type.equals("highScoreList")) {
-                        //Liest alle derzeitigen HighScores aller Benutzer aus der Datenbank
-                        mapHighScore = dba.getAllHighScoresFromDB();
-                        sendMessage("highScores");
-                        oos.writeObject(mapHighScore);
-                        oos.flush();
-                    }
+                    } 
+                    
                 }
                 log("after while()");
             } catch (Exception ex) {

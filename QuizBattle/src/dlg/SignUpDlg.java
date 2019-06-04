@@ -39,8 +39,8 @@ public class SignUpDlg extends JDialog {
     private StartPage startPage;
     private Client client;
 
-    public SignUpDlg(StartPage startPage, boolean modal, Client client) {
-        super(startPage, modal);
+    public SignUpDlg(StartPage startPage,Client client) {
+        super(startPage);
         this.startPage = startPage;
         this.client = client;
         this.pack();

@@ -40,9 +40,6 @@ public class ScoreBoard extends JFrame {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
 
-        UIManager.put("Label.font", UIManager.getFont("Label.font").deriveFont(40));
-        SwingUtilities.updateComponentTreeUI(this);
-
         map = client.getAllHighScores();
         JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 3)); //Anzahl der User
 
