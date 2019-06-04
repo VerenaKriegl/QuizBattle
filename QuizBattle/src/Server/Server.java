@@ -184,6 +184,9 @@ public class Server {
                             mapClients.put(oos, username);
                             mapInputClients.put(oos, ois);
                             
+                            mapHighScore = dba.getAllHighScoresFromDB();                           
+                            oos.writeObject(mapHighScore);
+                            oos.flush();
                             log(username + " signed up");
                         } else {
                             sendMessage("Registrierung fehlgeschlagen!");
