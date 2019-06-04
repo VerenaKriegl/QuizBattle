@@ -39,7 +39,8 @@ public class ScoreBoard extends JFrame {
     private void initComponents() {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
-
+        
+        client.highScoreMap();
         map = client.getAllHighScores();
         JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 3)); //Anzahl der User
 

@@ -23,10 +23,10 @@ public class StartGame extends JFrame {
     private int counterForPlace = 0;
     private Map<String, Integer> mapHighScore;
 
-    public StartGame(Client client, Map<String, Integer> map) {
+    public StartGame(Client client, Map<String, Integer> mapHighScore) {
         this.setLocationRelativeTo(null);
         this.setTitle("StartGame");
-        this.mapHighScore = map;
+        this.mapHighScore = mapHighScore;
         
         this.setSize(new Dimension(700, 520));
         this.setResizable(false);
@@ -35,7 +35,9 @@ public class StartGame extends JFrame {
         
         this.setLayout(new BorderLayout());
         
-        JPanel plScores = new JPanel(new GridLayout(map.size() + 1, 3));
+        client.highScoreMap();
+        mapHighScore = client.getAllHighScores();
+        JPanel plScores = new JPanel(new GridLayout(mapHighScore.size() + 1, 3));
         plScores.setBackground(new Color(255, 174, 2));
         JLabel lbHeadlinePlace = new JLabel("Places");
         lbHeadlinePlace.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
@@ -49,11 +51,11 @@ public class StartGame extends JFrame {
         lbHeadlineCoins.setFont(new Font("Arial", Font.ROMAN_BASELINE, 30));
         plScores.add(lbHeadlineCoins);
 
-        for (String username : map.keySet()) {
+        for (String username : mapHighScore.keySet()) {
             counterForPlace++;
             JLabel lbPlace = new JLabel(""+counterForPlace);
             JLabel lbUsername = new JLabel(username);
-            JLabel lbHighScore = new JLabel("" + map.get(username));
+            JLabel lbHighScore = new JLabel("" + mapHighScore.get(username));
 
             plScores.add(lbPlace);
             plScores.add(lbUsername);
@@ -86,7 +88,6 @@ public class StartGame extends JFrame {
 
     private void onShowHighScoreList() {
         this.setVisible(false);
-        client.highScoreMap();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
