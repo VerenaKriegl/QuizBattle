@@ -204,7 +204,4 @@ public class SignUpDlg extends JDialog {
     public Boolean isOK() {
         return ok;
     }
-    public static void main(String[] args) {
-        new SignUpDlg(null, null).setVisible(true);
-    }
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
@@ -15,7 +16,7 @@ import javax.swing.JLabel;
 public class EqualView extends JFrame {
 
     public EqualView() {
-        super("Unentschieden!");
+        super("Unentschieden");
         setSize(new Dimension(500, 600));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -26,7 +27,8 @@ public class EqualView extends JFrame {
     private void initComponents() {
         Container c = this.getContentPane();
         c.setLayout(new BorderLayout());
-        ImageIcon image = new ImageIcon("src/images/twoWinners.jpg");        
+        c.setBackground(Color.white);
+        ImageIcon image = new ImageIcon("src/images/unentschieden.gif");        
         JLabel lbEqual = new JLabel(image);
         c.add(lbEqual);
     }
