@@ -1,6 +1,7 @@
 package gui;
 
 import client.Client;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -10,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -39,11 +41,11 @@ public class BattleView extends JFrame {
 
     private void initComponents() {
         Container container = this.getContentPane();
-        container.setLayout(new GridLayout(3, 1));
+        container.setLayout(new BorderLayout());
 
-        container.add(getHeadline());
-        container.add(getPlayers());
-        container.add(getPlayButton());
+        container.add(getHeadline(), BorderLayout.NORTH);
+        container.add(getPlayers(), BorderLayout.CENTER);
+        container.add(getPlayButton(), BorderLayout.SOUTH);
     }
 
     private JPanel getPlayers() {
@@ -63,7 +65,8 @@ public class BattleView extends JFrame {
         plScore.add(lbTextHolder);
         plScore.add(lbPlayerTwo);
         plScore.add(lbScorePlayerTwo);
-
+        plScore.setBackground(new Color(145, 225, 255));
+        plScore.setBorder(new LineBorder(Color.BLACK));
         return plScore;
     }
     
@@ -71,7 +74,10 @@ public class BattleView extends JFrame {
 
     private JLabel getHeadline() {
         JLabel lbHeadline = new JLabel("BattleOverview");
-        lbHeadline.setFont(new Font("Serif", Font.BOLD, 28));
+        lbHeadline.setFont(new Font("Serif", Font.BOLD, 70));
+        lbHeadline.setOpaque(true);
+        lbHeadline.setBackground(new Color(255, 174, 2));
+        lbHeadline.setBorder(new LineBorder(Color.black));
         return lbHeadline;
     }
 
@@ -79,6 +85,18 @@ public class BattleView extends JFrame {
         btPlay = new JButton("Play");
         btPlay.addActionListener(e -> onPlay());
         btPlay.setVisible(false);
+        btPlay.setBackground(new Color(2, 189, 252));
+        btPlay.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btPlay.setBackground(new Color(255, 174, 2));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btPlay.setBackground(new Color(2, 189, 252));
+            }
+        });
+        btPlay.setBorder(new LineBorder(Color.BLACK));
+        
         return btPlay;
     }
 
